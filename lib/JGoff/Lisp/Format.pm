@@ -1,8 +1,6 @@
 package JGoff::Lisp::Format;
 
-use 5.006;
-use strict;
-use warnings;
+use Moose;
 
 =head1 NAME
 
