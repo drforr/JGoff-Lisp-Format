@@ -40,11 +40,18 @@ if you don't export anything, such as for a purely object-oriented module.
 sub format {
 }
 
-=head2 function2
+=head2 formatter
 
 =cut
 
-sub function2 {
+sub formatter {
+}
+
+=head2 formatter_call_to_string
+
+=cut
+
+sub formatter_call_to_string {
 }
 
 =head1 AUTHOR

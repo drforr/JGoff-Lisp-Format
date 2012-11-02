@@ -6,6 +6,9 @@ use Test::More;
 use base 'Exporter';
 our @EXPORT = qw( def_format_test deftest );
 
+our $most_positive_fixnum = ~0; # XXX Probably wrong
+our $most_negative_fixnum = -(~0); # XXX Probably wrong
+
 sub def_format_test {
   my ( $name, $format, $args, $result, $num_left ) = @_; # $num_left optional
   my $f = JGoff::Lisp::Format->new;
