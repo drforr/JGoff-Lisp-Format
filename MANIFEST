@@ -33,7 +33,7 @@ t/26-format-underscore.t
 t/27-format-x.t
 t/28-format.t
 t/29-formatter-c.t
-t/lib/JGoff/Format/Lisp/Utils.pm
+t/lib/JGoff/Lisp/Format/Utils.pm
 t/manifest.t
 t/pod-coverage.t
 t/pod.t

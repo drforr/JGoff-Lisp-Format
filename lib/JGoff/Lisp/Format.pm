@@ -33,11 +33,11 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 format( $stream, $format, @args )
 
 =cut
 
-sub function1 {
+sub format {
 }
 
 =head2 function2

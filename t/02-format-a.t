@@ -3,16 +3,15 @@
 use Test::More tests => 1;
 
 BEGIN {
-  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
-  use lib './lib';
+  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
+  use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
 my $f = JGoff::Lisp::Format->new;
 
-#(compile-and-load "printer-aux.lsp")
-
-def_format_test 'format.a.1' => "~a", [ undef ], "UNDEF";
+def_format_test 'format.a.1' =>
+  "~a", [ undef ], "UNDEF";
 
 deftest 'format.a.2' => sub {
   # with-standard-io-syntax
@@ -45,84 +44,118 @@ deftest 'formatter.a.3' => sub {
     undef );
 }, "Undef";
 
-def_format_test 'format.a.4' => "~;a", [ undef ], "()";
+def_format_test 'format.a.4' =>
+  "~;a", [ undef ], "()";
 
-def_format_test 'format.a.5' => "~:A", [ [ undef ] ], "[UNDEF]";
+def_format_test 'format.a.5' =>
+  "~:A", [ [ undef ] ], "[UNDEF]";
 
 #def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
 #  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
 
-def_format_test 'format.a.15' => "~va", [ undef, undef ], "UNDEF";
+def_format_test 'format.a.15' =>
+  "~va", [ undef, undef ], "UNDEF";
 
-def_format_test 'format.a.16' => "~v:A", [ undef, undef ], "()";
+def_format_test 'format.a.16' =>
+  "~v:A", [ undef, undef ], "()";
 
-def_format_test 'format.a.17' => "~@a", [ undef ], "UNDEF";
+def_format_test 'format.a.17' =>
+  '~@a', [ undef ], "UNDEF";
 
-def_format_test 'format.a.18' => "~v@A", [ undef, undef ], "UNDEF";
+def_format_test 'format.a.18' =>
+  '~v@A', [ undef, undef ], "UNDEF";
 
-def_format_test 'format.a.19' => "~v:@a", [ undef, undef ], "()";
+def_format_test 'format.a.19' =>
+  '~v:@a', [ undef, undef ], "()";
 
 ### With colinc specified
 
-def_format_test 'format.a.20' => "~v@:a", [ undef, undef ], "()";
+def_format_test 'format.a.20' =>
+  '~v@:a', [ undef, undef ], "()";
 
-def_format_test 'format.a.21' => "~3,1a", [ undef ], "NIL";
+def_format_test 'format.a.21' =>
+  "~3,1a", [ undef ], "NIL";
 
-def_format_test 'format.a.22' => "~4,3a", [ undef ], "NIL   ";
+def_format_test 'format.a.22' =>
+  "~4,3a", [ undef ], "NIL   ";
 
-def_format_test 'format.a.23' => "~3,3@a", [ undef ], "NIL";
+def_format_test 'format.a.23' =>
+  '~3,3@a', [ undef ], "NIL";
 
-def_format_test 'format.a.24' => "~4,4@a", [ undef ], "    NIL";
+def_format_test 'format.a.24' =>
+  '~4,4@a', [ undef ], "    NIL";
 
-def_format_test 'format.a.25' => "~5,3@a", [ undef ], "   NIL";
+def_format_test 'format.a.25' =>
+  '~5,3@a', [ undef ], "   NIL";
 
-def_format_test 'format.a.26' => "~5,3A", [ undef ], "NIL   ";
+def_format_test 'format.a.26' =>
+  "~5,3A", [ undef ], "NIL   ";
 
-def_format_test 'format.a.27' => "~7,3@a", [ undef ], "      NIL";
+def_format_test 'format.a.27' =>
+  '~7,3@a', [ undef ], "      NIL";
 
-def_format_test 'format.a.28' => "~7,3A", [ undef ], "NIL      ";
-
-### With padchar
-
-def_format_test 'format.a.30' => "~3,,+2A",  [ "ABC" ], "ABC  ";
-
-def_format_test 'format.a.31' => "~3,,0A", [ "ABC" ], "ABC";
-
-def_format_test 'format.a.32' => "~3,,-1A", [ "ABC" ], "ABC";
-
-def_format_test 'format.a.33' => "~3,,0A", [ "ABCD" ], "ABCD";
-
-def_format_test 'format.a.34' => "~3,,-1A", [ "ABCD" ], "ABCD";
+def_format_test 'format.a.28' =>
+  "~7,3A", [ undef ], "NIL      ";
 
 ### With padchar
 
-def_format_test 'format.a.35' => "~4,,,'XA", [ "AB" ], "ABXX";
+def_format_test 'format.a.30' =>
+  "~3,,+2A",  [ "ABC" ], "ABC  ";
 
-def_format_test 'format.a.36' => "~4,,,a", [ "AB" ], "AB  ";
+def_format_test 'format.a.31' =>
+  "~3,,0A", [ "ABC" ], "ABC";
 
-def_format_test 'format.a.37' => "~4,,,'X@a", [ "AB" ], "XXAB";
+def_format_test 'format.a.32' =>
+  "~3,,-1A", [ "ABC" ], "ABC";
 
-def_format_test 'format.a.38' => "~4,,,@A", [ "AB" ], "  AB";
+def_format_test 'format.a.33' =>
+  "~3,,0A", [ "ABCD" ], "ABCD";
 
-def_format_test 'format.a.39' => "~10,,,vA", [ undef, "abcde" ], "abcde     ";
+def_format_test 'format.a.34' =>
+  "~3,,-1A", [ "ABCD" ], "ABCD";
 
-def_format_test 'format.a.40' => "~10,,,v@A", [ undef, "abcde" ], "     abcde";
+### With padchar
 
-def_format_test 'format.a.41' => "~10,,,va", [ '*', "abcde" ], "abcde*****";
+def_format_test 'format.a.35' =>
+  "~4,,,'XA", [ "AB" ], "ABXX";
 
-def_format_test 'format.a.42' => "~10,,,v@a", [ '*', "abcde" ], "*****abcde";
+def_format_test 'format.a.36' =>
+  "~4,,,a", [ "AB" ], "AB  ";
+
+def_format_test 'format.a.37' =>
+  q{~4,,,'X@a}, [ "AB" ], "XXAB";
+
+def_format_test 'format.a.38' =>
+  '~4,,,@A', [ "AB" ], "  AB";
+
+def_format_test 'format.a.39' =>
+  "~10,,,vA", [ undef, "abcde" ], "abcde     ";
+
+def_format_test 'format.a.40' =>
+  '~10,,,v@A', [ undef, "abcde" ], "     abcde";
+
+def_format_test 'format.a.41' =>
+  "~10,,,va", [ '*', "abcde" ], "abcde*****";
+
+def_format_test 'format.a.42' =>
+  '~10,,,v@a', [ '*', "abcde" ], "*****abcde";
 
 ### Other tests
 
-def_format_test 'format.a.43' => "~3,,vA" [ undef, "ABC" ], "ABC";
+def_format_test 'format.a.43' =>
+  "~3,,vA", [ undef, "ABC" ], "ABC";
 
-def_format_test 'format.a.45' => "~4,,va", [ -1, "abcd" ], "abcd";
+def_format_test 'format.a.45' =>
+  "~4,,va", [ -1, "abcd" ], "abcd";
 
-def_format_test 'format.a.46' => "~5,vA", [ undef, "abc" ], "abc  ";
+def_format_test 'format.a.46' =>
+  "~5,vA", [ undef, "abc" ], "abc  ";
 
-def_format_test 'format.a.47' => "~5,vA", [ 3, "abc" ], "abc   ";
+def_format_test 'format.a.47' =>
+  "~5,vA", [ 3, "abc" ], "abc   ";
 
-def_format_test 'format.a.48' => "~5,v@A" [ 3, "abc" ], "   abc";
+def_format_test 'format.a.48' =>
+  '~5,v@A', [ 3, "abc" ], "   abc";
 
 ### # parameters
 
@@ -130,25 +163,25 @@ def_format_test 'format.a.49' =>
   "~#A", [ "abc", undef, undef, undef ], "abc ", 3;
 
 def_format_test 'format.a.50' =>
-  "~#@a", [ "abc", undef, undef, undef, undef, undef ], "   abc", 5;
+  '~#@a', [ "abc", undef, undef, undef, undef, undef ], "   abc", 5;
 
 def_format_test 'format.a.51' =>
   "~5,#a", [ "abc", undef, undef, undef ], "abc    ", 3;
 
 def_format_test 'format.a.52' =>
-  "~5,#@A", [ "abc", undef, undef, undef ], "    abc", 3;
+  '~5,#@A', [ "abc", undef, undef, undef ], "    abc", 3;
 
 def_format_test 'format.a.53' =>
   "~4,#A", [ "abc", undef, undef ], "abc   ", 2;
 
 def_format_test 'format.a.54' =>
-  "~4,#@A", [ "abc", undef, undef ], "   abc", 2;
+  '~4,#@A', [ "abc", undef, undef ], "   abc", 2;
 
 def_format_test 'format.a.55' =>
   "~#,#A", [ "abc", undef, undef, undef ], "abc    ", 3;
 
 def_format_test 'format.a.56' =>
-  "~#,#@A", [ "abc", undef, undef, undef ], "    abc", 3;
+  '~#,#@A', [ "abc", undef, undef, undef ], "    abc", 3;
 
 def_format_test 'format.a.57' =>
   "~-100A", [ "xyz" ], "xyz";

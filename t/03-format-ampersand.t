@@ -3,12 +3,9 @@
 use Test::More tests => 1;
 
 BEGIN {
-  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
-  use lib './lib';
+  use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
-
-my $f = JGoff::Lisp::Format->new;
 
 #(compile-and-load "printer-aux.lsp")
 

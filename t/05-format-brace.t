@@ -3,12 +3,9 @@
 use Test::More tests => 1;
 
 BEGIN {
-  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
-  use lib './lib';
+  use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
-
-#(compile-and-load "printer-aux.lsp")
 
 def_format_test 'format.b.14' =>
   "~vb", [ undef, 0b110100 ], "110100";
@@ -26,7 +23,7 @@ def_format_test 'format.b.25' =>
   "~+10b",  [ 0b1101 ], "      1101";
 
 def_format_test 'format.b.26' =>
-  "~+10@B", [ 0b1101 ], "     +1101";
+  '~+10@B', [ 0b1101 ], "     +1101";
 
 def_format_test 'format.b.27' =>
   "~-1b", [ 0b1101 ], "1101";
