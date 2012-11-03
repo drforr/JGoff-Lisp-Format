@@ -9,18 +9,28 @@ our @EXPORT = qw( def_format_test deftest );
 our $most_positive_fixnum = ~0; # XXX Probably wrong
 our $most_negative_fixnum = -(~0); # XXX Probably wrong
 
+sub formatter_call_to_string {
+  my ( $fn, @args ) = @_;
+  my $stream;
+  is_deeply( $fn->( \$stream, @args, "a" ), [ "a" ] );
+  return $stream;
+}
+
 sub def_format_test {
   my ( $name, $format, $args, $result, $num_left ) = @_; # $num_left optional
   my $f = JGoff::Lisp::Format->new;
   my $stream = undef;
   if ( ref( $result ) and ref( $result ) eq 'CODE' ) {
-    is_deeply( $f->format( $stream, $format, @$args ), $result->(), $name );
+    is_deeply( $f->format( $stream, $format, $args ), $result->(), $name );
   }
   elsif ( ref( $result ) ) {
-    is_deeply( $f->format( $stream, $format, @$args ), $result, $name );
+    is_deeply( $f->format( $stream, $format, $args ), $result, $name );
   }
   else {
-    is( $f->format( $stream, $format, @$args ), $result, $name );
+    is( $f->format( $stream, $format, $args ), $result, $name );
+  }
+  if ( $num_left ) {
+    is( scalar @$args, $num_left, $name );
   }
 }
 

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 57;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -22,13 +22,14 @@ deftest 'format.a.2' => sub {
   $f->format( undef, "~A", undef );
 }, "undef";
 
-deftest 'formatter.a.2' => sub {
-  # with-standard-io-syntax
-  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
-  $f->formatter_call_to_string(
-    $f->formatter( "~A" ),
-    undef );
-}, "nil";
+#deftest 'formatter.a.2' => sub {
+#  # with-standard-io-syntax
+#  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
+#  $f->formatter_call_to_string(
+#    $f->formatter( "~A" ),
+#    undef
+#  );
+#}, "undef";
 
 deftest 'format.a.3' => sub {
   # with-standard-io-syntax
@@ -36,16 +37,17 @@ deftest 'format.a.3' => sub {
   $f->format( undef, "~a", undef );
 }, "Undef";
 
-deftest 'formatter.a.3' => sub {
-  # with-standard-io-syntax
-  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
-  $f->formatter_call_to_string(
-    $f->formatter( "~a" ),
-    undef );
-}, "Undef";
+# XXX Need to play with the clisp first.
+#deftest 'formatter.a.3' => sub {
+#  # with-standard-io-syntax
+#  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
+#  formatter_call_to_string(
+#    $f->formatter( "~a" ),
+#    undef );
+#}, "Undef";
 
 def_format_test 'format.a.4' =>
-  "~;a", [ undef ], "()";
+  "~:a", [ undef ], "[]";
 
 def_format_test 'format.a.5' =>
   "~:A", [ [ undef ] ], "[UNDEF]";
@@ -57,7 +59,7 @@ def_format_test 'format.a.15' =>
   "~va", [ undef, undef ], "UNDEF";
 
 def_format_test 'format.a.16' =>
-  "~v:A", [ undef, undef ], "()";
+  "~v:A", [ undef, undef ], "[]";
 
 def_format_test 'format.a.17' =>
   '~@a', [ undef ], "UNDEF";
@@ -66,36 +68,49 @@ def_format_test 'format.a.18' =>
   '~v@A', [ undef, undef ], "UNDEF";
 
 def_format_test 'format.a.19' =>
-  '~v:@a', [ undef, undef ], "()";
+  '~v:@a', [ undef, undef ], "[]";
+
+def_format_test 'format.a.20' =>
+  '~v@:a', [ undef, undef ], "[]";
 
 ### With colinc specified
 
-def_format_test 'format.a.20' =>
-  '~v@:a', [ undef, undef ], "()";
+#
+# I've changed these formatting tests from the original ANSI spec to reflect
+# the nature of the string we're checking against.
+#
+# The first number is the padded length, and the second one the number of
+# characters at a time we have to work with.
+#
+# So, for instance, padding 'nil' to 3,1 means padding out to 3 characters,
+# which is trivially done by not padding.
+#
+# The natural equivalent in perl is 'undef', so testing to 5,1 reflects the
+# spirit of the original test.
 
 def_format_test 'format.a.21' =>
-  "~3,1a", [ undef ], "NIL";
+  "~5,1a", [ undef ], "UNDEF";
 
 def_format_test 'format.a.22' =>
-  "~4,3a", [ undef ], "NIL   ";
+  "~6,5a", [ undef ], "UNDEF     ";
 
 def_format_test 'format.a.23' =>
-  '~3,3@a', [ undef ], "NIL";
+  '~5,5@a', [ undef ], "UNDEF";
 
 def_format_test 'format.a.24' =>
-  '~4,4@a', [ undef ], "    NIL";
+  '~6,6@a', [ undef ], "      UNDEF";
 
 def_format_test 'format.a.25' =>
-  '~5,3@a', [ undef ], "   NIL";
+  '~9,5@a', [ undef ], "     UNDEF";
 
 def_format_test 'format.a.26' =>
-  "~5,3A", [ undef ], "NIL   ";
+  "~9,5A", [ undef ], "UNDEF     ";
 
 def_format_test 'format.a.27' =>
-  '~7,3@a', [ undef ], "      NIL";
+  '~11,5@a', [ undef ], "          UNDEF";
 
 def_format_test 'format.a.28' =>
-  "~7,3A", [ undef ], "NIL      ";
+  "~11,5A", [ undef ], "UNDEF          ";
 
 ### With padchar
 
@@ -186,7 +201,7 @@ def_format_test 'format.a.56' =>
 def_format_test 'format.a.57' =>
   "~-100A", [ "xyz" ], "xyz";
 
-def_format_test 'format.a.57' =>
+def_format_test 'format.a.58' =>
   "~-100000000000000000000a", [ "xyz" ], "xyz";
 
 =pod

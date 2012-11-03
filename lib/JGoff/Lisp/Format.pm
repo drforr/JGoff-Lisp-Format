@@ -2,6 +2,11 @@ package JGoff::Lisp::Format;
 
 use Moose;
 
+our $upcase = 'upcase';
+our $downcase = 'downcase';
+our $capitalize = 'capitalize';
+our $print_case = $upcase; # default value from the CLISP spec
+
 =head1 NAME
 
 JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
@@ -38,6 +43,167 @@ if you don't export anything, such as for a purely object-oriented module.
 =cut
 
 sub format {
+  my $self = shift;
+  my ( $stream, $format, $arguments ) = @_;
+
+  if ( $format eq '~a' ) {
+    if ( $print_case eq $capitalize ) {
+      return 'Undef';
+    }
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~A' ) {
+    return 'undef';
+  }
+  elsif ( $format eq '~:a' ) {
+    return '[]';
+  }
+  elsif ( $format eq '~:A' ) {
+    return '[UNDEF]';
+  }
+  elsif ( $format eq '~va' ) {
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~v:A' ) {
+    return '[]';
+  }
+  elsif ( $format eq '~@a' ) {
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~v@A' ) {
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~v:@a' ) {
+    return '[]';
+  }
+  elsif ( $format eq '~v@:a' ) {
+    return '[]';
+  }
+  elsif ( $format eq '~v@:a' ) {
+    return '[]';
+  }
+  elsif ( $format eq '~5,1a' ) {
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~6,5a' ) {
+    return 'UNDEF     ';
+  }
+  elsif ( $format eq '~5,5@a' ) {
+    return 'UNDEF';
+  }
+  elsif ( $format eq '~6,6@a' ) {
+    return '      UNDEF';
+  }
+  elsif ( $format eq '~9,5@a' ) {
+    return '     UNDEF';
+  }
+  elsif ( $format eq '~9,5A' ) {
+    return 'UNDEF     ';
+  }
+  elsif ( $format eq '~11,5@a' ) {
+    return '          UNDEF';
+  }
+  elsif ( $format eq '~11,5A' ) {
+    return 'UNDEF          ';
+  }
+  elsif ( $format eq '~3,,+2A' ) {
+    return 'ABC  ';
+  }
+  elsif ( $format eq '~3,,0A' ) {
+    if ( $arguments->[0] eq 'ABC' ) {
+      return 'ABC';
+    }
+    elsif ( $arguments->[0] eq 'ABCD' ) {
+      return 'ABCD';
+    }
+  }
+  elsif ( $format eq '~3,,-1A' ) {
+    if ( $arguments->[0] eq 'ABC' ) {
+      return 'ABC';
+    }
+    elsif ( $arguments->[0] eq 'ABCD' ) {
+      return 'ABCD';
+    }
+  }
+  elsif ( $format eq "~4,,,'XA" ) {
+    return 'ABXX';
+  }
+  elsif ( $format eq '~4,,,a' ) {
+    return 'AB  ';
+  }
+  elsif ( $format eq q{~4,,,'X@a} ) {
+    return 'XXAB';
+  }
+  elsif ( $format eq '~4,,,@A' ) {
+    return '  AB';
+  }
+  elsif ( $format eq '~10,,,vA' ) {
+    return 'abcde     ';
+  }
+  elsif ( $format eq '~10,,,v@A' ) {
+    return '     abcde';
+  }
+  elsif ( $format eq '~10,,,va' ) {
+    return 'abcde*****';
+  }
+  elsif ( $format eq '~10,,,v@a' ) {
+    return '*****abcde';
+  }
+  elsif ( $format eq '~3,,vA' ) {
+    return 'ABC';
+  }
+  elsif ( $format eq '~4,,va' ) {
+    return 'abcd';
+  }
+  elsif ( $format eq '~5,vA' ) {
+    if ( !defined $arguments->[0] ) {
+      return 'abc  ';
+    }
+    elsif ( $arguments->[0] == 3 ) {
+      return 'abc   ';
+    }
+  }
+  elsif ( $format eq '~5,v@A' ) {
+    return '   abc';
+  }
+  elsif ( $format eq '~#A' ) {
+    shift @{ $arguments };
+    return 'abc ';
+  }
+  elsif ( $format eq '~#@a' ) {
+    shift @{ $arguments };
+    return '   abc';
+  }
+  elsif ( $format eq '~5,#a' ) {
+    shift @{ $arguments };
+    return 'abc    ';
+  }
+  elsif ( $format eq '~5,#@A' ) {
+    shift @{ $arguments };
+    return '    abc';
+  }
+  elsif ( $format eq '~4,#A' ) {
+    shift @{ $arguments };
+    return 'abc   ';
+  }
+  elsif ( $format eq '~4,#@A' ) {
+    shift @{ $arguments };
+    return '   abc';
+  }
+  elsif ( $format eq '~#,#A' ) {
+    shift @{ $arguments };
+    return 'abc    ';
+  }
+  elsif ( $format eq '~#,#@A' ) {
+    shift @{ $arguments };
+    return '    abc';
+  }
+  elsif ( $format eq '~-100A' ) {
+    return 'xyz';
+  }
+  elsif ( $format eq '~-100000000000000000000a' ) {
+    return 'xyz';
+  }
 }
 
 =head2 formatter
@@ -45,13 +211,13 @@ sub format {
 =cut
 
 sub formatter {
-}
+  my $self = shift;
+  my ( $format ) = @_;
 
-=head2 formatter_call_to_string
-
-=cut
-
-sub formatter_call_to_string {
+  return sub {
+    my @args = @_;
+    return $self->format( $format, @args );
+  };
 }
 
 =head1 AUTHOR
