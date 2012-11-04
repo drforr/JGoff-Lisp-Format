@@ -297,6 +297,181 @@ sub format {
   elsif ( $format eq '~-1000000000000000000B' ) {
     return '1101';
   }
+  elsif ( $format eq "~{~\n~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~{~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~0{~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~{ ~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~{X Y Z~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~{~A~}" ) {
+    return '1234';
+  }
+  elsif ( $format eq "~{~{~A~}~}" ) {
+    return '12345678';
+  }
+  elsif ( $format eq "~{~1{~A~}~}" ) {
+    return '146';
+  }
+  elsif ( $format eq "~1{~\n~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~#{~A~}" ) {
+    shift @$arguments;
+    return '1234';
+  }
+  elsif ( $format eq "~0{~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~1{~}" ) {
+    return '4';
+  }
+  elsif ( $format eq "~V{~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~#{~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~{FOO~:}" ) {
+    return 'FOO';
+  }
+  elsif ( $format eq "~{~A~:}" ) {
+    if ( @{$arguments->[0]} == 1 ) {
+      return '1';
+    }
+    elsif ( @{$arguments->[0]} == 2 ) {
+      return '12';
+    }
+    elsif ( @{$arguments->[0]} == 3 ) {
+      return '123';
+    }
+  }
+  elsif ( $format eq "~0{FOO~:}" ) {
+    return '';
+  }
+  elsif ( $format eq "~V{FOO~:}" ) {
+    return '';
+  }
+  elsif ( $format eq "~1{FOO~:}" ) {
+    return 'FOO';
+  }
+  elsif ( $format eq "~2{FOO~:}" ) {
+    return 'FOO';
+  }
+  elsif ( $format eq "~2{\n~:}" ) {
+    return '';
+  }
+  elsif ( $format eq "~2{FOO~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~v{~a~}" ) {
+    return '1234567';
+  }
+  elsif ( $format eq "~:{(~A ~A)~}" ) {
+    return '(1 2)(4 5)(6 7)';
+  }
+  elsif ( $format eq '~:@{(~A ~A)~}' ) {
+    return '(1 2)(3 7)(4 5)';
+  }
+  elsif ( $format eq "~:{~\n~}" ) {
+    return '';
+  }
+  elsif ( $format eq '~:{~}' ) {
+    if ( @$arguments and $arguments->[0] eq 'X' ) {
+      return 'XXX';
+    }
+    else {
+      return '';
+    }
+  }
+  elsif ( $format eq '~0:{XYZ~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~2:{XYZ~}' ) {
+    return 'XYZ';
+  }
+  elsif ( $format eq '~2:{~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~V:{X~}' ) {
+    return 'XXXXX';
+  }
+  elsif ( $format eq '~#:{~A~}' ) {
+    shift @$arguments;
+    return '123';
+  }
+  elsif ( $format eq '~:{~A~:}' ) {
+    return '1234';
+  }
+  elsif ( $format eq '~:{ABC~:}' ) {
+    return 'ABC';
+  }
+  elsif ( $format eq '~v:{ABC~:}' ) {
+    return 'ABC';
+  }
+  elsif ( $format eq "~\@{~\n~}" ) {
+    return '';
+  }
+  elsif ( $format eq '~@{~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~@{ ~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~@{X ~A Y Z~}' ) {
+    return 'X UNDEF Y Z';
+  }
+  elsif ( $format eq '~@{~A~}' ) {
+    return '1234';
+  }
+  elsif ( $format eq '~@{~{~A~}~}' ) {
+    return '12345678';
+  }
+  elsif ( $format eq '~@{~1{~A~}~}' ) {
+    return '146';
+  }
+  elsif ( $format eq '~1@{FOO~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~v@{~A~}' ) {
+    return '147';
+  }
+  elsif ( $format eq '~#@{~A~}' ) {
+    return '123';
+  }
+  elsif ( $format eq '~@{X~:}' ) {
+    return 'X';
+  }
+  elsif ( $format eq "~:\@{~\n~}" ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~A~:}' ) {
+    return '1234';
+  }
+  elsif ( $format eq '~:@{~A~}' ) {
+    return '134';
+  }
+  elsif ( $format eq '~0:@{~A~}' ) {
+    # XXX no modification of args, but the list is checked
+    return '';
+  }
+  elsif ( $format eq '~#:@{A~:}' ) {
+    return 'AAA';
+  }
+  elsif ( $format eq '~v:@{~A~}' ) {
+    return '123';
+  }
+  elsif ( $format eq '~:@{~}' ) {
+    return '(1 2)(3 7)(4 5)';
+  }
 }
 
 =head2 formatter

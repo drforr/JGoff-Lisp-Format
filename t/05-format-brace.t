@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 62;
 
 BEGIN {
   use lib 't/lib';
@@ -143,7 +143,7 @@ def_format_test 'format.@{.2' =>
   '~@{ ~}', undef, "";
 
 def_format_test 'format.@{.3' =>
-  '~@{X ~A Y Z~}', [ undef ], "X NIL Y Z";
+  '~@{X ~A Y Z~}', [ undef ], "X UNDEF Y Z";
 
 def_format_test 'format.@{.4' =>
   '~@{~A~}', [ 1, 2, 3, 4 ], "1234";
@@ -171,7 +171,8 @@ def_format_test 'format.@{.10' =>
 
 def_format_test 'format.\:@{.1' =>
   concatenate( '~:@{~', "\n", "~}" ),
-  undef, "";
+  undef,
+  "";
 
 def_format_test 'format.\:@{.2' =>
   '~:@{~A~}', [ [ 1, 2 ], [ 3 ], [ 4, 5, 6 ] ], "134";
