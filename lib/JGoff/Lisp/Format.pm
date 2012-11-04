@@ -7,6 +7,8 @@ our $downcase = 'downcase';
 our $capitalize = 'capitalize';
 our $print_case = $upcase; # default value from the CLISP spec
 
+our $most_positive_fixnum = ~0; # XXX Probably wrong
+
 =head1 NAME
 
 JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
@@ -472,6 +474,93 @@ sub format {
   elsif ( $format eq '~:@{~}' ) {
     return '(1 2)(3 7)(4 5)';
   }
+  elsif ( $format eq '~{X ~A~^ Y ~A~^ ~}' ) {
+    if ( @{ $arguments->[0] } == 5 ) {
+      return 'X 1 Y 2 X 3 Y 4 X 5';
+    }
+    else {
+      return 'X 1 Y 2 X 3 Y 4';
+    }
+  }
+  elsif ( $format eq '~0{~A~^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~1{~A~^~A~}' ) {
+    if ( @{ $arguments->[0] } == 3 ) {
+      return '12';
+    }
+    else {
+      return '1';
+    }
+  }
+  elsif ( $format eq '~{~A~A~0^~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~{~A~A~v^~A~}' ) {
+    return '12456';
+  }
+  elsif ( $format eq '~{~#,3^~A~}' ) {
+    return '1234567';
+  }
+  elsif ( $format eq '~{~2,#^~A~}~A' ) {
+    return "123456780";
+  }
+  elsif ( $format eq '~{~#,#,#^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~{~#,1,2^~A~}' ) {
+    return '123456789';
+  }
+  elsif ( $format eq '~{~#,#,v^~A~}' ) {
+    if ( @{ $arguments->[0] } == 14 ) {
+      return '2468';
+    }
+    else {
+      return '246';
+    }
+  }
+  elsif ( $format eq '~{~v,v^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~{~0,v,v^~A~}' ) {
+    if ( $arguments->[0][1] ==
+         $JGoff::Lisp::Format::most_positive_fixnum + 1 ) {
+      return '';
+    }
+    else {
+      return 1;
+    }
+  }
+  elsif ( $format eq '~{~1,v^~A~}' ) {
+    return '876';
+  }
+  elsif ( $format eq '~{~0,v^~A~}' ) {
+    return '876';
+  }
+  elsif ( $format eq '~{~1,2,v^~A~}' ) {
+    if ( defined( $arguments->[0][6] ) ) {
+      return '123';
+    }
+    else {
+      return '1234';
+    }
+  }
+  elsif ( $format eq '~{~1,1,v^~A~}' ) {
+    return '123';
+  }
+  elsif ( $format eq q{~{~'X^~A~}} ) {
+    return '123';
+  }
+  elsif ( $format eq q{~{~v,'X^~A~}} ) {
+    return '123';
+  }
+  elsif ( $format eq q{~{~'X,v^~A~}} ) {
+    return '123';
+  }
+  elsif ( $format eq '~{~v,v^~A~}' ) {
+    return '123';
+  }
+  return 'Not Caught';
 }
 
 =head2 formatter

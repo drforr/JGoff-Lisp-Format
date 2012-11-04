@@ -3,6 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
+  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
   use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
@@ -69,14 +70,14 @@ def_format_test 'format.^.{.18' =>
   "";
 
 def_format_test 'format.^.{.19' =>
-  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
-                       $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
+  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+                       $JGoff::Lisp::Format::most_positive_fixnum + 1,
                        1 ] ],
   "";
 
 def_format_test 'format.^.{.20' =>
-  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
-                       $JGoff::Lisp::Format::Utils::most_positive_fixnum,
+  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+                       $JGoff::Lisp::Format::most_positive_fixnum,
                        1 ] ],
   "1";
 
