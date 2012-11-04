@@ -1,6 +1,7 @@
 #!perl
 
-use Test::More tests => 57;
+use Test::More tests => 92;
+use List::Util qw( min );
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -14,37 +15,41 @@ def_format_test 'format.a.1' =>
   "~a", [ undef ], "UNDEF";
 
 deftest 'format.a.2' => sub {
-  # with-standard-io-syntax
-  # XXX strictly speaking, *print-case* should be somewhere in core perl.
-  # XXX but since it doesn't exist, make one up.
-  # XXX
-  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
-  $f->format( undef, "~A", undef );
+  with_standard_io_syntax {
+    # XXX strictly speaking, *print-case* should be somewhere in core perl.
+    # XXX but since it doesn't exist, make one up.
+    # XXX
+    local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
+    $f->format( undef, "~A", undef );
+  };
 }, "undef";
 
-#deftest 'formatter.a.2' => sub {
-#  # with-standard-io-syntax
-#  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
-#  $f->formatter_call_to_string(
-#    $f->formatter( "~A" ),
-#    undef
-#  );
-#}, "undef";
+deftest 'formatter.a.2' => sub {
+  with_standard_io_syntax {
+    local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
+    formatter_call_to_string(
+      $f->formatter( "~A" ),
+      undef
+    );
+  };
+}, "undef";
 
 deftest 'format.a.3' => sub {
-  # with-standard-io-syntax
-  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
-  $f->format( undef, "~a", undef );
+  with_standard_io_syntax {
+    local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
+    $f->format( undef, "~a", undef );
+  };
 }, "Undef";
 
-# XXX Need to play with the clisp first.
-#deftest 'formatter.a.3' => sub {
-#  # with-standard-io-syntax
-#  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
-#  formatter_call_to_string(
-#    $f->formatter( "~a" ),
-#    undef );
-#}, "Undef";
+deftest 'formatter.a.3' => sub {
+  with_standard_io_syntax {
+    local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
+    formatter_call_to_string(
+      $f->formatter( "~a" ),
+      undef
+    );
+  };
+}, "Undef";
 
 def_format_test 'format.a.4' =>
   "~:a", [ undef ], "[]";
@@ -54,6 +59,20 @@ def_format_test 'format.a.5' =>
 
 #def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
 #  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
+
+deftest 'format.a.7' => sub {
+  my $fn = $f->formatter( "~a" );
+  my $list = [];
+  for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
+    my $s1 = $c; # was (string c), but perl has no such notion.
+    my $s2 = $f->format( undef, "~a", [ $s1 ] );
+    my $s3 = formatter_call_to_string( $fn, [ $s1 ] );
+    unless ( $s1 eq $s2 and $s2 eq $s3 ) {
+      collect( $list, $c, $s1, $s2, $s3 );
+    }
+  };
+  return $list;
+}, [];
 
 def_format_test 'format.a.15' =>
   "~va", [ undef, undef ], "UNDEF";
@@ -112,6 +131,34 @@ def_format_test 'format.a.27' =>
 def_format_test 'format.a.28' =>
   "~11,5A", [ undef ], "UNDEF          ";
 
+deftest 'format.a.29' => sub {
+  my $fn = $f->formatter( "~v,,2A" );
+  my $list = [];
+  for my $i ( -4 .. 10 ) {
+    my $s = $f->format( undef, "~v,,2A", [ $i, "ABC" ] );
+    my $s2 = formatter_call_to_string( $fn, [ $i, "ABC" ] );
+    is( $s, $s2, 'format.a.29' ); # XXX capture the anem.
+    push @$list, $s; # XXX Different (collect)
+  };
+  return $list;
+}, [
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC  ",
+  "ABC   ",
+  "ABC    ",
+  "ABC     ",
+  "ABC      ",
+  "ABC       "
+];
+
 ### With padchar
 
 def_format_test 'format.a.30' =>
@@ -163,6 +210,46 @@ def_format_test 'format.a.43' =>
 def_format_test 'format.a.45' =>
   "~4,,va", [ -1, "abcd" ], "abcd";
 
+deftest 'format.a.44' => sub {
+  my $fn = $f->formatter( "~3,,vA" );
+  my $list = [];
+  for my $i ( 0 .. 6 ) {
+    my $s = $f->format( undef, "~3,,vA", [ $i, 'ABC' ] );
+    my $s2 = formatter_call_to_string( $fn, [ $i, 'ABC' ] );
+    is( $s, $s2, 'format.a.44' );
+    push @$list, $s;
+  }
+  return $list;
+}, [
+  "ABC",
+  "ABC ",
+  "ABC  ",
+  "ABC   ",
+  "ABC    ",
+  "ABC     ",
+  "ABC      "
+];
+
+deftest 'format.a.44a' => sub {
+  my $fn = $f->formatter( '~3,,v@A' );
+  my $list = [];
+  for my $i ( 0 .. 6 ) {
+    my $s = $f->format( undef, '~3,,v@A', [ $i, 'ABC' ] );
+    my $s2 = formatter_call_to_string( $fn, [ $i, 'ABC' ] );
+    is( $s, $s2, 'format.a.44' );
+    push @$list, $s;
+  }
+  return $list;
+}, [
+  "ABC",
+  " ABC",
+  "  ABC",
+  "   ABC",
+  "    ABC",
+  "     ABC",
+  "      ABC"
+];
+
 def_format_test 'format.a.46' =>
   "~5,vA", [ undef, "abc" ], "abc  ";
 
@@ -205,16 +292,6 @@ def_format_test 'format.a.58' =>
   "~-100000000000000000000a", [ "xyz" ], "xyz";
 
 =pod
-
-(deftest format.a.7
-  (let ((fn (formatter "~a")))
-    (loop for c across +standard-chars+
-          for s1 = (string c)
-          for s2 = (format nil "~a" s1)
-          for s3 = (formatter-call-to-string fn s1)
-          unless (and (string= s1 s2) (string= s2 s3))
-          collect (list c s1 s2 s3)))
-  nil)
 
 (deftest format.a.8
   (let ((fn (formatter "~A")))
@@ -360,58 +437,5 @@ def_format_test 'format.a.58' =>
   "        ()")
 
 ;;; With padchar
-
-(deftest format.a.29
-  (let ((fn (formatter "~v,,2A")))
-    (loop for i from -4 to 10
-          for s = (format nil "~v,,2A" i "ABC")
-          for s2 = (formatter-call-to-string fn i "ABC")
-          do (assert (string= s s2))
-          collect s))
-  ("ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC  "
-   "ABC   "
-   "ABC    "
-   "ABC     "
-   "ABC      "
-   "ABC       "))
-
-(deftest format.a.44
-  (let ((fn (formatter "~3,,vA")))
-    (loop for i from 0 to 6
-          for s =(format nil "~3,,vA" i "ABC")
-          for s2 = (formatter-call-to-string fn i "ABC")
-          do (assert (string= s s2))
-          collect s))
-  ("ABC"
-   "ABC "
-   "ABC  "
-   "ABC   "
-   "ABC    "
-   "ABC     "
-   "ABC      "))
-
-(deftest format.a.44a
-  (let ((fn (formatter "~3,,v@A")))
-    (loop for i from 0 to 6
-          for s = (format nil "~3,,v@A" i "ABC")
-          for s2 = (formatter-call-to-string fn i "ABC")
-          do (assert (string= s s2))
-          collect s))
-  ("ABC"
-   " ABC"
-   "  ABC"
-   "   ABC"
-   "    ABC"
-   "     ABC"
-   "      ABC"))
 
 =cut

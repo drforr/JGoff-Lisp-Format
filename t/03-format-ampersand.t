@@ -7,8 +7,6 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
-#(compile-and-load "printer-aux.lsp")
-
 def_format_test 'format.&.1' =>
   "~0&", undef, "";
 

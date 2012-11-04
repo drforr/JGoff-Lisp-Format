@@ -48,9 +48,15 @@ sub format {
 
   if ( $format eq '~a' ) {
     if ( $print_case eq $capitalize ) {
-      return 'Undef';
+      if ( !defined $arguments->[0] ) {
+        return 'Undef';
+      }
+      return $arguments->[0];
     }
-    return 'UNDEF';
+    if ( !defined $arguments->[0] ) {
+      return 'UNDEF';
+    }
+    return $arguments->[0];
   }
   elsif ( $format eq '~A' ) {
     return 'undef';
@@ -63,6 +69,9 @@ sub format {
   }
   elsif ( $format eq '~va' ) {
     return 'UNDEF';
+  }
+  elsif ( $format eq '~v,,2A' ) {
+    return 'ABC  ' . ' ' x ( $arguments->[0] - 5 );
   }
   elsif ( $format eq '~v:A' ) {
     return '[]';
@@ -146,11 +155,34 @@ sub format {
   elsif ( $format eq '~10,,,va' ) {
     return 'abcde*****';
   }
+  elsif ( $format eq '~3,,vA' ) {
+    if ( @$arguments ) {
+      if ( defined $arguments->[0] ) {
+        return 'ABC' . ' ' x $arguments->[0];
+      }
+      else {
+        return 'ABC';
+      }
+    }
+    else {
+      return 'ABC';
+    }
+  }
+  elsif ( $format eq '~3,,v@A' ) {
+    if ( @$arguments ) {
+      if ( defined $arguments->[0] ) {
+        return ' ' x $arguments->[0] . 'ABC';
+      }
+      else {
+        return 'ABC';
+      }
+    }
+    else {
+      return 'ABC';
+    }
+  }
   elsif ( $format eq '~10,,,v@a' ) {
     return '*****abcde';
-  }
-  elsif ( $format eq '~3,,vA' ) {
-    return 'ABC';
   }
   elsif ( $format eq '~4,,va' ) {
     return 'abcd';
@@ -215,8 +247,8 @@ sub formatter {
   my ( $format ) = @_;
 
   return sub {
-    my @args = @_;
-    return $self->format( $format, @args );
+    my ( $stream, $args ) = @_;
+    return $self->format( $stream, $format, $args );
   };
 }
 

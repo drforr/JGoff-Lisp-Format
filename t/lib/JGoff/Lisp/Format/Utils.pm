@@ -4,16 +4,32 @@ use JGoff::Lisp::Format;
 use Test::More;
 
 use base 'Exporter';
-our @EXPORT = qw( def_format_test deftest );
+our @EXPORT = qw(
+  def_format_test
+  deftest
+  formatter_call_to_string collect
+  with_standard_io_syntax
+);
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
 our $most_negative_fixnum = -(~0); # XXX Probably wrong
+our @standard_chars = split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
+our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
 
+sub with_standard_io_syntax(&) {
+  my $fn = shift;
+  return $fn->();
+}
+
+sub collect {
+  my $list = shift;
+  push @$list, [ @_ ];
+}
+
+# XXX This needs lots of work, there's lots going on in the original function.
 sub formatter_call_to_string {
-  my ( $fn, @args ) = @_;
-  my $stream;
-  is_deeply( $fn->( \$stream, @args, "a" ), [ "a" ] );
-  return $stream;
+  my ( $fn, $args ) = @_;
+  return $fn->( undef, $args );
 }
 
 sub def_format_test {
@@ -36,7 +52,13 @@ sub def_format_test {
 
 sub deftest {
   my ( $name, $func, $result ) = @_;
-  is( $func->(), $result, $name );
+  my $test = $func->();
+  if ( ref $test ) {
+    is_deeply( $test, $result, $name );
+  }
+  else {
+    is( $test, $result, $name );
+  }
 }
 
 1;
