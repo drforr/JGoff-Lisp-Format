@@ -236,6 +236,38 @@ sub format {
   elsif ( $format eq '~-100000000000000000000a' ) {
     return 'xyz';
   }
+  elsif ( $format eq '~0&' ) {
+    return '';
+  }
+  elsif ( $format eq '~&' ) {
+    return '';
+  }
+  elsif ( $format eq 'X~&' ) {
+    return "X\n";
+  }
+  elsif ( $format eq 'X~%~&' ) {
+    return "X\n";
+  }
+  elsif ( $format eq '~v&' ) {
+    return '';
+  }
+  elsif ( $format eq 'X~v&' ) {
+    return "X\n";
+  }
+  elsif ( $format eq 'X~V%' ) {
+    return "X";
+  }
+  elsif ( $format eq 'X~#V%' ) {
+    return "X";
+  }
+  elsif ( $format eq 'X~#%' ) {
+    if ( $arguments and @$arguments ) {
+      return "X\n\n\n";
+    }
+    else {
+      return "X";
+    }
+  }
 }
 
 =head2 formatter
