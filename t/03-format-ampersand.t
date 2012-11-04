@@ -14,16 +14,16 @@ def_format_test 'format.&.2' =>
   "~&", undef, "";
 
 def_format_test 'format.&.3' =>
-  "X~&", undef, sub { "X" . "\n" };
+  "X~&", undef, concatenate( "X", "\n" );
 
 def_format_test 'format.&.4' =>
-  "X~%~&", undef, sub { "X" . "\n" };
+  "X~%~&", undef, concatenate( "X", "\n" );
 
 def_format_test 'format.&.7' =>
   "~v&", [ undef ], "";
 
 def_format_test 'format.&.8' =>
-  "X~v&", [ undef ], sub { "X" . "\n" };
+  "X~v&", [ undef ], concatenate( "X", "\n" );
 
 def_format_test 'format.&.11' =>
   "X~V%", [ 0 ], "X";
@@ -32,7 +32,10 @@ def_format_test 'format.&.12' =>
   "X~#%", undef, "X";
 
 def_format_test 'format.&.13' =>
-  "X~#%", [ "a", "b", "c" ], sub { my $nl = "\n"; "X" . $nl . $nl . $nl }, 3;
+  "X~#%", [ "a", "b", "c" ], sub {
+     my $nl = "\n";
+     concatenate( "X", $nl, $nl, $nl ) },
+  3;
 
 =pod
 

@@ -102,6 +102,101 @@ def_format_test 'format.\:{.4' =>
 def_format_test 'format.\:{.5' =>
   "~:{~}", [ "X", [ undef, [ 1, 2 ], [ 3 ] ] ], "XXX";
 
+def_format_test 'format.\:{.7' =>
+  "~0:{XYZ~}", [ [ [ 1 ] ] ], "";
+
+def_format_test 'format.\:{.8' =>
+  "~2:{XYZ~}", [ [ [ 1 ] ] ], "XYZ";
+
+def_format_test 'format.\:{.9' =>
+  "~2:{~A~}", [ [ [ 1 ], [ 2 ] ] ], "12";
+
+# XXX Testing a property-list, close to a hash.
+def_format_test 'format.\:{.10' =>
+  "~2:{~A~}", [ [ [ 1, 'X' ], [ 2, 'Y' ], [ 3, 'Z' ] ] ], "12";
+
+def_format_test 'format.\:{.12' =>
+  "~V:{X~}", [ undef, [ [ 1 ], [ 2 ], [ 3 ], undef, [ 5 ] ] ], "XXXXX";
+
+def_format_test 'format.\:{.13' =>
+  "~#:{~A~}", [ [ [ 1 ], [ 2 ], [ 3 ], [ 4 ], [ 5 ] ], "foo", "bar" ], "123", 2;
+
+def_format_test 'format.\:{.14' =>
+  "~:{~A~:}", [ [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ] ], "1234";
+
+def_format_test 'format.\:{.16' =>
+  "~:{ABC~:}", [ [ undef ] ], "ABC";
+
+def_format_test 'format.\:{.17' =>
+  "~v:{ABC~:}", [ undef, [ undef ] ], "ABC";
+
+### Tests of ~@{ ... ~}
+
+def_format_test 'format.@{.1' =>
+  concatenate( '~@{~', "\n", "~}" ),
+  undef, "";
+
+def_format_test 'format.@{.1A' =>
+  '~@{~}', [ "" ], "";
+
+def_format_test 'format.@{.2' =>
+  '~@{ ~}', undef, "";
+
+def_format_test 'format.@{.3' =>
+  '~@{X ~A Y Z~}', [ undef ], "X NIL Y Z";
+
+def_format_test 'format.@{.4' =>
+  '~@{~A~}', [ 1, 2, 3, 4 ], "1234";
+
+# XXX This is a list of quoted lists here, maybe something going on?
+def_format_test 'format.@{.5' =>
+  '~@{~{~A~}~}', [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ], "12345678";
+
+def_format_test 'format.@{.6' =>
+  '~@{~1{~A~}~}', [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ], "146";
+
+def_format_test 'format.@{.7' =>
+  '~1@{FOO~}', undef, "";
+
+def_format_test 'format.@{.8' =>
+  '~v@{~A~}', [ undef, 1, 4, 7 ], "147";
+
+def_format_test 'format.@{.9' =>
+  '~#@{~A~}', [ 1, 2, 3 ], "123";
+
+def_format_test 'format.@{.10' =>
+  '~@{X~:}', undef, "X";
+
+### ~:@{
+
+def_format_test 'format.\:@{.1' =>
+  concatenate( '~:@{~', "\n", "~}" ),
+  undef, "";
+
+def_format_test 'format.\:@{.2' =>
+  '~:@{~A~}', [ [ 1, 2 ], [ 3 ], [ 4, 5, 6 ] ], "134";
+
+# XXX Almost forgot, another '(1 2) '(3 4) list.
+def_format_test 'format.\:@{.3' =>
+  '~:@{(~A ~A)~}', [ [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ], "(1 2)(3 7)(4 5)";
+
+def_format_test 'format.\:@{.4' =>
+  '~:@{~}',
+  [ "(~A ~A)", [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
+  "(1 2)(3 7)(4 5)";
+
+def_format_test 'format.\:@.6' =>
+  '~:@{~A~:}', [ [ 1, 'A' ], [ 2, 'B' ], [ 3 ], [ 4, 'C', 'D' ] ], "1234";
+
+def_format_test 'format.\:@.7' =>
+  '~0:@{~A~:}', [ [ 1, 'A' ], [ 2, 'B' ], [ 3 ], [ 4, 'C', 'D' ] ], "", 4;
+
+def_format_test 'format.\:@.8' =>
+  '~#:@{A~:}', [ undef, undef, undef ], "AAA";
+
+def_format_test 'format.\:@.9' =>
+  '~v:@{~A~}', [ undef, [ 1 ], [ 2 ], [ 3 ] ], "123";
+
 =pod
 
 (deftest format.{.8
@@ -139,18 +234,6 @@ def_format_test 'format.\:{.5' =>
   (format nil "~:{~}" (formatter "~A") '((1 2) (3) (4 5 6)))
   "134")
 
-def_format_test 'format.\:{.7
-  "~0:{XYZ~}" ('((1))) "")
-
-def_format_test 'format.\:{.8
-  "~2:{XYZ~}" ('((1))) "XYZ")
-
-def_format_test 'format.\:{.9
-  "~2:{~A~}" ('((1) (2))) "12")
-
-def_format_test 'format.\:{.10
-  "~2:{~A~}" ('((1 X) (2 Y) (3 Z))) "12")
-
 (deftest format.\:{.11
   (loop for i from 0 to 10 collect
         (format nil "~v:{~A~}" i '((1) (2) (3 X) (4 Y Z) (5) (6))))
@@ -164,15 +247,6 @@ def_format_test 'format.\:{.10
   ("" "1" "12" "123" "1234" "12345"
    "123456" "123456" "123456" "123456" "123456"))
 
-def_format_test 'format.\:{.12
-  "~V:{X~}" (nil '((1) (2) (3) nil (5))) "XXXXX")
-
-def_format_test 'format.\:{.13
-  "~#:{~A~}" ('((1) (2) (3) (4) (5)) 'foo 'bar) "123" 2)
-
-def_format_test 'format.\:{.14
-  "~:{~A~:}" ('((1 X) (2 Y) (3) (4 A B))) "1234")
-
 (deftest format.\:{.15
   (loop for i from 0 to 10 collect
         (format nil "~v:{~A~:}" i '((1 X) (2 Y) (3) (4 A B))))
@@ -185,46 +259,6 @@ def_format_test 'format.\:{.14
           (formatter-call-to-string fn i '((1 X) (2 Y) (3) (4 A B)))))
   ("" "1" "12" "123" "1234" "1234"
    "1234" "1234" "1234" "1234" "1234"))
-
-def_format_test 'format.\:{.16
-  "~:{ABC~:}" ('(nil)) "ABC")
-
-def_format_test 'format.\:{.17
-  "~v:{ABC~:}" (nil '(nil)) "ABC")
-
-
-;;; Tests of ~@{ ... ~}
-
-def_format_test 'format.@{.1
-  (concatenate 'string "~@{~" (string #\Newline) "~}")
-  nil "")
-
-def_format_test 'format.@{.1A
-  "~@{~}" ("") "")
-
-def_format_test 'format.@{.2
-  "~@{ ~}" nil "")
-
-def_format_test 'format.@{.3
-  "~@{X ~A Y Z~}" (nil) "X NIL Y Z")
-
-def_format_test 'format.@{.4
-  "~@{~A~}" (1 2 3 4) "1234")
-
-def_format_test 'format.@{.5
-  "~@{~{~A~}~}" ('(1 2 3) '(4 5) '(6 7 8)) "12345678")
-
-def_format_test 'format.@{.6
-  "~@{~1{~A~}~}" ('(1 2 3) '(4 5) '(6 7 8)) "146")
-
-def_format_test 'format.@{.7
-  "~1@{FOO~}" nil "")
-
-def_format_test 'format.@{.8
-  "~v@{~A~}" (nil 1 4 7) "147")
-
-def_format_test 'format.@{.9
-  "~#@{~A~}" (1 2 3) "123")
 
 (deftest format.@{.10
   (loop for i from 0 to 10
@@ -245,44 +279,14 @@ def_format_test 'format.@{.9
   ("" "1" "12" "123" "1234" "12345"
    "123456" "1234567" "12345678" "123456789" "12345678910"))
 
-def_format_test 'format.@{.11
-  "~@{X~:}" nil "X")
-
-def_format_test 'format.@{.12
+def_format_test format.@{.12
   "~@{~}" ((formatter "X~AY") 1) "X1Y")
 
-def_format_test 'format.@{.13
+def_format_test format.@{.13
   "~v@{~}" (1 (formatter "X") 'foo) "X" 1)
 
-;;; ~:@{
-
-def_format_test 'format.\:@{.1
-  (concatenate 'string "~:@{~" (string #\Newline) "~}")
-  nil "")
-
-def_format_test 'format.\:@{.2
-  "~:@{~A~}" ('(1 2) '(3) '(4 5 6)) "134")
-
-def_format_test 'format.\:@{.3
-  "~:@{(~A ~A)~}" ('(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
-
-def_format_test 'format.\:@{.4
-  "~:@{~}" ("(~A ~A)" '(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
-
-def_format_test 'format.\:@{.5
+def_format_test format.\:@{.5
   "~:@{~}" ((formatter "(~A ~A)") '(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
-
-def_format_test 'format.\:@.6
-  "~:@{~A~:}" ('(1 A) '(2 B) '(3) '(4 C D)) "1234")
-
-def_format_test 'format.\:@.7
-  "~0:@{~A~:}" ('(1 A) '(2 B) '(3) '(4 C D)) "" 4)
-
-def_format_test 'format.\:@.8
-  "~#:@{A~:}" (nil nil nil) "AAA")
-
-def_format_test 'format.\:@.9
-  "~v:@{~A~}" (nil '(1) '(2) '(3)) "123")
 
 (deftest format.\:@.10
   (loop for i from 0 to 10
@@ -365,4 +369,5 @@ def_format_test 'format.\:@.9
 (deftest format.\:@{.error.5
   (signals-error (format nil "~:@{~A ~A~}" '(x . y)) type-error)
   t)
+
 =cut
