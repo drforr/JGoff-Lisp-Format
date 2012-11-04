@@ -268,6 +268,35 @@ sub format {
       return "X";
     }
   }
+  elsif ( $format eq '~vb' ) {
+    if ( $arguments and @$arguments and !defined $arguments->[0] ) {
+      return '110100';
+    }
+    else {
+      return '1101';
+    }
+  }
+  elsif ( $format eq '~6,vB' ) {
+    return '   100';
+  }
+  elsif ( $format eq '~,,v:b' ) {
+    return '10,011';
+  }
+  elsif ( $format eq q{~,,'*,v:B} ) {
+    return '10*110';
+  }
+  elsif ( $format eq '~+10b' ) {
+    return '      1101';
+  }
+  elsif ( $format eq '~+10@B' ) {
+    return '     +1101';
+  }
+  elsif ( $format eq '~-1b' ) {
+    return '1101';
+  }
+  elsif ( $format eq '~-1000000000000000000B' ) {
+    return '1101';
+  }
 }
 
 =head2 formatter

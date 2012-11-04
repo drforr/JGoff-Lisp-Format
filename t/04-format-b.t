@@ -1,13 +1,29 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 11;
 
 BEGIN {
   use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
-#(compile-and-load "printer-aux.lsp")
+my $f = JGoff::Lisp::Format->new;
+
+### Comma tests
+
+deftest 'format.b.8' => sub {
+  my $fn = $f->formatter( "~:B" );
+  my $list = [];
+  for my $i ( -7 .. 7 ) {
+    my $s1 = $f->format( undef, "~b", [ $i ] );
+    my $s2 = $f->format( undef, "~:b", [ $i ] );
+    my $s3 = formatter_call_to_string( $fn, [ $i ] );
+    unless( $s1 eq $s2 and $s2 eq $s3 ) {
+      collect( $list, $i, $s1, $s2, $s3 );
+    }
+  }
+  return $list;
+}, [];
 
 def_format_test 'format.b.14' =>
   "~vb", [ undef, 0b110100 ], "110100";
@@ -32,6 +48,9 @@ def_format_test 'format.b.27' =>
 
 def_format_test 'format.b.28' =>
   "~-1000000000000000000B", [ 0b1101 ], "1101";
+
+def_format_test 'format.b.29' =>
+  "~vb", [ $JGoff::Lisp::Format::Utils::most_negative_fixnum, 0b1101 ], "1101";
 
 =pod
 
@@ -227,16 +246,6 @@ def_format_test 'format.b.28' =>
   nil)
 
 ;;; Comma tests
-
-(deftest format.b.8
-  (let ((fn (formatter "~:B")))
-    (loop for i from -7 to 7
-          for s1 = (format nil "~b" i)
-          for s2 = (format nil "~:b" i)
-          for s3 = (formatter-call-to-string fn i)
-          unless (and (string= s1 s2) (string= s2 s3))
-          collect (list i s1 s2 s3)))
-  nil)
 
 (deftest format.b.9
   (let ((fn (formatter "~:b")))
@@ -508,8 +517,6 @@ def_format_test 'format.b.28' =>
   "+1100100010"
   "+1100100010")
 
-(def-format-test format.b.29
-  "~vb" ((1- most-negative-fixnum) #b1101) "1101")
 
 ;;; Randomized test
 

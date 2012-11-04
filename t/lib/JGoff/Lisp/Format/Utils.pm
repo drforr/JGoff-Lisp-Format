@@ -7,7 +7,9 @@ use base 'Exporter';
 our @EXPORT = qw(
   def_format_test
   deftest
-  formatter_call_to_string collect
+  formatter_call_to_string
+  collect
+  concatenate
   with_standard_io_syntax
 );
 
@@ -19,6 +21,10 @@ our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
 sub with_standard_io_syntax(&) {
   my $fn = shift;
   return $fn->();
+}
+
+sub concatenate {
+  return join '', @_;
 }
 
 sub collect {
