@@ -368,7 +368,7 @@ sub format {
   elsif ( $format eq "~2{FOO~:}" ) {
     return 'FOO';
   }
-  elsif ( $format eq "~2{\n~:}" ) {
+  elsif ( $format eq "~2{~\n~:}" ) {
     return '';
   }
   elsif ( $format eq "~2{FOO~}" ) {
@@ -461,7 +461,7 @@ sub format {
   elsif ( $format eq '~:@{~A~}' ) {
     return '134';
   }
-  elsif ( $format eq '~0:@{~A~}' ) {
+  elsif ( $format eq '~0:@{~A~:}' ) {
     # XXX no modification of args, but the list is checked
     return '';
   }
