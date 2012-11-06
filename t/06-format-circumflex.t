@@ -76,8 +76,8 @@ def_format_test 'format.^.{.19' =>
   "";
 
 def_format_test 'format.^.{.20' =>
-  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
-                       $JGoff::Lisp::Format::most_positive_fixnum,
+  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
+                       $JGoff::Lisp::Format::Utils::most_positive_fixnum,
                        1 ] ],
   "1";
 
@@ -191,212 +191,271 @@ def_format_test 'format.^.\:{.18' =>
   [ [ [ 1 ], [ 2, 10 ], [ 3, $a, $b ], [ 4 ], [ 5, $x ], [ 6 ], [ 7, 8 ] ] ],
   "2357";
 
+def_format_test 'format.^.\:{.19' =>
+  "~:{~#,#^~A~}",
+  [ [ [ 1 ], [ ], [ 2, 10 ], [ 3, 'a', 'b' ],
+    [ 4 ], [ 5, 'x' ], [ 6 ], [ 7, 8 ] ] ],
+  "";
+
+def_format_test 'format.^.\:{.20' =>
+  "~:{~0,v^~A~}",
+  [ [ [ 0, 1 ], [ 1, 2 ], [ undef, 3 ], [ 2, 4 ] ] ],
+  "24";
+
+def_format_test 'format.^.\:{.21' =>
+  "~:{~1,v^~A~}",
+  [ [ [ 0, 1 ], [ 1, 2 ], [ undef, 3 ], [ 2, 4 ] ] ],
+  "134";
+
+def_format_test 'format.^.\:{.22' =>
+  "~:{~1,1,1^~A~}",
+  [ [ [ 1 ], [ 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9, 0 ] ] ],
+  "";
+
+def_format_test 'format.^.\:{.23' =>
+  "~:{~1,2,3^~A~}",
+  [ [ [ 1 ], [ 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9, 0 ] ] ],
+  "";
+
+def_format_test 'format.^.\:{.24' =>
+  "~:{~1,2,1^~A~}",
+  [ [ [ 1 ], [ 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9, 0 ] ] ],
+  "1247";
+
+def_format_test 'format.^.\:{.25' =>
+  "~:{~1,0,1^~A~}",
+  [ [ [ 1 ], [ 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9, 0 ] ] ],
+  "1247";
+
+def_format_test 'format.^.\:{.26' =>
+  "~:{~3,2,1^~A~}",
+  [ [ [ 1 ], [ 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9, 0 ] ] ],
+  "1247";
+
+def_format_test 'format.^.\:{.27' =>
+  "~:{~v,2,3^~A~}",
+  [ [ [ 1, 10 ], [ 2, 20 ], [ 3, 30 ], [ 4, 40 ] ] ],
+  "3040";
+
+def_format_test 'format.^.\:{.28' =>
+  "~:{~1,v,3^~A~}",
+  [ [ [ 0, 7 ], [ 1, 10 ], [ 2, 20 ], [ 3, 30 ], [ 4, 40 ] ] ],
+  "740";
+
+def_format_test 'format.^.\:{.29' =>
+  "~:{~1,2,v^~A~}",
+  [ [ [ 0, 0 ], [ 1, 10 ], [ 2, 20 ], [ 3, 30 ], [ 4, 40 ], [ 0, 50 ] ] ],
+  "01050";
+
+def_format_test 'format.^.\:{.30' =>
+  "~:{~1,2,v^~A~}",
+  [ [ [ undef, 0 ] ] ],
+  "0";
+
+def_format_test 'format.^.\:{.31' =>
+  "~:{~#,3,3^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "45";
+
+def_format_test 'format.^.\:{.32' =>
+  "~:{~2,#,3^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "145";
+
+def_format_test 'format.^.\:{.33' =>
+  "~:{~0,3,#^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "12";
+
+def_format_test 'format.^.\:{.34' =>
+  "~:{~#,#,3^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "45";
+
+def_format_test 'format.^.\:{.35' =>
+  "~:{~3,#,#^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "12";
+
+def_format_test 'format.^.\:{.36' =>
+  "~:{~#,3,#^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "1245";
+
+def_format_test 'format.^.\:{.37' =>
+  "~:{~#,#,#^~A~}",
+  [ [ [ 1 ], [ 2, 1 ], [ 3, 2, 1 ], [ 4, 3, 2, 1 ], [ 5, 4, 3, 2, 1 ] ] ],
+  "";
+
+def_format_test 'format.^.\:{.38' =>
+  "~:{~1,v,v^~A~}",
+  [ [ [ 'a', undef, 0 ] ] ],
+  "0";
+
+def_format_test 'format.^.\:{.39' =>
+  "~:{~v,1,v^~A~}",
+  [ [ [ 'a', undef, 0 ] ] ],
+  "0";
+
+### Tests of ~^ inside ~@{ ... ~}
+
+def_format_test 'format.^.@{.1' =>
+  "~@{X ~A~^ Y ~A~^ ~}",
+  [ 1, 2, 3, 4, 5 ],
+  "X 1 Y 2 X 3 Y 4 X 5";
+
+def_format_test 'format.^.@{.2' =>
+  "~@{X ~A~^ Y ~A~^ ~}",
+  [ 1, 2, 3, 4 ],
+  "X 1 Y 2 X 3 Y 4";
+
+def_format_test 'format.^.@{.3' =>
+  "~1@{~A~^~A~}", [ 1 ], "1";
+
+def_format_test 'format.^.@{.4' =>
+  "~0@{~A~^~A~}", [ 1 ], "", 1;
+
+def_format_test 'format.^.@{.5' =>
+  "~1@{~A~^~A~}", [ 1, 2, 3 ], "12", 1;
+
+def_format_test 'format.^.@{.6' =>
+  "~@{~A~A~0^~A~}", [ 1, 2, 3, 4, 5, 6 ], "12", 4;
+
+def_format_test 'format.^.@{.7' =>
+  "~@{~A~A~v^~A~}", [ 1, 2, 3, 4, 5, 6, 0, 7, 8, 9, 10, 11, 12 ], "12456", 6;
+
+def_format_test 'format.^.@{.8' =>
+  "~@{~#,3^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "1234567", 3;
+
+def_format_test 'format.^.@{.9' =>
+  "~@{~2,#^~A~}X~A", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "12345678X9", 1;
+
+def_format_test 'format.^.@{.10' =>
+  "~@{~#,#^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "", 10;
+
+def_format_test 'format.^.@{.11' =>
+  "~@{~#,#,#^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "", 10;
+
+def_format_test 'format.^.@{.12' =>
+  "~@{~#,1,2^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "123456789", 1;
+
+def_format_test 'format.^.@{.13' =>
+  "~@{~#,#,v^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], "246", 3;
+
+def_format_test 'format.^.@{.14' =>
+  "~@{~#,#,v^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ], "246", 4;
+
+def_format_test 'format.^.@{.15' =>
+  "~@{~#,#,v^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ], "246", 5;
+
+def_format_test 'format.^.@{.16' =>
+  "~@{~#,#,v^~A~}", [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ], "246", 6;
+
+def_format_test 'format.^.@{.17' =>
+  "~@{~#,#,v^~A~}",
+  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+  "2468",
+  5;
+
+def_format_test 'format.^.@{.18' =>
+  "~@{~v,v^~A~}",
+  [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+    $JGoff::Lisp::Format::most_positive_fixnum + 1,
+   1 ],
+  "",
+  1;
+
+def_format_test 'format.^.@{.19' =>
+  "~@{~0,v,v^~A~}",
+  [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+    $JGoff::Lisp::Format::most_positive_fixnum + 1,
+   1 ],
+  "",
+  1;
+
+def_format_test 'format.^.@{.20' =>
+  "~@{~0,v,v^~A~}",
+  [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+    $JGoff::Lisp::Format::most_positive_fixnum,
+   1 ],
+  "1";
+
+def_format_test 'format.^.@{.21' =>
+  "~@{~1,v^~A~}", ] undef, 8, undef, 7, 0, 6, 1, 5 ], "876", 1;
+
+def_format_test 'format.^.@{.22' =>
+  "~@{~0,v^~A~}", [ 3, 8, 1, 7, 3, 6, undef, 5 ], "876", 1;
+
+def_format_test 'format.^.@{.23' =>
+  "~@{~1,2,v^~A~}", [ 0, 1, 0, 2, 0, 3, 3, 4 ], "123", 1;
+
+def_format_test 'format.^.@{.24' =>
+  "~@{~1,2,v^~A~}", [ 0, 1, 0, 2, 0, 3, undef, 4 ], "1234";
+
+def_format_test 'format.^.@{.25' =>
+  "~@{~1,1,v^~A~}", [ 0, 1, 0, 2, 0, 3, undef, 4 ], "123", 1;
+
+def_format_test 'format.^.@{.26' =>
+  "~@{~'X^~A~}", [ 1, 2, 3 ], "123";
+
+def_format_test 'format.^.@{.27' =>
+  "~@{~v,'X^~A~}", [ 0, 1, 'x' 2, undef, 3, 'X' 4, 0, 5 ], "123", 3;
+
+def_format_test 'format.^.@{.28' =>
+  "~@{~'X,v^~A~}", [ 0, 1, 'x' 2, undef, 3, 'X', 4, 0, 5 ], "123", 3;
+
+def_format_test 'format.^.@{.29' =>
+  "~@{~v,v^~A~}",
+  [ 0, 2, 1, 'x', 'X', 2, 5, 'X', 3, 'y', 'y', 4, 1, 2, 5 ],
+  "123",
+  4;
+
+def_format_test 'format.^.@{.30' =>
+  "~@{~',,',^~A~}", [ 1, 2, 3 ]. "", 3;
+
+def_format_test 'format.^.@{.31' =>
+  "~@{~1,v,v^~A~}", [ 'a', undef, 0 ], "0";
+
+def_format_test 'format.^.@{.32' =>
+  "~@{~v,1,v^~A~}", [ 'a', undef, 0 ], "0";
+
+def_format_test 'format.^.@{.33' =>
+  "~@{~v,v,v^~A~}", [ 'a', 'a', undef, 0 ], "", 1;
+
+### Inside ~:@{
+
+def_format_test 'format.^.\:@{.1' =>
+  "~:@{~A~^~A~A~}", [ [ 1 ], [ 2, 3, 4 ], [ 5, 6, 7, 8 ] ], "1234567";
+
+def_format_test 'format.^.\:@{.2' =>
+  "~@:{~A~0^~A~A~}", [ [ 1 ], [ 2, 3, 4 ], [ 5, 6, 7, 8 ] ], "125";
+
+def_format_test 'format.^.\:@{.3' =>
+  "~:@{~#^~A~}", [ [ 1 ], [ 2, 3, 4 ], [ ], [ 5, 6, 7, 8 ], [ ] ], "125";
+
+def_format_test 'format.^.\:@{.4' =>
+  "~@:{~#^~A~#^~A~#^~A~#^~A~}",
+  [ [ 1 ], [ 2, 3, 4 ], [ ], [ 5, 6, 7, 8 ], [ ] ],
+  "12345678";
+
+def_format_test 'format.^.\:@{.5' =>
+  "~:@{~v^~A~}",
+  [ [ 1, 2, 3 ], [ 0 ], [ 2, 4 ], [ 0, 5 ], [ 1, 6, 7, 8 ] ],
+  "246";
+
+def_format_test 'format.^.\:@{.6' =>
+  "~:@{~v^~A~}", [ [ undef ], [ undef, 1 ], [ 1, 2 ] ], "12";
+
+def_format_test 'format.^.\:@{.7' =>
+  "~:@{~v^~A~}", [ [ 'x', 1 ], [ 'y', 2 ], [ 0, 3 ], [ 1, 4 ] ], "124";
+
+def_format_test 'format.^.\:@{.8' =>
+  "~:@{~v,3^~A~}", [ [ 1, 1 ], [ 2, 0 ], [ 3, 4 ], [ 5, 6 ] ], "106";
+
+def_format_test 'format.^.\:@{.9' =>
+  "~@:{~3,v^~A~}", [ [ 1, 1 ], [ 2, 0 ], [ 3, 4 ], [ 5, 6 ] ] ,"106";
+
 =pod
-
-(def-format-test format.^.\:{.19
-  "~:{~#,#^~A~}" ('((1)()(2 10)(3 a b)(4)(5 x)(6)(7 8))) "")
-
-(def-format-test format.^.\:{.20
-  "~:{~0,v^~A~}" ('((0 1)(1 2)(nil 3)(2 4))) "24")
-
-(def-format-test format.^.\:{.21
-  "~:{~1,v^~A~}" ('((0 1)(1 2)(nil 3)(2 4))) "134")
-
-(def-format-test format.^.\:{.22
-  "~:{~1,1,1^~A~}" ('((1)(2 3)(4 5 6)(7 8 9 0))) "")
-
-(def-format-test format.^.\:{.23
-  "~:{~1,2,3^~A~}" ('((1)(2 3)(4 5 6)(7 8 9 0))) "")
-
-(def-format-test format.^.\:{.24
-  "~:{~1,2,1^~A~}" ('((1)(2 3)(4 5 6)(7 8 9 0))) "1247")
-
-(def-format-test format.^.\:{.25
-  "~:{~1,0,1^~A~}" ('((1)(2 3)(4 5 6)(7 8 9 0))) "1247")
-
-(def-format-test format.^.\:{.26
-  "~:{~3,2,1^~A~}" ('((1)(2 3)(4 5 6)(7 8 9 0))) "1247")
-
-(def-format-test format.^.\:{.27
-  "~:{~v,2,3^~A~}" ('((1 10)(2 20)(3 30)(4 40))) "3040")
-
-(def-format-test format.^.\:{.28
-  "~:{~1,v,3^~A~}" ('((0 7)(1 10)(2 20)(3 30)(4 40))) "740")
-
-(def-format-test format.^.\:{.29
-  "~:{~1,2,v^~A~}" ('((0 0)(1 10)(2 20)(3 30)(4 40)(0 50))) "01050")
-
-(def-format-test format.^.\:{.30
-  "~:{~1,2,v^~A~}" ('((nil 0))) "0")
-
-(def-format-test format.^.\:{.31
-  "~:{~#,3,3^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "45")
-
-(def-format-test format.^.\:{.32
-  "~:{~2,#,3^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "145")
-
-(def-format-test format.^.\:{.33
-  "~:{~0,3,#^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "12")
-
-(def-format-test format.^.\:{.34
-  "~:{~#,#,3^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "45")
-
-(def-format-test format.^.\:{.35
-  "~:{~3,#,#^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "12")
-
-(def-format-test format.^.\:{.36
-  "~:{~#,3,#^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "1245")
-
-(def-format-test format.^.\:{.37
-  "~:{~#,#,#^~A~}" ('((1) (2 1) (3 2 1) (4 3 2 1) (5 4 3 2 1))) "")
-
-(def-format-test format.^.\:{.38
-  "~:{~1,v,v^~A~}" ('((#\a nil 0))) "0")
-
-(def-format-test format.^.\:{.39
-  "~:{~v,1,v^~A~}" ('((#\a nil 0))) "0")
-
-;;; Tests of ~^ inside ~@{ ... ~}
-
-(def-format-test format.^.@{.1
-  "~@{X ~A~^ Y ~A~^ ~}" (1 2 3 4 5) "X 1 Y 2 X 3 Y 4 X 5")
-
-(def-format-test format.^.@{.2
-  "~@{X ~A~^ Y ~A~^ ~}" (1 2 3 4) "X 1 Y 2 X 3 Y 4")
-
-(def-format-test format.^.@{.3
-  "~1@{~A~^~A~}" (1) "1")
-
-(def-format-test format.^.@{.4
-  "~0@{~A~^~A~}" (1) "" 1)
-
-(def-format-test format.^.@{.5
-  "~1@{~A~^~A~}" (1 2 3) "12" 1)
-
-(def-format-test format.^.@{.6
-  "~@{~A~A~0^~A~}" (1 2 3 4 5 6) "12" 4)
-
-(def-format-test format.^.@{.7
-  "~@{~A~A~v^~A~}" (1 2 3 4 5 6 0 7 8 9 10 11 12) "12456" 6)
-
-(def-format-test format.^.@{.8
-  "~@{~#,3^~A~}" (1 2 3 4 5 6 7 8 9 10) "1234567" 3)
-
-(def-format-test format.^.@{.9
-  "~@{~2,#^~A~}X~A" (1 2 3 4 5 6 7 8 9 10) "12345678X9" 1)
-
-(def-format-test format.^.@{.10
-  "~@{~#,#^~A~}" (1 2 3 4 5 6 7 8 9 10) "" 10)
-
-(def-format-test format.^.@{.11
-  "~@{~#,#,#^~A~}" (1 2 3 4 5 6 7 8 9 10) "" 10)
-
-(def-format-test format.^.@{.12
-  "~@{~#,1,2^~A~}" (1 2 3 4 5 6 7 8 9 10) "123456789" 1)
-
-(def-format-test format.^.@{.13
-  "~@{~#,#,v^~A~}" (1 2 3 4 5 6 7 8 9 10) "246" 3)
-
-(def-format-test format.^.@{.14
-  "~@{~#,#,v^~A~}" (1 2 3 4 5 6 7 8 9 10 11) "246" 4)
-
-(def-format-test format.^.@{.15
-  "~@{~#,#,v^~A~}" (1 2 3 4 5 6 7 8 9 10 11 12) "246" 5)
-
-(def-format-test format.^.@{.16
-  "~@{~#,#,v^~A~}" (1 2 3 4 5 6 7 8 9 10 11 12 13) "246" 6)
-
-(def-format-test format.^.@{.17
-  "~@{~#,#,v^~A~}" (1 2 3 4 5 6 7 8 9 10 11 12 13 14) "2468" 5)
-
-(def-format-test format.^.@{.18
-  "~@{~v,v^~A~}"
-  ((1+ most-positive-fixnum)
-   (1+ most-positive-fixnum)
-   1)
-  "" 1)
-
-(def-format-test format.^.@{.19
-  "~@{~0,v,v^~A~}"
-  ((1+ most-positive-fixnum)
-   (1+ most-positive-fixnum)
-   1)
-  "" 1)
-
-(def-format-test format.^.@{.20
-  "~@{~0,v,v^~A~}"
-  ((1+ most-positive-fixnum)
-   most-positive-fixnum
-   1)
-  "1")
-
-(def-format-test format.^.@{.21
-  "~@{~1,v^~A~}" (nil 8 nil 7 0 6 1 5) "876" 1)
-
-(def-format-test format.^.@{.22
-  "~@{~0,v^~A~}" (3 8 1 7 3 6 nil 5) "876" 1)
-
-(def-format-test format.^.@{.23
-  "~@{~1,2,v^~A~}" (0 1 0 2 0 3 3 4) "123" 1)
-
-(def-format-test format.^.@{.24
-  "~@{~1,2,v^~A~}" (0 1 0 2 0 3 nil 4) "1234")
-
-(def-format-test format.^.@{.25
-  "~@{~1,1,v^~A~}" (0 1 0 2 0 3 nil 4) "123" 1)
-
-(def-format-test format.^.@{.26
-  "~@{~'X^~A~}" (1 2 3) "123")
-
-(def-format-test format.^.@{.27
-  "~@{~v,'X^~A~}" (0 1 #\x 2 nil 3 #\X 4 0 5) "123" 3)
-
-(def-format-test format.^.@{.28
-  "~@{~'X,v^~A~}" (0 1 #\x 2 nil 3 #\X 4 0 5) "123" 3)
-
-(def-format-test format.^.@{.29
-  "~@{~v,v^~A~}" (0 2 1 #\x #\X 2 5 #\X 3 #\y #\y 4 1 2 5) "123" 4)
-
-(def-format-test format.^.@{.30
-  "~@{~',,',^~A~}" (1 2 3) "" 3)
-
-(def-format-test format.^.@{.31
-  "~@{~1,v,v^~A~}" (#\a nil 0) "0")
-
-(def-format-test format.^.@{.32
-  "~@{~v,1,v^~A~}" (#\a nil 0) "0")
-
-(def-format-test format.^.@{.33
-  "~@{~v,v,v^~A~}" (#\a #\a nil 0) "" 1)
-
-;;; Inside ~:@{
-
-(def-format-test format.^.\:@{.1
-  "~:@{~A~^~A~A~}" ('(1) '(2 3 4) '(5 6 7 8)) "1234567")
-
-(def-format-test format.^.\:@{.2
-  "~@:{~A~0^~A~A~}" ('(1) '(2 3 4) '(5 6 7 8)) "125")
-
-(def-format-test format.^.\:@{.3
-  "~:@{~#^~A~}" ('(1) '(2 3 4) () '(5 6 7 8) ()) "125")
-
-(def-format-test format.^.\:@{.4
-  "~@:{~#^~A~#^~A~#^~A~#^~A~}" ('(1) '(2 3 4) () '(5 6 7 8) ()) "12345678")
-
-(def-format-test format.^.\:@{.5
-  "~:@{~v^~A~}" ('(1 2 3) '(0) '(2 4) '(0 5) '(1 6 7 8)) "246")
-
-(def-format-test format.^.\:@{.6
-  "~:@{~v^~A~}" ('(nil) '(nil 1) '(1 2)) "12")
-
-(def-format-test format.^.\:@{.7
-  "~:@{~v^~A~}" ('(#\x 1) '(#\y 2) '(0 3) '(1 4)) "124")
-
-(def-format-test format.^.\:@{.8
-  "~:@{~v,3^~A~}" ('(1 1) '(2 0) '(3 4) '(5 6)) "106")
-
-(def-format-test format.^.\:@{.9
-  "~@:{~3,v^~A~}" ('(1 1) '(2 0) '(3 4) '(5 6)) "106")
 
 (def-format-test format.^.\:@{.10
   "~:@{~v,3^~A~}" ('(#\x 1)) "1")
