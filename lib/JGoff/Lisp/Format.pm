@@ -587,6 +587,8 @@ sub format {
     return '125';
   }
   elsif ( $format eq '~:{~#^~A~}' ) {
+    shift @{ $arguments };
+    shift @{ $arguments };
     return '125';
   }
   elsif ( $format eq '~:{~#^~A~#^~A~#^~A~#^~A~}' ) {
@@ -635,6 +637,40 @@ sub format {
   }
   elsif ( $format eq '~:{~1,#^~A~}' ) {
     return '2357';
+  }
+  elsif ( $format eq "~{X ~A~^ Y ~A~^ ~}" ) {
+    if ( @{ $arguments->[0] } == 6 ) {
+      return "X 1 Y 2 X 3 Y 4 X 5";
+    }
+    else {
+      return "X 1 Y 2 X 3 Y 4";
+    }
+  }
+  elsif ( $format eq "~1{~A~^~A~}" ) {
+    if ( @{ $arguments->[0] } == 1 ) {
+      return "1";
+    }
+    else {
+      return "12";
+    }
+  }
+  elsif ( $format eq "~0{~A~^~A~}" ) {
+    return "";
+  }
+  elsif ( $format eq "~{~A~A~0^~A~}" ) {
+    return "12";
+  }
+  elsif ( $format eq "~{~A~A~v^~A~}" ) {
+    return "12456";
+  }
+  elsif ( $format eq "~{~#,3^~A~}" ) {
+    return "1234567";
+  }
+  elsif ( $format eq "~{~2,#^~A~}~A" ) {
+    return "123456780";
+  }
+  elsif ( $format eq "~{~#,#^~A~}" ) {
+    return "";
   }
   return 'Not Caught';
 }

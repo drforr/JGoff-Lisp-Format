@@ -52,7 +52,7 @@ sub def_format_test {
     is( $f->format( $stream, $format, $args ), $result, $name );
   }
   if ( $num_left ) {
-    is( scalar @$args, $num_left, $name );
+    is( scalar @$args, $num_left, $name . " argument count" );
   }
 }
 
