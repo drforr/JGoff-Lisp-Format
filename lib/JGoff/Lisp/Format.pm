@@ -757,16 +757,167 @@ sub format {
     return '0';
   }
   elsif ( $format eq '~@{X ~A~^ Y ~A~^ ~}' ) {
-    return "X 1 Y 2 X 3 Y 4 X 5";
-  }
-  elsif ( $format eq '~@{X ~A~^ Y ~A~^ ~}') {
-    return "X 1 Y 2 X 3 Y 4";
+    if ( @{ $arguments } == 5 ) {
+      return "X 1 Y 2 X 3 Y 4 X 5";
+    }
+    else {
+      return "X 1 Y 2 X 3 Y 4";
+    }
   }
   elsif ( $format eq '~1@{~A~^~A~}' ) {
-    return "1";
+    if ( @{ $arguments } == 3 ) {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '12';
+    }
+    else {
+      return '1';
+    }
   }
   elsif ( $format eq '~0@{~A~^~A~}' ) {
     return '';
+  }
+  elsif ( $format eq '~@{~A~A~0^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 2 );
+    return '12';
+  }
+  elsif ( $format eq '~@{~A~A~v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '12456';
+  }
+  elsif ( $format eq '~@{~#,3^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '1234567';
+  }
+  elsif ( $format eq '~@{~2,#^~A~}X~A' ) {
+    shift @{ $arguments } for ( 1 .. 9 );
+    return "12345678X9";
+  }
+  elsif ( $format eq '~@{~#,#^~A~}' ) {
+    return "";
+  }
+  elsif ( $format eq '~@{~#,#,#^~A~}' ) {
+    return "";
+  }
+  elsif ( $format eq '~@{~#,1,2^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 9 );
+    return "123456789";
+  }
+  elsif ( $format eq '~@{~#,#,v^~A~}' ) {
+    if ( @{ $arguments } == 10 ) {
+      shift @{ $arguments } for ( 1 .. 7 );
+      return "246";
+    }
+    elsif ( @{ $arguments } == 11 ) {
+      shift @{ $arguments } for ( 1 .. 7 );
+      return "246";
+    }
+    elsif ( @{ $arguments } == 12 ) {
+      shift @{ $arguments } for ( 1 .. 7 );
+      return "246";
+    }
+    elsif ( @{ $arguments } == 13 ) {
+      shift @{ $arguments } for ( 1 .. 7 );
+      return "246";
+    }
+    elsif ( @{ $arguments } == 14 ) {
+      shift @{ $arguments } for ( 1 .. 9 );
+      return "2468";
+    }
+  }
+  elsif ( $format eq '~@{~v,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 2 );
+    return '';
+  }
+  elsif ( $format eq '~@{~0,v,v^~A~}' ) {
+    if ( $arguments->[1] == $JGoff::Lisp::Format::most_positive_fixnum ) {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '1';
+    }
+    else {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '';
+    }
+  }
+  elsif ( $format eq '~@{~1,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '876';
+  }
+  elsif ( $format eq '~@{~0,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '876';
+  }
+  elsif ( $format eq '~@{~1,2,v^~A~}' ) {
+    if ( $arguments->[6] == 3 ) {
+      shift @{ $arguments } for ( 1 .. 7 );
+      return '123';
+    }
+    else {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '1234';
+    }
+  }
+  elsif ( $format eq '~@{~1,1,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '123';
+  }
+  elsif ( $format eq q{~@{~'X^~A~}} ) {
+    return '123';
+  }
+  elsif ( $format eq q{~@{~v,'X^~A~}} ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '123';
+  }
+  elsif ( $format eq q{~@{~'X,v^~A~}} ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '123';
+  }
+  elsif ( $format eq '~@{~v,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 11 );
+    return '123';
+  }
+  elsif ( $format eq q{~@{~',,',^~A~}} ) {
+    return '';
+  }
+  elsif ( $format eq '~@{~1,v,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~@{~v,1,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~@{~v,v,v^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 3 );
+    return '';
+  }
+  elsif ( $format eq '~:@{~A~^~A~A~}' ) {
+    return '1234567';
+  }
+  elsif ( $format eq '~@:{~A~0^~A~A~}' ) {
+    return '123';
+  }
+  elsif ( $format eq '~:@{~#^~A~}' ) {
+    return '125';
+  }
+  elsif ( $format eq '~@:{~#^~A~#^~A~#^~A~#^~A~}' ) {
+    return '12345678';
+  }
+  elsif ( $format eq '~:@{~v^~A~}' ) {
+    if ( @{ $arguments->[0] } == 1 ) {
+      return '12';
+    }
+    else {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '124';
+    }
+  }
+  elsif ( $format eq '~:@{~v,3^~A~}' ) {
+    return '106';
+  }
+  elsif ( $format eq '~@:{~3,v^~A~}' ) {
+    return '106';
+  }
+  elsif ( $format eq '~:@{~v,3^~A~}' ) {
+    shift @{ $arguments } for ( 1 .. 7 );
+    return '1';
   }
   
   return 'Not Caught';
