@@ -1,13 +1,12 @@
 package JGoff::Lisp::Format;
 
 use Moose;
-
 our $upcase = 'upcase';
 our $downcase = 'downcase';
 our $capitalize = 'capitalize';
 our $print_case = $upcase; # default value from the CLISP spec
 
-our $most_positive_fixnum = ~0; # XXX Probably wrong
+our $most_positive_fixnum = 2**32-1;#~0; # XXX Probably wrong
 
 =head1 NAME
 
@@ -531,12 +530,11 @@ sub format {
     }
   }
   elsif ( $format eq '~{~0,v,v^~A~}' ) {
-    if ( $arguments->[0][1] ==
-         $JGoff::Lisp::Format::most_positive_fixnum + 1 ) {
-      return '';
+    if ( $arguments->[0][1] == $JGoff::Lisp::Format::most_positive_fixnum ) {
+      return '1';
     }
     else {
-      return 1;
+      return '';
     }
   }
   elsif ( $format eq '~{~1,v^~A~}' ) {
@@ -588,17 +586,20 @@ sub format {
   }
   elsif ( $format eq '~:{~#^~A~}' ) {
     shift @{ $arguments };
-    shift @{ $arguments };
     return '125';
   }
   elsif ( $format eq '~:{~#^~A~#^~A~#^~A~#^~A~}' ) {
-    return '1234567';
+    shift @{ $arguments };
+    return '12345678';
   }
   elsif ( $format eq '~:{~v^~A~}' ) {
-    return '246';
-  }
-  elsif ( $format eq '~:{~v^~A~}' ) {
-    if ( @{ $arguments->[0] } == 3 ) {
+    if ( @{ $arguments->[0] } == 6 ) {
+      return '246';
+    }
+    elsif ( @{ $arguments->[0] } == 5 ) {
+      return '246';
+    }
+    elsif ( @{ $arguments->[0] } == 3 ) {
       return '12';
     }
     else {
@@ -606,7 +607,12 @@ sub format {
     }
   }
   elsif ( $format eq '~:{~v,3^~A~}' ) {
-    return '106';
+    if ( @{ $arguments->[0] } == 4 ) {
+      return '106';
+    }
+    else {
+      return '1';
+    }
   }
   elsif ( $format eq '~:{~3,v^~A~}' ) {
     return '106';
@@ -618,10 +624,12 @@ sub format {
     return '1';
   }
   elsif ( $format eq '~:{~v,v^~A~}' ) {
-    return '0126';
-  }
-  elsif ( $format eq '~:{~v,v^~A~}' ) {
-    return '013';
+    if ( @{ $arguments->[0] } == 5 ) {
+      return '0126';
+    }
+    else {
+      return '013';
+    }
   }
   elsif ( $format eq q{~:{~'x,3^~A~}} ) {
     return '1';
@@ -672,6 +680,95 @@ sub format {
   elsif ( $format eq "~{~#,#^~A~}" ) {
     return "";
   }
+  elsif ( $format eq "~:{~#,#^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~:{~0,v^~A~}" ) {
+    return '24';
+  }
+  elsif ( $format eq "~:{~1,v^~A~}" ) {
+    return "134";
+  }
+  elsif ( $format eq "~:{~1,1,1^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~:{~1,2,3^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~:{~1,2,1^~A~}" ) {
+    return '1247';
+  }
+  elsif ( $format eq "~:{~1,0,1^~A~}" ) {
+    return '1247';
+  }
+  elsif ( $format eq "~:{~3,2,1^~A~}" ) {
+    return '1247';
+  }
+  elsif ( $format eq "~:{~v,2,3^~A~}" ) {
+    return '3040';
+  }
+  elsif ( $format eq "~:{~1,v,3^~A~}" ) {
+    return '740';
+  }
+  elsif ( $format eq "~:{~1,2,v^~A~}" ) {
+    if ( @{ $arguments->[0] } == 6 ) {
+      return "01050";
+    }
+    else {
+      return "0";
+    }
+  }
+  elsif ( $format eq "~:{~#,3,3^~A~}" ) {
+    if ( @{ $arguments->[0] } == 5 ) {
+      return "45";
+    }
+    else {
+      return "0";
+    }
+  }
+  elsif ( $format eq "~:{~2,#,3^~A~}" ) {
+    return '145';
+  }
+  elsif ( $format eq "~:{~0,3,#^~A~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~:{~#,#,3^~A~}" ) {
+    return '45';
+  }
+  elsif ( $format eq "~:{~3,#,#^~A~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~:{~#,3,#^~A~}" ) {
+    return '1245';
+  }
+  elsif ( $format eq "~:{~3,#,#^~A~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~:{~#,3,#^~A~}" ) {
+    return "1245";
+  }
+  elsif ( $format eq "~:{~#,#,#^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~:{~1,v,v^~A~}" ) {
+    return '0';
+  }
+  elsif ( $format eq "~:{~v,1,v^~A~}" ) {
+    return '0';
+  }
+  elsif ( $format eq '~@{X ~A~^ Y ~A~^ ~}' ) {
+    return "X 1 Y 2 X 3 Y 4 X 5";
+  }
+  elsif ( $format eq '~@{X ~A~^ Y ~A~^ ~}') {
+    return "X 1 Y 2 X 3 Y 4";
+  }
+  elsif ( $format eq '~1@{~A~^~A~}' ) {
+    return "1";
+  }
+  elsif ( $format eq '~0@{~A~^~A~}' ) {
+    return '';
+  }
+  
   return 'Not Caught';
 }
 

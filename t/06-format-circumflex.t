@@ -64,8 +64,8 @@ def_format_test 'format.^.{.17' =>
   "2468";
 
 def_format_test 'format.^.{.18' =>
-  "~{~v,v^~A~}", [ [ $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
-                     $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
+  "~{~v,v^~A~}", [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+                     $JGoff::Lisp::Format::most_positive_fixnum + 1,
                      1 ] ],
   "";
 
@@ -76,8 +76,8 @@ def_format_test 'format.^.{.19' =>
   "";
 
 def_format_test 'format.^.{.20' =>
-  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::Utils::most_positive_fixnum + 1,
-                       $JGoff::Lisp::Format::Utils::most_positive_fixnum,
+  "~{~0,v,v^~A~}", [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+                       $JGoff::Lisp::Format::most_positive_fixnum,
                        1 ] ],
   "1";
 

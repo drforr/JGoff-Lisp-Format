@@ -40,19 +40,24 @@ sub formatter_call_to_string {
 
 sub def_format_test {
   my ( $name, $format, $args, $result, $num_left ) = @_; # $num_left optional
+  my ( $package, $filename, $line ) = caller();
   my $f = JGoff::Lisp::Format->new;
   my $stream = undef;
   if ( ref( $result ) and ref( $result ) eq 'CODE' ) {
-    is_deeply( $f->format( $stream, $format, $args ), $result->(), $name );
+    is_deeply( $f->format( $stream, $format, $args ), $result->(), $name ) or
+      diag( "  at test file $filename line $line" );
   }
   elsif ( ref( $result ) ) {
-    is_deeply( $f->format( $stream, $format, $args ), $result, $name );
+    is_deeply( $f->format( $stream, $format, $args ), $result, $name ) or
+      diag( "  at test file $filename line $line" );
   }
   else {
-    is( $f->format( $stream, $format, $args ), $result, $name );
+    is( $f->format( $stream, $format, $args ), $result, $name ) or
+      diag( "  at test file $filename line $line" );
   }
   if ( $num_left ) {
-    is( scalar @$args, $num_left, $name . " argument count" );
+    is( scalar @$args, $num_left, $name . " argument count" ) or
+      diag( "  at test file $filename line $line" );
   }
 }
 
