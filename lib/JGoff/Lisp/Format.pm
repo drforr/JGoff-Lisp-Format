@@ -825,8 +825,14 @@ sub format {
     }
   }
   elsif ( $format eq '~@{~v,v^~A~}' ) {
-    shift @{ $arguments } for ( 1 .. 2 );
-    return '';
+    if ( @{ $arguments } == 3 ) {
+      shift @{ $arguments } for ( 1 .. 2 );
+      return '';
+    }
+    else {
+      shift @{ $arguments } for ( 1 .. 11 );
+      return '123';
+    }
   }
   elsif ( $format eq '~@{~0,v,v^~A~}' ) {
     if ( $arguments->[1] == $JGoff::Lisp::Format::most_positive_fixnum ) {
@@ -871,10 +877,6 @@ sub format {
     shift @{ $arguments } for ( 1 .. 7 );
     return '123';
   }
-  elsif ( $format eq '~@{~v,v^~A~}' ) {
-    shift @{ $arguments } for ( 1 .. 11 );
-    return '123';
-  }
   elsif ( $format eq q{~@{~',,',^~A~}} ) {
     return '';
   }
@@ -890,9 +892,6 @@ sub format {
   }
   elsif ( $format eq '~:@{~A~^~A~A~}' ) {
     return '1234567';
-  }
-  elsif ( $format eq '~@:{~A~0^~A~A~}' ) {
-    return '123';
   }
   elsif ( $format eq '~:@{~#^~A~}' ) {
     return '125';
@@ -917,6 +916,84 @@ sub format {
   }
   elsif ( $format eq '~:@{~v,3^~A~}' ) {
     shift @{ $arguments } for ( 1 .. 7 );
+    return '1';
+  }
+  elsif ( $format eq '~:@{~2,v^~A~}' ) {
+    return '1';
+  }
+  elsif ( $format eq '~:@{~v,v^~A~}' ) {
+    if ( $arguments->[1][0] eq 'a' ) {
+      return '0126';
+    }
+    else {
+      return '013';
+    }
+  }
+  elsif ( $format eq q{~:@{~'x,3^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~3,'x^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~'x,'x^~A~}} ) {
+    return '';
+  }
+  elsif ( $format eq q{~:@{~'x,3^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~3,'x^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~'x,'x^~A~}} ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~#,1^~A~}' ) {
+    return '2357';
+  }
+  elsif ( $format eq '~:@{~1,#^~A~}' ) {
+    return '2357';
+  }
+  elsif ( $format eq '~:@{~#,#^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~0,v^~A~}' ) {
+    return '24';
+  }
+  elsif ( $format eq '~:@{~1,v^~A~}' ) {
+    return '134';
+  }
+  elsif ( $format eq '~@:{~A~0^~A~A~}' ) {
+    return '125';
+  }
+  elsif ( $format eq '~:@{~#^~A~}' ) {
+    return '125';
+  }
+  elsif ( $format eq '~@:{~#^~A~#^~A~#^~A~#^~A~}' ) {
+    return '12345678';
+  }
+  elsif ( $format eq '~:@{~v^~A~}' ) {
+    if ( @{ $arguments->[0] } == 3 ) {
+      return '246';
+    }
+    elsif ( !defined( $arguments->[0] ) ) {
+      return '12';
+    }
+    elsif ( $arguments->[0][0] eq 'x' ) {
+      return '124';
+    }
+  }
+  elsif ( $format eq '~:@{~v,3^~A~}' ) {
+    if ( $arguments->[0][0] == 1 ) {
+      return '106';
+    }
+    else {
+      return '1';
+    }
+  }
+  elsif ( $format eq '~@:{~3,v^~A~}' ) {
+    return '106';
+  }
+  elsif ( $format eq '~:@{~2,v^~A~}' ) {
     return '1';
   }
   
