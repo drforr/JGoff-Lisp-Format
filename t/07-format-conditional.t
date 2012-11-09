@@ -97,43 +97,43 @@ def_format_test 'format.^.{.17' =>
 
 def_format_test 'format.^.{.18' =>
   "~{~v,v^~A~}",
-  ((list (1+ most-positive-fixnum)
-         (1+ most-positive-fixnum)
-         1)),
+  [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+      $JGoff::Lisp::Format::most_positive_fixnum + 1,
+      1 ] ],
   "";
 
 def_format_test 'format.^.{.19' =>
   "~{~0,v,v^~A~}",
-  ((list (1+ most-positive-fixnum)
-         (1+ most-positive-fixnum)
-         1)),
+  [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+      $JGoff::Lisp::Format::most_positive_fixnum + 1,
+      1 ] ],
   "";
 
 def_format_test 'format.^.{.20' =>
   "~{~0,v,v^~A~}",
-  ((list (1+ most-positive-fixnum)
-         most-positive-fixnum
-         1)),
+  [ [ $JGoff::Lisp::Format::most_positive_fixnum + 1,
+      $JGoff::Lisp::Format::most_positive_fixnum,
+      1 ] ],
   "1";
 
 def_format_test 'format.^.{.21' =>
   "~{~1,v^~A~}",
-  [ '[ nil 8 nil 7 0 6 1 5 ] ],
+  [ [ undef, 8, undef, 7, 0, 6, 1, 5 ] ],
   "876";
 
 def_format_test 'format.^.{.22' =>
   "~{~0,v^~A~}",
-  [ '[ 3 8 1 7 3 6 nil 5 ] ],
+  [ [ 3, 8, 1, 7, 3, 6, undef, 5 ] ],
   "876";
 
 def_format_test 'format.^.{.23' =>
   "~{~1,2,v^~A~}",
-  [ '[ 0 1 0 2 0 3 3 4 ] ],
+  [ [ 0, 1, 0, 2, 0, 3, 3, 4 ] ],
   "123";
 
 def_format_test 'format.^.{.24' =>
   "~{~1,2,v^~A~}",
-  [ '[ 0 1 0 2 0 3 nil 4 ] ],
+  [ [ 0, 1, 0, 2, 0, 3, undef, 4 ] ],
   "1234";
 
 def_format_test 'format.^.{.25' =>

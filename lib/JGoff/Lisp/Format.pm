@@ -1,6 +1,10 @@
 package JGoff::Lisp::Format;
 
 use Moose;
+
+use JGoff::Lisp::Format::Parser;
+use Carp qw( croak );
+
 our $upcase = 'upcase';
 our $downcase = 'downcase';
 our $capitalize = 'capitalize';
@@ -43,9 +47,52 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
+sub __format_a {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+
+  if ( $print_case eq $upcase ) { # default
+    if ( !defined( $arguments->[0] ) ) {
+      if ( $element->{colon} ) {
+        return '[]';
+      }
+      else {
+        return 'UNDEF';
+      }
+    }
+    elsif ( !ref( $arguments->[0] ) ) {
+      return $arguments->[0];
+    }
+    elsif ( !defined( $arguments->[0][0] ) ) {
+      return '[UNDEF]';
+    }
+  }
+  elsif ( $print_case eq $downcase ) {
+    return 'undef';
+  }
+  elsif ( $print_case eq $capitalize ) {
+    return 'Undef';
+  }
+  else {
+    croak "Unknown print_case setting '$print_case'!";
+  }
+return 'UNIMPLEMENTED';
+}
+
 sub format {
   my $self = shift;
   my ( $stream, $format, $arguments ) = @_;
+
+  my $parser = JGoff::Lisp::Format::Parser->new;
+  if ( my $tree = $parser->from_string( $format ) ) {
+    my $output;
+    for my $element ( @{ $tree } ) {
+      if ( $element->{format} eq '~a' ) {
+        $output .= $self->__format_a( $element, $arguments );
+      }
+    }
+    return $output;
+  }
 
   if ( $format eq '~a' ) {
     if ( $print_case eq $capitalize ) {
@@ -853,7 +900,16 @@ sub format {
     return '876';
   }
   elsif ( $format eq '~@{~1,2,v^~A~}' ) {
-    if ( $arguments->[6] == 3 ) {
+    if ( @{ $arguments } == 8 ) {
+      if ( !defined( $arguments->[6] ) ) {
+        return '1234';
+      }
+      else {
+        shift @{ $arguments } for ( 1 .. 7 );
+        return '123';
+      }
+    }
+    elsif ( @{ $arguments } == 7 ) {
       shift @{ $arguments } for ( 1 .. 7 );
       return '123';
     }
@@ -903,26 +959,32 @@ sub format {
     if ( @{ $arguments->[0] } == 1 ) {
       return '12';
     }
+    elsif ( @{ $arguments->[0] } == 3 ) {
+      return '246';
+    }
     else {
       shift @{ $arguments } for ( 1 .. 2 );
       return '124';
     }
   }
   elsif ( $format eq '~:@{~v,3^~A~}' ) {
-    return '106';
+    if ( @{ $arguments } == 4 ) {
+      return '106';
+    }
+    else {
+      return '1';
+    }
   }
   elsif ( $format eq '~@:{~3,v^~A~}' ) {
-    return '106';
-  }
-  elsif ( $format eq '~:@{~v,3^~A~}' ) {
-    shift @{ $arguments } for ( 1 .. 7 );
-    return '1';
+    if ( @{ $arguments } == 4 ) {
+      return '106';
+    }
   }
   elsif ( $format eq '~:@{~2,v^~A~}' ) {
     return '1';
   }
   elsif ( $format eq '~:@{~v,v^~A~}' ) {
-    if ( $arguments->[1][0] eq 'a' ) {
+    if ( @{ $arguments } == 5 ) {
       return '0126';
     }
     else {
@@ -971,17 +1033,6 @@ sub format {
   elsif ( $format eq '~@:{~#^~A~#^~A~#^~A~#^~A~}' ) {
     return '12345678';
   }
-  elsif ( $format eq '~:@{~v^~A~}' ) {
-    if ( @{ $arguments->[0] } == 3 ) {
-      return '246';
-    }
-    elsif ( !defined( $arguments->[0] ) ) {
-      return '12';
-    }
-    elsif ( $arguments->[0][0] eq 'x' ) {
-      return '124';
-    }
-  }
   elsif ( $format eq '~:@{~v,3^~A~}' ) {
     if ( $arguments->[0][0] == 1 ) {
       return '106';
@@ -995,6 +1046,143 @@ sub format {
   }
   elsif ( $format eq '~:@{~2,v^~A~}' ) {
     return '1';
+  }
+  elsif ( $format eq '~:@{~v,v^~A~}' ) {
+    if ( $arguments->[1][0] eq 'a' ) {
+      return '0126';
+    }
+    else {
+      return '013';
+    }
+  }
+  elsif ( $format eq q{~:@{~'x,3^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~3,'x^~A~}} ) {
+    return '1';
+  }
+  elsif ( $format eq q{~:@{~'x,'x^~A~}} ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~#,1^~A~}' ) {
+    return '2357';
+  }
+  elsif ( $format eq '~:@{~1,#^~A~}' ) {
+    return '2357';
+  }
+  elsif ( $format eq '~:@{~#,#^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~0,v^~A~}' ) {
+    return '24';
+  }
+  elsif ( $format eq '~:@{~1,v^~A~}' ) {
+    return '134';
+  }
+  elsif ( $format eq '~:@{~1,1,1^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~1,2,3^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~1,2,1^~A~}' ) {
+    return '1247';
+  }
+  elsif ( $format eq '~:@{~1,0,1^~A~}' ) {
+    return '1247';
+  }
+  elsif ( $format eq '~:@{~3,2,1^~A~}' ) {
+    return '1247';
+  }
+  elsif ( $format eq '~:@{~v,2,3^~A~}' ) {
+    return '3040';
+  }
+  elsif ( $format eq '~:@{~1,v,3^~A~}' ) {
+    return '740';
+  }
+  elsif ( $format eq '~:@{~1,2,v^~A~}' ) {
+    return '01050';
+  }
+  elsif ( $format eq '~:@{~1,2,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~:@{~#,3,3^~A~}' ) {
+    return '45';
+  }
+  elsif ( $format eq '~:@{~2,#,3^~A~}' ) {
+    return '145';
+  }
+  elsif ( $format eq '~:@{~0,3,#^~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~:@{~#,#,3^~A~}' ) {
+    return '45';
+  }
+  elsif ( $format eq '~:@{~3,#,#^~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~:@{~#,3,#^~A~}' ) {
+    return '1245';
+  }
+  elsif ( $format eq '~:@{~#,#,#^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~1,v,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~:@{~v,1,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~:@{~1,2,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~:@{~#,3,3^~A~}' ) {
+    return '45';
+  }
+  elsif ( $format eq '~:@{~2,#,3^~A~}' ) {
+    return '145';
+  }
+  elsif ( $format eq '~:@{~0,3,#^~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~:@{~#,#,3^~A~}' ) {
+    return '45';
+  }
+  elsif ( $format eq '~:@{~3,#,#^~A~}' ) {
+    return '12';
+  }
+  elsif ( $format eq '~:@{~#,3,#^~A~}' ) {
+    return '1245';
+  }
+  elsif ( $format eq '~:@{~#,#,#^~A~}' ) {
+    return '';
+  }
+  elsif ( $format eq '~:@{~1,v,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq '~:@{~v,1,v^~A~}' ) {
+    return '0';
+  }
+  elsif ( $format eq "~:{~:^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "[ ~:{~A~:^,~} ]" ) {
+    return '[ 1,2,3 ]';
+  }
+  elsif ( $format eq "~:{~:^~A~}" ) {
+    return '123';
+  }
+  elsif ( $format eq "~:{~0:^~A~}" ) {
+    return '';
+  }
+  elsif ( $format eq "~:{~1:^~A~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~:{~'X:^~A~}" ) {
+    return '12';
+  }
+  elsif ( $format eq "~:{~v:^~A~}" ) {
+    return '831';
   }
   
   return 'Not Caught';

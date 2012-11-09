@@ -63,12 +63,15 @@ sub def_format_test {
 
 sub deftest {
   my ( $name, $func, $result ) = @_;
+  my ( $package, $filename, $line ) = caller();
   my $test = $func->();
   if ( ref $test ) {
-    is_deeply( $test, $result, $name );
+    is_deeply( $test, $result, $name ) or
+      diag( "  at test file $filename line $line" );
   }
   else {
-    is( $test, $result, $name );
+    is( $test, $result, $name ) or
+      diag( "  at test file $filename line $line" );
   }
 }
 
