@@ -40,26 +40,137 @@ if you don't export anything, such as for a purely object-oriented module.
 sub __token_a {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: : |
-          @ |
-          v |
-          v: |
-          v@ |
-          v:@ | # :@ and @: are equivalent
-          v[@]: |
-          \d+,\d+ |
-          \d+,\d+@ |
-      )?
-      [aA] 
+    ~ (?: | : | v | v: | [@] | v[@] | v:[@] | v[@]: | \d+,\d+ | \d+,\d+[@] |
+            v,,\d+ | \d+,,[+]\d+ | \d+,,\d+ | \d+,,-\d+ | \d+,,,'X | \d+,,, |
+            \d+,,,'X | \d+,,,'X[@] | \d+,,,[@] | \d+,,,v | \d+,,,v[@] |
+            \d+,,v | \d+,,v[@] | \d+,v | \d+,v[@] | [#] | [#][@] | \d+,[#] |
+            \d+,[#][@] | [#],[#] | [#],[#][@] | -\d+
+      )
+    [aA]
   }x );
-  my $rv = { format => '~a' };
-  $rv->{colon} = 1 if $match =~ m{ [:] | [:][@] [aA] }x;
-  $rv->{at} = 1 if $match =~ m{ [@] | [@][:] [aA] }x;
-  $rv->{v} = 1 if $match =~ m{ [v] | [v][:] | [v][@] [aA] }x;
-  if ( $match =~ m{ (\d+),(\d+) [@]? [aA] }x ) {
-    $rv->{minpad} = $1;
-    $rv->{colinc} = $2;
-  }
+  my $rv = {
+    format => '~a',
+    mincol => 0,
+    minpad => 0,
+    colinc => 1,
+    padchar => ' '
+  };
+  return $rv;
+}
+
+sub __token_ampersand {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | v | V
+      )
+    [&]
+  }x );
+  my $rv = {
+    format => '~&',
+  };
+  return $rv;
+}
+
+sub __token_percent {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | V | [#]
+      )
+    [%]
+  }x );
+  my $rv = {
+    format => '~%',
+  };
+  return $rv;
+}
+
+sub __token_b {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [:] | v | \d+,v | ,,v: | ,,'[*],v: | [+]\d+ | [+]\d+[@] | [-]\d+
+      )
+    [bB]
+  }x );
+  my $rv = {
+    format => '~b',
+  };
+  return $rv;
+}
+
+sub __token_open_brace {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | [#] | V | v | [:] | \d+ [:] | V [:] | [#] [:] | v [:] | [@] |
+            \d+ [@] | [:] [@] | [@] [:] | v [@] | [#] [@] | \d+ [#] [@] |
+            \d+ [:] [@] | [#] [:] [@] | v [:] [@]
+      )
+    \{
+  }x );
+  my $rv = {
+    format => '~{',
+  };
+  return $rv;
+}
+
+sub __token_newline {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~
+    \n
+  }x );
+  my $rv = {
+    format => '~\\n',
+  };
+  return $rv;
+}
+
+sub __token_close_brace {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [:]
+      )
+    \}
+  }x );
+  my $rv = {
+    format => '~}',
+  };
+  return $rv;
+}
+
+sub __token_circumflex {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | v | [#],\d+ | \d+,[#] | [#],[#] | [#],[#],[#] | [#],[#],v |
+            [#],\d+,\d+ | v,v | \d+,v,v | \d+,v | \d+,\d+,v | 'X | v,'X | 'X,v |
+            ',,', | v,\d+,v | v,v,v | [#] | v,[#] | v,\d+ | 'x,\d+ | \d+,'x |
+            'x,'x | \d+,\d+,\d+ | v,\d+,\d+ | \d+,v,\d+ | \d+,[#],\d+ | 
+            \d+,\d+,[#] | [#],[#],\d+ | \d+,[#],[#] | [#],\d+,[#] | [:] |
+            \d+ [:] | 'X [:] | v [:] | V [:] | [#] [:] | \d+,\d+ [:] |
+            v,\d+ [:] | \d+,V [:] | V,v [:] | [#],\d+[:] | \d+,[#][:] |
+            [#],[#] | [#],[#][:] | [#],v[:] | V,[#][:] | 'X,'Y[:] | 'X,'X[:] |
+            \d+,\d+,\d+[:] | \d+,\d+,v | \d+,\d+,v[:] | v,\d+,\d+[:] |
+            \d+,v,\d+ | \d+,v,\d+[:] | V,v,\d+[:] | v,\d+,v | v,\d+,v[:] |
+            \d+,V,v[:] | v,v,V[:] | [#],\d+,\d+ | [#],\d+,\d+[:] |
+            \d+,[#],\d+[:]
+      )
+    \^
+  }x );
+  my $rv = {
+    format => '~^',
+  };
+  return $rv;
+}
+
+sub __token_colon {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?:
+      )
+    [:]
+  }x );
+  my $rv = {
+    format => '~:',
+  };
   return $rv;
 }
 
@@ -68,7 +179,18 @@ sub parse {
 
   $self->sequence_of( sub {
     $self->any_of(
+      sub { $self->expect( qr{
+        X | Y | Z | FOO | \( | \) | XYZ | ABC | \[ | \] | [,] | A
+      }x ) },
       sub { $self->__token_a },
+      sub { $self->__token_ampersand },
+      sub { $self->__token_percent },
+      sub { $self->__token_b },
+      sub { $self->__token_open_brace },
+      sub { $self->__token_newline },
+      sub { $self->__token_close_brace },
+      sub { $self->__token_circumflex },
+      sub { $self->__token_colon },
     );
   } );
 }

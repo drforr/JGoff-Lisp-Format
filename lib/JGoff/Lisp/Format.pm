@@ -85,13 +85,14 @@ sub format {
 
   my $parser = JGoff::Lisp::Format::Parser->new;
   if ( my $tree = $parser->from_string( $format ) ) {
-    my $output;
-    for my $element ( @{ $tree } ) {
-      if ( $element->{format} eq '~a' ) {
-        $output .= $self->__format_a( $element, $arguments );
-      }
-    }
-    return $output;
+    return 'PARSED';
+#    my $output;
+#    for my $element ( @{ $tree } ) {
+#      if ( $element->{format} eq '~a' ) {
+#        $output .= $self->__format_a( $element, $arguments );
+#      }
+#    }
+#    return $output;
   }
 
   if ( $format eq '~a' ) {
