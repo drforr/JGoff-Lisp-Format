@@ -25,7 +25,7 @@ def_format_test 'format.cond.3' =>
 
 def_format_test 'format.cond.4' =>
   "~[a~]",
-   [ [ 1,- most-negative-fixnum ] ],
+   [ $JGoff::Lisp::Format::most_negative_fixnum - 1 ],
    "";
 
 def_format_test 'format.cond.5' =>
@@ -35,7 +35,7 @@ def_format_test 'format.cond.5' =>
 
 def_format_test 'format.cond.6' =>
   "~[a~]",
-   [ [ 1,+ most-positive-fixnum ] ],
+   [ $JGoff::Lisp::Format::most_positive_fixnum + 1 ],
    "";
 
 #(deftest format.cond.7
@@ -103,7 +103,7 @@ def_format_test 'format.cond.12' =>
 
 def_format_test 'format.cond.15' =>
   "~#[A~;B~]",
-   nil,
+   undef,
    "A";
 
 def_format_test 'format.cond.16' =>
@@ -112,7 +112,7 @@ def_format_test 'format.cond.16' =>
    "B",
    1;
 
-;;; ~[ .~:;  ~]
+### ~[ .~:;  ~]
 
 #(deftest format.cond\:.1
 #  (loop for i from -100 to 100
@@ -136,12 +136,12 @@ def_format_test 'format.cond\:.2' =>
 
 def_format_test 'format.cond\:.3' =>
   "~[a~:;b~]",
-   [ [ 1,- most-negative-fixnum ] ],
+   [ $JGoff::Lisp::Format::most_negative_fixnum - 1 ],
    "b";
 
 def_format_test 'format.cond\:.4' =>
   "~[a~:;b~]",
-   [ [ 1,+ most-positive-fixnum ] ],
+   [ $JGoff::Lisp::Format::most_positive_fixnum + 1 ],
    "b";
 
 #(deftest format.cond\:.5
@@ -179,7 +179,7 @@ def_format_test 'format.cond\:.4' =>
 
 def_format_test 'format.cond\:.8' =>
   "~#[A~:;B~]",
-   nil,
+   undef,
    "A";
 
 def_format_test 'format.cond\:.9' =>
@@ -188,7 +188,7 @@ def_format_test 'format.cond\:.9' =>
    "B",
    2;
 
-;;; ~:[...~]
+### ~:[...~]
 
 def_format_test 'format.\:cond.1' =>
   "~:[a~;b~]",
@@ -210,7 +210,7 @@ def_format_test 'format.\:cond.1' =>
 #          collect (list x s)))
 #  nil)
 
-;;; ~@[ ... ~]
+### ~@[ ... ~]
 
 def_format_test 'format.@cond.1' =>
   "~@[X~]Y~A",
@@ -218,6 +218,6 @@ def_format_test 'format.@cond.1' =>
    "XY1";
 
 def_format_test 'format.@cond.2' =>
-  "~@[X~]Y~A" ,
-  [ undef, 2 ],
+   "~@[X~]Y~A" ,
+   [ undef, 2 ],
    "Y2";

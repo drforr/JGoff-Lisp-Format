@@ -203,7 +203,7 @@ sub __token_question {
 sub __token_open_bracket {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:
+    ~ (?: | \d+ | -\d+ | [#] | [@]
       )
     \[
   }x );
@@ -265,13 +265,27 @@ sub __token_semicolon {
   return $rv;
 }
 
+sub __token_d {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [v] | \d+,v | ,,v[:] | ,,'\*,v[:] | [+]\d+[:] | [+]\d+[@] |
+          [-+]\d+
+      )
+    [dD]
+  }x );
+  my $rv = {
+    format => '~d',
+  };
+  return $rv;
+}
+
 sub parse {
   my $self = shift;
 
   $self->sequence_of( sub {
     $self->any_of(
       sub { $self->expect( qr{
-        ABC | [bAUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \] | [,]
+        ABC | [abcdABUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \] | [,]
       }x ) },
       sub { $self->__token_semicolon },
       sub { $self->__token_a },
@@ -288,6 +302,7 @@ sub parse {
       sub { $self->__token_close_paren },
       sub { $self->__token_circumflex },
       sub { $self->__token_colon },
+      sub { $self->__token_d },
       sub { $self->__token_question },
     );
   } );

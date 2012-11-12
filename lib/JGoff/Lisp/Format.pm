@@ -11,6 +11,7 @@ our $capitalize = 'capitalize';
 our $print_case = $upcase; # default value from the CLISP spec
 
 our $most_positive_fixnum = 2**32-1;#~0; # XXX Probably wrong
+our $most_negative_fixnum = -(2**32-1);#~0; # XXX Probably wrong
 
 =head1 NAME
 

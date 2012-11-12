@@ -238,7 +238,7 @@ BEGIN {
 #           while (<= count limit))))
 #  nil)
 
-;;; Comma tests
+### Comma tests
 
 #(deftest format.d.8
 #  (let ((fn1 (formatter "~d"))
@@ -397,7 +397,7 @@ BEGIN {
 #           collect (list x i commachar s1 s2 s3))))
 #  nil)
 
-;;; NIL arguments
+### NIL arguments
 
 def_format_test 'format.d.14' =>
   "~vD",
@@ -419,7 +419,7 @@ def_format_test 'format.d.17' =>
   [ undef, 12345 ],
   "12*345";
 
-;;; When the argument is not an integer, print as if using ~A and base 10
+### When the argument is not an integer, print as if using ~A and base 10
 
 #(deftest format.d.18
 #  (loop for x in *mini-universe*
@@ -454,12 +454,12 @@ def_format_test 'format.d.17' =>
 #        collect (list x s1 s2))
 #  nil)
 
-;;; Must add tests for non-integers when the parameters
-;;; are specified, but it's not clear what the meaning is.
-;;; Does mincol apply to the ~A equivalent?  What about padchar?
-;;; Are comma-char and comma-interval always ignored?
+### Must add tests for non-integers when the parameters
+### are specified, but it's not clear what the meaning is.
+### Does mincol apply to the ~A equivalent?  What about padchar?
+### Are comma-char and comma-interval always ignored?
 
-;;; # arguments
+### # arguments
 
 #(deftest format.d.22
 #  (apply
@@ -557,7 +557,7 @@ def_format_test 'format.d.25' =>
   "      1234";
 
 def_format_test 'format.d.26' =>
-  "~+10@d",
+  '~+10@d',
   [ 1234 ],
   "     +1234";
 
@@ -573,10 +573,10 @@ def_format_test 'format.d.28' =>
 
 def_format_test 'format.d.29' =>
   "~vd",
-  [ [ 1,- most-negative-fixnum ],  1234 ],
+  [ $JGoff::Lisp::Format::most_negative_fixnum - 1, 1234 ],
   "1234";
 
-;;; Randomized test
+### Randomized test
 
 #(deftest format.d.30
 #  (let ((fn (formatter "~v,v,v,vD")))
