@@ -8,7 +8,7 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
-;;; ~*
+### ~*
 
 def_format_test 'format.*.1' =>
   "~A~*~A",
@@ -56,7 +56,7 @@ def_format_test 'format.*.9' =>
   [ 0, [ 1, 2, 3, 4, undef, 6, 7, 8, 9, 'A' ],  5 ],
   "01234789A5";
 
-;;; ~:*
+### ~:*
 
 def_format_test 'format.\:*.1' =>
   "~A~:*~A",
@@ -128,64 +128,64 @@ def_format_test 'format.\:*.13' =>
   [ 0, [ 1, 2, 3, 4, undef ],  5 ],
   "01234NIL5";
 
-;;; ~@*
+### ~@*
 
 def_format_test 'format.@*.1' =>
-  "~A~A~@*~A~A",
+  '~A~A~@*~A~A',
   [ 1, 2, 3, 4 ],
   "1212",
   2;
 
 def_format_test 'format.@*.2' =>
-  "~A~A~1@*~A~A",
+  '~A~A~1@*~A~A',
   [ 1, 2, 3, 4 ],
   "1223",
   1;
 
 def_format_test 'format.@*.3' =>
-  "~A~A~2@*~A~A",
+  '~A~A~2@*~A~A',
   [ 1, 2, 3, 4 ],
   "1234";
 
 def_format_test 'format.@*.4' =>
-  "~A~A~3@*~A~A",
+  '~A~A~3@*~A~A',
   [ 1, 2, 3, 4, 5 ],
   "1245";
 
 def_format_test 'format.@*.5' =>
-  "~A~A~v@*~A~A",
+  '~A~A~v@*~A~A',
   [ 1, 2, undef, 3, 4 ],
   "1212",
   3;
 
 def_format_test 'format.@*.6' =>
-  "~A~A~v@*~A~A",
+  '~A~A~v@*~A~A',
   [ 1, 2, 1, 3, 4 ],
   "1221",
   2;
 
 def_format_test 'format.@*.7' =>
-  "~A~A~v@*~A~A",
+  '~A~A~v@*~A~A',
   [ 6, 7, 2, 3, 4 ],
   "6723",
   1;
 
 def_format_test 'format.@*.8' =>
-  "~A~{~A~A~@*~A~A~}~A",
+  '~A~{~A~A~@*~A~A~}~A',
   [ 0, [ 1, 2 ], 9 ],
   "012129";
 
 def_format_test 'format.@*.9' =>
-  "~A~{~A~A~0@*~A~A~}~A",
+  '~A~{~A~A~0@*~A~A~}~A',
   [ 0, [ 1, 2 ], 9 ],
   "012129";
 
 def_format_test 'format.@*.10' =>
-  "~A~1{~A~A~v@*~A~A~}~A",
+  '~A~1{~A~A~v@*~A~A~}~A',
   [ 0, [ 1, 2, undef ], 9 ],
   "012129";
 
 def_format_test 'format.@*.11' =>
-  "~A~{~A~A~1@*~A~}~A",
+  '~A~{~A~A~1@*~A~}~A',
   [ 0, [ 1, 2 ], 9 ],
   "01229";

@@ -279,6 +279,32 @@ sub __token_d {
   return $rv;
 }
 
+sub __token_f {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | ,,,,',
+      )
+    [fF]
+  }x );
+  my $rv = {
+    format => '~f',
+  };
+  return $rv;
+}
+
+sub __token_asterisk {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | [vV] [:] | [vV][@] | [vV] | [:] | \d+[:] | \d+[@] | \d+[vV][@] | [@]
+      )
+    [*]
+  }x );
+  my $rv = {
+    format => '~*',
+  };
+  return $rv;
+}
+
 sub parse {
   my $self = shift;
 
@@ -287,6 +313,7 @@ sub parse {
       sub { $self->expect( qr{
         ABC | [abcdABUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \] | [,]
       }x ) },
+      sub { $self->__token_asterisk },
       sub { $self->__token_semicolon },
       sub { $self->__token_a },
       sub { $self->__token_ampersand },
@@ -304,6 +331,8 @@ sub parse {
       sub { $self->__token_colon },
       sub { $self->__token_d },
       sub { $self->__token_question },
+      sub { $self->__token_f },
+      sub { $self->__token_asterisk },
     );
   } );
 }

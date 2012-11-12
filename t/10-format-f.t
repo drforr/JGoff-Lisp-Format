@@ -371,7 +371,7 @@ BEGIN {
 #                      (<= abs-xr-sr abs-xr-sr-lo))
 #          collect (list d w x xr s sr eps abs-xr-sr abs-xr-sr-hi abs-xr-sr-lo)))
 #  nil)
-|#
+#|#
 
 #(deftest format.f.34
 #  (with-standard-io-syntax
