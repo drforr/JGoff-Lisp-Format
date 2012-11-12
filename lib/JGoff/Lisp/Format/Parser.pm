@@ -128,7 +128,8 @@ sub __token_open_brace {
 sub __token_newline {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~
+    ~ (?: | [@]
+      )
     \n
   }x );
   my $rv = {
