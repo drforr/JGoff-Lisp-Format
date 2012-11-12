@@ -32,8 +32,7 @@ t/25-format-t.t
 t/26-format-tilde.t
 t/27-format-underscore.t
 t/28-format-x.t
-t/29-format.t
-t/30-formatter-c.t
+t/29-formatter-c.t
 t/lib/JGoff/Lisp/Format/Utils.pm
 t/manifest.t
 t/pod-coverage.t

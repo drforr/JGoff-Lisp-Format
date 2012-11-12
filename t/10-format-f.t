@@ -8,7 +8,7 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
-;;; Equivalent to PRIN1 for 0 or (abs x) in range [10^-3,10^7).
+### Equivalent to PRIN1 for 0 or (abs x) in range [10^-3,10^7).
 
 #(deftest format.f.1
 #  (let ((*print-readably* nil)
@@ -228,7 +228,7 @@ BEGIN {
 #          collect (list x s s2)))
 #  nil)
 
-;;; overflow
+### overflow
 
 #(deftest format.f.22
 #  (let ((fn (formatter "~5,1,,'*F")))
@@ -270,7 +270,7 @@ BEGIN {
 #          collect (list x s s2)))
 #  nil)
 
-;;; padchar
+### padchar
 
 #(deftest format.f.26
 #  (let ((fn (formatter "~10,1,,f")))
@@ -292,7 +292,7 @@ BEGIN {
 #          collect (list x s s2)))
 #  nil)
 
-;;; v parameters
+### v parameters
 
 #(deftest format.f.28
 #  (let ((fn (formatter "~VF")))
@@ -349,7 +349,7 @@ BEGIN {
 #          collect (list x s1 s2 s3)))
 #  nil)
 
-;;; Randomized tests
+### Randomized tests
 
 ##|
 #(deftest format.f.33
@@ -520,7 +520,7 @@ BEGIN {
 #     collect (list x w d k overflowchar padchar f1 s1 s2)))
 #  nil)
 
-;;; This failed in sbcl 0.8.12.25
+### This failed in sbcl 0.8.12.25
 
 def_format_test 'format.f.43' =>
   "~,,,,',f",
