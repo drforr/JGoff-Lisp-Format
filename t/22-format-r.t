@@ -8,9 +8,7 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
-;;; Test of various radixes
-(compile-and-load "printer-aux.lsp")
-(compile-and-load "roman-numerals.lsp")
+### Test of various radixes
 
 #(deftest format.r.1
 #  (loop
@@ -226,7 +224,7 @@ def_format_test 'format.r.12' =>
 
 def_format_test 'format.r.13' =>
   "~3@:r",
-  [ #3r2120012102 ],
+  [ _ternary_to_decimal( '2120012102' ) ],
   "+2,120,012,102";
 
 #(deftest format.r.14
@@ -395,16 +393,36 @@ def_format_test 'format.r.22' =>
   [ 0b1011101 ],
   "1*011*101";
 
+sub _ternary_to_decimal {
+  my $ternary = shift;
+  my $decimal = 0;
+  for my $ch ( reverse split //, $ternary ) {
+    $decimal *= 3;
+    $decimal += $ch;
+  }
+  return $decimal;
+}
+sub _decimal_to_ternary {
+  my $decimal = shift;
+  my $ternary = '';
+  while ( $decimal > 0 ) {
+    $ternary .= $decimal % 3;
+    $ternary -= $decimal % 3;
+    $ternary /= 3;
+  }
+  retuern $ternary;
+}
+
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
-  [ #3r1021101 ],
+  [ _ternary_to_decimal( '1021101' ) ],
   "XXXXX1,021,101";
 
-;; v directive in various positions
+### v directive in various positions
 
 def_format_test 'format.r.24' =>
   "~10,vr",
-  ] undef, 12345 ],
+  [ undef, 12345 ],
   "12345";
 
 #(deftest format.r.25
@@ -431,7 +449,7 @@ def_format_test 'format.r.26' =>
 def_format_test 'format.r.27' =>
   "~10,12,vr",
   [ '/', 123456789 ],
-  "///123456789")
+  "///123456789";
 
 def_format_test 'format.r.28' =>
   "~10,,,v:r",
@@ -455,7 +473,7 @@ def_format_test 'format.r.31' =>
 
 def_format_test 'format.r.32' =>
   "~16,,,,#:r",
-  [ 0x12345670 nil nil nil ],
+  [ 0x12345670, undef, undef, undef ],
   "1234,5670",
   3;
 

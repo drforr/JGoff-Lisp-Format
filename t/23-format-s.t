@@ -61,10 +61,10 @@ def_format_test 'format.s.2' =>
 #    (formatter-call-to-string (formatter "~s") 'nil))
 #  "Nil")
 
-def_format_test 'format.s.6' =>
-  "~:s",
-  (#(nil)),
-  "#(NIL)";
+#def_format_test 'format.s.6' => # XXX Not sure how to interpret this
+#  "~:s",
+#  [ #(nil) ],
+#  "#(UNDEF)";
 
 #(deftest format.s.7
 #  (let ((fn (formatter "~S")))
@@ -263,7 +263,7 @@ def_format_test 'format.s.20' =>
   [ undef, undef ],
   "()";
 
-;;; With colinc specified
+### With colinc specified
 
 def_format_test 'format.s.21' =>
   "~3,1s",
@@ -276,24 +276,36 @@ def_format_test 'format.s.22' =>
   "NIL   "; # XXX
 
 def_format_test 'format.s.23' =>
-  "~3,3@s" (nil) "NIL") # XXX
+  "~3,3@s",
+  [ undef ],
+  "UNDEF"; # XXX
 
 def_format_test 'format.s.24' =>
-  "~4,4@s" (nil) "    NIL") # XXX
+  "~4,4@s",
+  [ undef ],
+  "    NIL"; # XXX
 
-def_format_test 'format.s.25
-  "~5,3@s" (nil) "   NIL") # XXX
+def_format_test 'format.s.25' =>
+  "~5,3@s",
+  [ undef ],
+  "   NIL"; # XXX
 
-def_format_test 'format.s.26
-  "~5,3S" (nil) "NIL   ") # XXX
+def_format_test 'format.s.26' =>
+  "~5,3S",
+  [ undef ],
+  "NIL   "; # XXX
 
-def_format_test 'format.s.27
-  "~7,3@s" (nil) "      NIL") # XXX
+def_format_test 'format.s.27' =>
+  "~7,3@s",
+  [ undef ],
+  "      NIL"; # XXX
 
-def_format_test 'format.s.28
-  "~7,3S" (nil) "NIL      ") # XXX
+def_format_test 'format.s.28' =>
+  "~7,3S",
+  [ undef ],
+  "NIL      "; # XXX
 
-;;; With minpad
+### With minpad
 
 #(deftest format.s.29
 #  (with-standard-io-syntax

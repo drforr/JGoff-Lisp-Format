@@ -28,22 +28,22 @@ def_format_test 'format.p.4' =>
   [ 1.0 ],
   "s";
 
-(deftest format.p.5
-  (loop for x in *universe*
-        for s = (format nil "~p" x)
-        unless (or (eql x 1) (string= s "s"))
-        collect (list x s))
-  nil)
+#(deftest format.p.5
+#  (loop for x in *universe*
+#        for s = (format nil "~p" x)
+#        unless (or (eql x 1) (string= s "s"))
+#        collect (list x s))
+#  nil)
 
-(deftest formatter.p.5
-  (let ((fn (formatter "~p")))
-    (loop for x in *universe*
-          for s = (formatter-call-to-string fn x)
-          unless (or (eql x 1) (string= s "s"))
-          collect (list x s)))
-  nil)
+#(deftest formatter.p.5
+#  (let ((fn (formatter "~p")))
+#    (loop for x in *universe*
+#          for s = (formatter-call-to-string fn x)
+#          unless (or (eql x 1) (string= s "s"))
+#          collect (list x s)))
+#  nil)
 
-;;; :p
+### :p
 
 def_format_test 'format.p.6' =>
   "~D cat~:P",
@@ -65,7 +65,7 @@ def_format_test 'format.p.9' =>
   [ "No" ],
   "No cats";
 
-;;; :@p
+### :@p
 
 def_format_test 'format.p.10' =>
   "~D penn~:@P",
@@ -87,7 +87,7 @@ def_format_test 'format.p.13' =>
   [ "No" ],
   "No pennies";
 
-;;; @p
+### @p
 
 def_format_test 'format.p.14' =>
   "~@p",
@@ -109,17 +109,17 @@ def_format_test 'format.p.17' =>
   [ 1.0 ],
   "ies";
 
-(deftest format.p.18
-  (loop for x in *universe*
-        for s = (format nil "~@p" x)
-        unless (or (eql x 1) (string= s "ies"))
-        collect (list x s))
-  nil)
+#(deftest format.p.18
+#  (loop for x in *universe*
+#        for s = (format nil "~@p" x)
+#        unless (or (eql x 1) (string= s "ies"))
+#        collect (list x s))
+#  nil)
 
-(deftest formatter.p.18
-  (let ((fn (formatter "~@P")))
-    (loop for x in *universe*
-          for s = (formatter-call-to-string fn x)
-          unless (or (eql x 1) (string= s "ies"))
-          collect (list x s)))
-  nil)
+#(deftest formatter.p.18
+#  (let ((fn (formatter "~@P")))
+#    (loop for x in *universe*
+#          for s = (formatter-call-to-string fn x)
+#          unless (or (eql x 1) (string= s "ies"))
+#          collect (list x s)))
+#  nil)

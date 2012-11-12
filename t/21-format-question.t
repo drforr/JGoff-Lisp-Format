@@ -10,39 +10,39 @@ BEGIN {
 
 def_format_test 'format.?.1' =>
   "~?",
-  ("" nil),
+  [ "", undef ],
   "";
 
 def_format_test 'format.?.2' =>
   "~?",
-  ("~A" '(1)),
+  [ "~A", [ 1 ] ],
   "1";
 
 def_format_test 'format.?.3' =>
   "~?",
-  ("" '(1)),
+  [ "", [ 1 ] ],
   "";
 
 def_format_test 'format.?.4' =>
   "~? ~A",
-  ("" '(1) 2),
+  [ "", [ 1 ], 2 ],
   " 2";
 
 def_format_test 'format.?.5' =>
   "a~?z",
-  ("b~?y" '("c~?x" ("~A" (1)))),
+  [ "b~?y", [ "c~?x", [ "~A", [ 1 ] ] ] ],
   "abc1xyz";
 
-;;; Tests of ~@?
+### Tests of ~@?
 
 def_format_test 'format.@?.1' =>
   "~@?",
-  (""),
+  [ "" ],
   "";
 
 def_format_test 'format.@?.2' =>
   "~@?",
-  ("~A" 1),
+  [ "~A", 1 ],
   "1";
 
 def_format_test 'format.@?.3' =>

@@ -202,7 +202,7 @@ BEGIN {
 #           collect (list i mincol s1 s2 s3 pos))))
 #  nil)
 
-;;; Comma tests
+### Comma tests
 
 #(deftest format.o.8
 #  (let ((fn (formatter "~:O")))
@@ -378,7 +378,7 @@ def_format_test 'format.o.17' =>
   [ undef, 012345 ],
   "12*345";
 
-;;; When the argument is not an integer, print as if using ~A and base 10
+### When the argument is not an integer, print as if using ~A and base 10
 
 #(deftest format.o.18
 #  (let ((fn (formatter "~o")))
@@ -422,12 +422,12 @@ def_format_test 'format.o.17' =>
 #          collect (list x s1 s2 s3)))
 #  nil)
 
-;;; Must add tests for non-integers when the parameters
-;;; are specified, but it's not clear what the meaning is.
-;;; Does mincol apply to the ~A equivalent?  What about padchar?
-;;; Are comma-char and comma-interval always ignored?
+### Must add tests for non-integers when the parameters
+### are specified, but it's not clear what the meaning is.
+### Does mincol apply to the ~A equivalent?  What about padchar?
+### Are comma-char and comma-interval always ignored?
 
-;;; # arguments
+### # arguments
 
 #(deftest format.o.22
 #  (apply
@@ -529,7 +529,7 @@ def_format_test 'format.o.29' =>
   [ $JGoff::Lisp::Format::most_negative_fixnum - 1, 01234 ],
   "1234";
 
-;;; Randomized test
+### Randomized test
 
 #(deftest format.o.30
 #  (let ((fn (formatter "~v,v,v,vo")))

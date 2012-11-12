@@ -47,7 +47,7 @@ BEGIN {
 #    (format nil "~/CL-TEST::FUNCTION-FOR-FORMAT-SLASH-9/" 1))
 #  "1")
 
-;;; Single : doesn't mean it has to be exported
+### Single : doesn't mean it has to be exported
 #(def-pprint-test format./.10
 #  (progn
 #    (setf (symbol-function 'FUNCTION-FOR-FORMAT-SLASH-10) #'pprint-linear)

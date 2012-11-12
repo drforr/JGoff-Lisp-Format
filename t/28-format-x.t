@@ -205,7 +205,7 @@ BEGIN {
 #           collect (list i mincol s1 s2 s3 pos))))
 #  nil)
 
-;;; Comma tests
+### Comma tests
 
 #(deftest format.x.8
 #  (let ((fn (formatter "~:X")))
@@ -359,14 +359,14 @@ BEGIN {
 #           collect (list x i commachar s1 s2 s3))))
 #  nil)
 
-;;; NIL arguments
+### NIL arguments
 
 def_format_test 'format.x.14' =>
   "~vx",
   [ undef, 0x100 ],
   "100";
 
-(def-format-test format.x.15
+def_format_test 'format.x.15' =>
   "~6,vX",
   [ undef, 0x100 ],
   "   100";
@@ -381,7 +381,7 @@ def_format_test 'format.x.17' =>
   [ undef, 0x12345 ],
   "12*345";
 
-;;; When the argument is not an integer, print as if using ~A and base 10
+### When the argument is not an integer, print as if using ~A and base 10
 
 #(deftest format.x.18
 #  (let ((fn (formatter "~x")))
@@ -426,12 +426,12 @@ def_format_test 'format.x.17' =>
 #          collect (list x s1 s2 s3)))
 #  nil)
 
-;;; Must add tests for non-integers when the parameters
-;;; are specified, but it's not clear what the meaning is.
-;;; Does mincol apply to the ~A equivalent?  What about padchar?
-;;; Are comma-char and comma-interval always ignored?
+### Must add tests for non-integers when the parameters
+### are specified, but it's not clear what the meaning is.
+### Does mincol apply to the ~A equivalent?  What about padchar?
+### Are comma-char and comma-interval always ignored?
 
-;;; # arguments
+### # arguments
 
 #(deftest format.x.22
 #  (apply
