@@ -306,14 +306,58 @@ sub __token_asterisk {
   return $rv;
 }
 
+sub __token_o {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?:  | [vV] | \d+,[vV] | ,,v[:] | ,,'[*],v[:] | [+]\d+[@] | [+]\d+
+           | [-]\d+
+      )
+    [oO]
+  }x );
+  my $rv = {
+    format => '~o',
+  };
+  return $rv;
+}
+
+sub __token_p {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [:] | [@] | [@][:] | [:][@]
+      )
+    [pP]
+  }x );
+  my $rv = {
+    format => '~p',
+  };
+  return $rv;
+}
+
+sub __token_pipe {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | [vV]
+      )
+    [|]
+  }x );
+  my $rv = {
+    format => '~|',
+  };
+  return $rv;
+}
+
 sub parse {
   my $self = shift;
 
   $self->sequence_of( sub {
     $self->any_of(
       sub { $self->expect( qr{
-        ABC | [abcdABUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \] | [,]
+        [!][@][#]0[^][&][*]this |
+        ABC | cat | penn | XXyy | uuVV | this | is | TEST[.]
+            | [abcdABUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \]
+            | [,]
       }x ) },
+      sub { $self->__token_p },
       sub { $self->__token_asterisk },
       sub { $self->__token_semicolon },
       sub { $self->__token_a },
@@ -334,6 +378,8 @@ sub parse {
       sub { $self->__token_question },
       sub { $self->__token_f },
       sub { $self->__token_asterisk },
+      sub { $self->__token_o },
+      sub { $self->__token_pipe },
     );
   } );
 }

@@ -13,7 +13,7 @@ def_format_test 'format.paren.1' =>
   ("ABc dEF ghI"),
   "xxyyabc def ghiuuvv";
 
-;;; Conversion of simple characters to downcase
+### Conversion of simple characters to downcase
 #(deftest format.paren.2
 #  (loop for i from 0 below (min char-code-limit (ash 1 16))
 #        for c = (code-char i)
@@ -114,7 +114,7 @@ def_format_test 'format.paren.7' =>
 #          collect it))
 #  nil)
 
-;;; Nested conversion
+### Nested conversion
 
 def_format_test 'format.paren.9' =>
   "~(aBc ~:(def~) GHi~)",

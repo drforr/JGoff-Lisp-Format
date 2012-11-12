@@ -356,7 +356,7 @@ BEGIN {
 #           collect (list x i commachar s1 s2 s3))))
 #  nil)
 
-;;; NIL arguments
+### NIL arguments
 
 def_format_test 'format.o.14' =>
   "~vO",
@@ -510,7 +510,7 @@ def_format_test 'format.o.25' =>
   "      1234";
 
 def_format_test 'format.o.26' =>
-  "~+10@O",
+  '~+10@O',
   [ 01234 ],
   "     +1234";
 

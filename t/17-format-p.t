@@ -68,44 +68,44 @@ def_format_test 'format.p.9' =>
 ### :@p
 
 def_format_test 'format.p.10' =>
-  "~D penn~:@P",
+  '~D penn~:@P',
   [ 1 ],
   "1 penny";
 
 def_format_test 'format.p.11' =>
-  "~D penn~:@p",
+  '~D penn~:@p',
   [ 2 ],
   "2 pennies";
 
 def_format_test 'format.p.12' =>
-  "~D penn~@:P",
+  '~D penn~@:P',
   [ 0 ],
   "0 pennies";
 
 def_format_test 'format.p.13' =>
-  "~D penn~@:p",
+  '~D penn~@:p',
   [ "No" ],
   "No pennies";
 
 ### @p
 
 def_format_test 'format.p.14' =>
-  "~@p",
+  '~@p',
   [ 1 ],
   "y";
 
 def_format_test 'format.p.15' =>
-  "~@P",
+  '~@P',
   [ 2 ],
   "ies";
 
 def_format_test 'format.p.16' =>
-  "~@p",
+  '~@p',
   [ 0 ],
   "ies";
 
 def_format_test 'format.p.17' =>
-  "~@P",
+  '~@P',
   [ 1.0 ],
   "ies";
 
