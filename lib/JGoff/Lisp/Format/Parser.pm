@@ -230,7 +230,7 @@ sub __token_close_bracket {
 sub __token_open_paren {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [@]
+    ~ (?: | [@] | [:][@]
       )
     \(
   }x );
@@ -411,9 +411,9 @@ sub parse {
 
   $self->sequence_of( sub {
     $self->any_of(
+      sub { $self->expect( '!@#$%^&*this' ) },
       sub { $self->expect( qr{
-        [!][@][#]0[^][&][*]this |
-        ABC | cat | penn | XXyy | uuVV | this | is | TEST[.]
+        ABC | cat | penn | XXyy | uuVV | this | is7a | is | TEST[.]
             | [a-zA-Z()] | NO | FOO | XYZ | \[ | \]
             | [,]
       }x ) },

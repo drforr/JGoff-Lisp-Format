@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
