@@ -5,6 +5,7 @@ use Test::More;
 
 use base 'Exporter';
 our @EXPORT = qw(
+  char_name
   def_format_test
   deftest
   formatter_call_to_string
@@ -17,6 +18,12 @@ our $most_positive_fixnum = ~0; # XXX Probably wrong
 our $most_negative_fixnum = -(~0); # XXX Probably wrong
 our @standard_chars = split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
 our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
+
+sub char_name {
+  my $char = shift;
+  return 'Space' if $char eq ' ';
+  return $char;
+}
 
 sub with_standard_io_syntax(&) {
   my $fn = shift;

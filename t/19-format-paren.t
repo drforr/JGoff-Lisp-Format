@@ -165,41 +165,41 @@ def_format_test 'format.paren.17' =>
   "Abc Def Ghi";
 
 def_format_test 'format.paren.18' =>
-  "~@(aBc ~(def~) GHi~)",
+  '~@(aBc ~(def~) GHi~)',
   undef,
   "Abc def ghi";
 
 def_format_test 'format.paren.19' =>
-  "~@(aBc ~:(def~) GHi~)",
+  '~@(aBc ~:(def~) GHi~)',
   undef,
   "Abc def ghi";
 
 def_format_test 'format.paren.20' =>
-  "~@(aBc ~@(def~) GHi~)",
+  '~@(aBc ~@(def~) GHi~)',
   undef,
   "Abc def ghi";
 
 def_format_test 'format.paren.21' =>
-  "~@(aBc ~@:(def~) GHi~)",
+  '~@(aBc ~@:(def~) GHi~)',
   undef,
   "Abc def ghi";
 
 def_format_test 'format.paren.22' =>
-  "~:@(aBc ~(def~) GHi~)",
+  '~:@(aBc ~(def~) GHi~)',
   undef,
   "ABC DEF GHI";
 
 def_format_test 'format.paren.23' =>
-  "~@:(aBc ~:(def~) GHi~)",
+  '~@:(aBc ~:(def~) GHi~)',
   undef,
   "ABC DEF GHI";
 
 def_format_test 'format.paren.24' =>
-  "~:@(aBc ~@(def~) GHi~)",
+  '~:@(aBc ~@(def~) GHi~)',
   undef,
   "ABC DEF GHI";
 
 def_format_test 'format.paren.25' =>
-  "~@:(aBc ~@:(def~) GHi~)",
+  '~@:(aBc ~@:(def~) GHi~)',
   undef,
   "ABC DEF GHI";

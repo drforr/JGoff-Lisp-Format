@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 5;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -53,5 +53,5 @@ def_format_test 'format.page.4' =>
 
 def_format_test 'format.page.5' =>
   "~v|",
-  [ nil ],
+  [ undef ],
   $f->format( undef, "~|" );

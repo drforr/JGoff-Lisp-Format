@@ -100,7 +100,7 @@ sub __token_b {
 sub __token_c {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:
+    ~ (?: | [:]
       )
     [cC]
   }x );
