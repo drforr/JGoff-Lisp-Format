@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 62;
+use Test::More tests => 71;
 
 BEGIN {
   use lib 't/lib';
@@ -9,6 +9,8 @@ BEGIN {
 
 use strict;
 use warnings;
+
+my $f = JGoff::Lisp::Format->new;
 
 def_format_test 'format.{.1' =>
   concatenate( "~{~", "\n", "~}" ), [ [ undef ] ], "";
@@ -48,6 +50,22 @@ def_format_test 'format.{.15' =>
 
 def_format_test 'format.{.16' =>
   "~1{~}", [ "~A", [ 4, 5, 6 ] ], "4";
+
+deftest 'format.{.17' => sub { # XXX Vet the arguments
+  $f->format( undef, "~{~}", $f->formatter( "" ), undef );
+}, "";
+
+deftest 'format.{.18' => sub { # XXX Vet the arguments
+  $f->format( undef, "~1{~}", $f->formatter( "" ), [ [ 1, 2, 3, 4 ] ] );
+}, "";
+
+deftest 'format.{.19' => sub { # XXX Vet the arguments
+  $f->format( undef, "~1{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
+}, "1234";
+
+deftest 'format.{.20' => sub { # XXX Vet the arguments
+  $f->format( undef, "~3{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
+}, "123";
 
 def_format_test 'format.{.21' =>
   "~V{~}", [ 2, "~A", [ 1, 2, 3, 4, 5 ] ], "12";
@@ -104,6 +122,14 @@ def_format_test 'format.\:{.4' =>
 
 def_format_test 'format.\:{.5' =>
   "~:{~}", [ "X", [ undef, [ 1, 2 ], [ 3 ] ] ], "XXX";
+
+deftest 'format.\:{.6' => sub { # XXX Vet the arguments
+  $f->format(
+    undef,
+    "~:{~}",
+    $f->formatter( "~A" ), [ [ [ 1, 2 ], [ 3 ], [ 4, 5, 6 ] ] ]
+  );
+}, "134";
 
 def_format_test 'format.\:{.7' =>
   "~0:{XYZ~}", [ [ [ 1 ] ] ], "";
@@ -170,6 +196,21 @@ def_format_test 'format.@{.9' =>
 def_format_test 'format.@{.10' =>
   '~@{X~:}', undef, "X";
 
+#def_format_test format.@{.12
+#  "~@{~}" ((formatter "X~AY") 1) "X1Y")
+def_format_test 'format.@{.12' => # XXX double-check
+  '~@{~}',
+  [ $f->formatter( "X~AY" ), 1 ],
+  "X1Y";
+
+#def_format_test format.@{.13
+#  "~v@{~}" (1 (formatter "X") 'foo) "X" 1)
+def_format_test 'format.@{.13' => # XXX double-check
+  '~v@{~}',
+  [ 1, $f->formatter( "X" ), "foo" ],
+  "X",
+  1;
+
 ### ~:@{
 
 def_format_test 'format.\:@{.1' =>
@@ -187,6 +228,11 @@ def_format_test 'format.\:@{.3' =>
 def_format_test 'format.\:@{.4' =>
   '~:@{~}',
   [ "(~A ~A)", [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
+  "(1 2)(3 7)(4 5)";
+
+def_format_test 'format.\:@{.5' => # XXX vet arguments
+  '~:@{~}',
+  [ [ $f->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
   "(1 2)(3 7)(4 5)";
 
 def_format_test 'format.\:@.6' =>
@@ -217,26 +263,6 @@ def_format_test 'format.\:@.9' =>
           unless (string= s (subseq "1234567890" 0 i))
           collect (list i s)))
   nil)
-
-(deftest format.{.17
-  (format nil "~{~}" (formatter "") nil)
-  "")
-
-(deftest format.{.18
-  (format nil "~1{~}" (formatter "") '(1 2 3 4))
-  "")
-
-(deftest format.{.19
-  (format nil "~{~}" (formatter "~A") '(1 2 3 4))
-  "1234")
-
-(deftest format.{.20
-  (format nil "~3{~}" (formatter "~A") '(1 2 3 4))
-  "123")
-
-(deftest format.\:{.6
-  (format nil "~:{~}" (formatter "~A") '((1 2) (3) (4 5 6)))
-  "134")
 
 (deftest format.\:{.11
   (loop for i from 0 to 10 collect
@@ -282,15 +308,6 @@ def_format_test 'format.\:@.9' =>
             (assert (equal (apply fn s i (append (reverse x) rest)) rest)))))
   ("" "1" "12" "123" "1234" "12345"
    "123456" "1234567" "12345678" "123456789" "12345678910"))
-
-def_format_test format.@{.12
-  "~@{~}" ((formatter "X~AY") 1) "X1Y")
-
-def_format_test format.@{.13
-  "~v@{~}" (1 (formatter "X") 'foo) "X" 1)
-
-def_format_test format.\:@{.5
-  "~:@{~}" ((formatter "(~A ~A)") '(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
 
 (deftest format.\:@.10
   (loop for i from 0 to 10
