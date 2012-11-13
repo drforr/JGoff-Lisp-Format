@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 def_format_test 'format.paren.1' =>
   "~(XXyy~AuuVV~)",
   ("ABc dEF ghI"),
@@ -53,14 +56,14 @@ def_format_test 'format.paren.1' =>
 
 
 def_format_test 'format.paren.3' =>
-  "~@(this is a TEST.~)",
+  '~@(this is a TEST.~)',
   undef,
   "This is a test.";
 
 def_format_test 'format.paren.4' =>
-  "~@(!@#$%^&*this is a TEST.~)",
+  '~@(!@#$%^&*this is a TEST.~)',
   undef,
-  "!@#$%^&*This is a test.";
+  '!@#$%^&*This is a test.';
 
 def_format_test 'format.paren.5' =>
   "~:(this is a TEST.~)",
@@ -73,7 +76,7 @@ def_format_test 'format.paren.6' =>
   "This Is7a Test.";
 
 def_format_test 'format.paren.7' =>
-  "~:@(this is AlSo A teSt~)",
+  '~:@(this is AlSo A teSt~)',
   undef,
   "THIS IS ALSO A TEST";
 
@@ -127,12 +130,12 @@ def_format_test 'format.paren.10' =>
   "abc def ghi";
 
 def_format_test 'format.paren.11' =>
-  "~@(aBc ~:(def~) GHi~)",
+  '~@(aBc ~:(def~) GHi~)',
   undef,
   "Abc def ghi";
 
 def_format_test 'format.paren.12' =>
-  "~(aBc ~@(def~) GHi~)",
+  '~(aBc ~@(def~) GHi~)',
   undef,
   "abc def ghi";
 
@@ -152,12 +155,12 @@ def_format_test 'format.paren.15' =>
   "Abc Def Ghi";
 
 def_format_test 'format.paren.16' =>
-  "~:(aBc ~@(def~) GHi~)",
+  '~:(aBc ~@(def~) GHi~)',
   undef,
   "Abc Def Ghi";
 
 def_format_test 'format.paren.17' =>
-  "~:(aBc ~@:(def~) GHi~)",
+  '~:(aBc ~@:(def~) GHi~)',
   undef,
   "Abc Def Ghi";
 

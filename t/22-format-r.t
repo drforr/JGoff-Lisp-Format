@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 ### Test of various radixes
 
 #(deftest format.r.1
@@ -213,7 +216,7 @@ def_format_test 'format.r.9' =>
 #  "123")
 
 def_format_test 'format.r.11' =>
-  "~8@R",
+  '~8@R',
   [ 65 ],
   "+101";
 
@@ -223,7 +226,7 @@ def_format_test 'format.r.12' =>
   "1,111,110";
 
 def_format_test 'format.r.13' =>
-  "~3@:r",
+  '~3@:r',
   [ _ternary_to_decimal( '2120012102' ) ],
   "+2,120,012,102";
 
@@ -265,7 +268,7 @@ def_format_test 'format.r.16' =>
   "10001";
 
 def_format_test 'format.r.17' =>
-  "~8,10:@r",
+  '~8,10:@r',
   [ 0526104 ],
   "  +526,104";
 
@@ -335,7 +338,7 @@ def_format_test 'format.r.17' =>
 #          collect (list i s1 s2)))
 #  nil)
 
-;;; Old roman numerals
+### Old roman numerals
 
 #(defun old-roman-numeral (x)
 #  (assert (typep x '(integer 1)))
@@ -386,7 +389,7 @@ def_format_test 'format.r.17' =>
 #        collect (list i s1 s2))
 #  nil)
 
-;; Combinations of mincol and comma chars
+### Combinations of mincol and comma chars
 
 def_format_test 'format.r.22' =>
   "~2,12,,'*:r",
@@ -482,7 +485,7 @@ def_format_test 'format.r.33' =>
   [ 0x12345670 ],
   "1,2,3,4,5,6,7,0";
 
-;;; Explicit signs
+### Explicit signs
 
 def_format_test 'format.r.34' =>
   "~+10r",
@@ -509,7 +512,7 @@ def_format_test 'format.r.38' =>
   [ 12345 ],
   "12345";
 
-;;; Randomized test
+### Randomized test
 
 #(deftest format.r.39
 #  (let ((fn (formatter "~v,v,v,v,vr")))

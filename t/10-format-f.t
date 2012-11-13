@@ -1,12 +1,15 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 3;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
   use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
+
+use strict;
+use warnings;
 
 ### Equivalent to PRIN1 for 0 or (abs x) in range [10^-3,10^7).
 

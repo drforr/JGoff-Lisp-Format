@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 #(deftest format.x.1
 #  (let ((fn (formatter "~x")))
 #    (with-standard-io-syntax
@@ -514,7 +517,7 @@ def_format_test 'format.x.25' =>
   "      1234";
 
 def_format_test 'format.x.26' =>
-  "~+10@X",
+  '~+10@X',
   [ 0x1234 ],
   "     +1234";
 

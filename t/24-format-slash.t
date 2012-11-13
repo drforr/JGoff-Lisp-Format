@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 #(def-pprint-test format./.1
 #  (format nil "~/pprint-linear/" 1)
 #  "1")

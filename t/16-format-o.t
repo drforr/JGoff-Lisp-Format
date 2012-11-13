@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 #(deftest format.o.1
 #  (let ((fn (formatter "~o")))
 #    (with-standard-io-syntax

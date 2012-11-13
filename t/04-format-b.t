@@ -7,6 +7,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 my $f = JGoff::Lisp::Format->new;
 
 ### Comma tests

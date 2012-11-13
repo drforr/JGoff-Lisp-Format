@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 def_format_test 'format.newline.1' =>
   concatenate( "~", "\n", "   X" ),
   undef,

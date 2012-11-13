@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 92;
+use Test::More tests => 91;
 use List::Util qw( min );
 
 BEGIN {
@@ -8,6 +8,9 @@ BEGIN {
   use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
+
+use strict;
+use warnings;
 
 my $f = JGoff::Lisp::Format->new;
 

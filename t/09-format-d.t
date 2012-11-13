@@ -1,12 +1,15 @@
 #!perl
 
-use Test::More tests => 1;
+use Test::More tests => 11;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
   use lib 't/lib';
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
+
+use strict;
+use warnings;
 
 #(deftest format.d.1
 #  (with-standard-io-syntax

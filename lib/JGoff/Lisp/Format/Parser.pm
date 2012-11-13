@@ -74,7 +74,7 @@ sub __token_ampersand {
 sub __token_percent {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | V | [#]
+    ~ (?: | [vV] | [#]
       )
     [%]
   }x );
@@ -309,8 +309,8 @@ sub __token_asterisk {
 sub __token_o {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:  | [vV] | \d+,[vV] | ,,v[:] | ,,'[*],v[:] | [+]\d+[@] | [+]\d+
-           | [-]\d+
+    ~ (?: | [vV] | \d+,[vV] | ,,v[:] | ,,'[*],v[:] | [+]\d+[@] | [+]\d+
+          | [-]\d+
       )
     [oO]
   }x );
@@ -346,6 +346,66 @@ sub __token_pipe {
   return $rv;
 }
 
+sub __token_r {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | \d+ | [vV] | [#] | \d+[@] | \d+[:] | \d+[@][:] | \d+,,,,\d+
+          | \d+,\d+[:][@] | \d+,\d+,,'[*][:] | \d+,\d+,'X,',[:] | \d+,[vV]
+          | \d+,[#] | \d+,\d+,[vV] | \d+,,,,[vV][:] | \d+,,,[vV][:]
+          | \d+,,,,[#][:] | \d+,,,,\d+[:] | [+]\d+ | \d+,[+]\d+ | \d+,\d+
+          | \d+,[-]\d+
+      )
+    [rR]
+  }x );
+  my $rv = {
+    format => '~r',
+  };
+  return $rv;
+}
+
+sub __token_s {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [vV] | [vV][:] | [@] | [vV][@] | [vV][:][@] | [vV][@][:] | \d+,\d+
+          | \d+,\d+[@] | \d+,,[+]\d+ | \d+,,\d+ | \d+,,[-]\d+ | \d+,,,'X
+          | \d+,,, | \d+,,,'X[@] | \d+,,,[@] | \d+,,,[vV] | \d+,,,[v][@]
+          | \d+,,[vV] | \d+,[vV] | \d+,,[vV][@] | \d+,[vV][@]
+      )
+    [sS]
+  }x );
+  my $rv = {
+    format => '~s',
+  };
+  return $rv;
+}
+
+sub __token_x {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [vV] | \d+,[vV] | ,,[vV][:] | ,,'[*],[vV][:] | [+]\d+ | [+]\d+[@]
+          | [-]\d+
+      )
+    [xX]
+  }x );
+  my $rv = {
+    format => '~x',
+  };
+  return $rv;
+}
+
+sub __token_tilde {
+  my $self = shift;
+  my $match = $self->expect( qr{
+    ~ (?: | [vV]
+      )
+    ~
+  }x );
+  my $rv = {
+    format => '~~',
+  };
+  return $rv;
+}
+
 sub parse {
   my $self = shift;
 
@@ -354,7 +414,7 @@ sub parse {
       sub { $self->expect( qr{
         [!][@][#]0[^][&][*]this |
         ABC | cat | penn | XXyy | uuVV | this | is | TEST[.]
-            | [abcdABUVWXYZ] | NO | FOO | \( | \) | XYZ | \[ | \]
+            | [a-zA-Z()] | NO | FOO | XYZ | \[ | \]
             | [,]
       }x ) },
       sub { $self->__token_p },
@@ -380,6 +440,10 @@ sub parse {
       sub { $self->__token_asterisk },
       sub { $self->__token_o },
       sub { $self->__token_pipe },
+      sub { $self->__token_r },
+      sub { $self->__token_s },
+      sub { $self->__token_tilde },
+      sub { $self->__token_x },
     );
   } );
 }

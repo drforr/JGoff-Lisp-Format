@@ -8,6 +8,9 @@ BEGIN {
   use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
+use strict;
+use warnings;
+
 #(deftest format.s.1
 #  (let ((*print-readably* nil)
 #        (*print-case* :upcase))
@@ -244,22 +247,22 @@ def_format_test 'format.s.16' =>
   "()";
 
 def_format_test 'format.s.17' =>
-  "~@S",
+  '~@S',
   [ undef ],
   "UNDEF";
 
 def_format_test 'format.s.18' =>
-  "~v@S",
+  '~v@S',
   [ undef, undef ],
   "UNDEF";
 
 def_format_test 'format.s.19' =>
-  "~v:@s",
+  '~v:@s',
   [ undef, undef ],
   "()";
 
 def_format_test 'format.s.20' =>
-  "~v@:s",
+  '~v@:s',
   [ undef, undef ],
   "()";
 
@@ -276,17 +279,17 @@ def_format_test 'format.s.22' =>
   "NIL   "; # XXX
 
 def_format_test 'format.s.23' =>
-  "~3,3@s",
+  '~3,3@s',
   [ undef ],
   "UNDEF"; # XXX
 
 def_format_test 'format.s.24' =>
-  "~4,4@s",
+  '~4,4@s',
   [ undef ],
   "    NIL"; # XXX
 
 def_format_test 'format.s.25' =>
-  "~5,3@s",
+  '~5,3@s',
   [ undef ],
   "   NIL"; # XXX
 
@@ -296,7 +299,7 @@ def_format_test 'format.s.26' =>
   "NIL   "; # XXX
 
 def_format_test 'format.s.27' =>
-  "~7,3@s",
+  '~7,3@s',
   [ undef ],
   "      NIL"; # XXX
 
@@ -358,7 +361,7 @@ def_format_test 'format.s.34' =>
   [ "ABCD" ],
   "ABCD";
 
-;;; With padchar
+### With padchar
 
 def_format_test 'format.s.35' =>
   "~4,,,'XS",
@@ -371,12 +374,12 @@ def_format_test 'format.s.36' =>
   "AB  ";
 
 def_format_test 'format.s.37' =>
-  "~4,,,'X@s",
+  q{~4,,,'X@s},
   [ "AB" ],
   "XXAB";
 
 def_format_test 'format.s.38' =>
-  "~4,,,@S",
+  '~4,,,@S',
   [ "AB" ],
   "  AB";
 
@@ -386,7 +389,7 @@ def_format_test 'format.s.39' =>
   "ABCDE     ";
 
 def_format_test 'format.s.40' =>
-  "~10,,,v@S",
+  '~10,,,v@S',
   [ undef, "ABCDE" ],
   "     ABCDE";
 
@@ -396,11 +399,11 @@ def_format_test 'format.s.41' =>
   "ABCDE*****";
 
 def_format_test 'format.s.42' =>
-  "~10,,,v@s",
+  '~10,,,v@s',
   [ '*', "ABCDE" ],
   "*****ABCDE";
 
-;;; Other tests
+### Other tests
 
 def_format_test 'format.s.43' =>
   "~3,,vS",
@@ -459,6 +462,6 @@ def_format_test 'format.s.47' =>
   "456   ";
 
 def_format_test 'format.s.48' =>
-  "~5,v@S",
+  '~5,v@S',
   [ 3, 789 ],
   "   789";
