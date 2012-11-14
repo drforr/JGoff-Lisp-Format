@@ -73,7 +73,8 @@ deftest 'format.a.7' => sub {
   my $fn = $f->formatter( "~a" );
   my $list = [];
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
-    my $s1 = $c; # was (string c), but perl has no such notion.
+    #my $s1 = string( $c );
+    my $s1 = string( $c );
     my $s2 = $f->format( undef, "~a", [ $s1 ] );
     my $s3 = formatter_call_to_string( $fn, [ $s1 ] );
     unless ( $s1 eq $s2 and $s2 eq $s3 ) {

@@ -1,6 +1,7 @@
 package JGoff::Lisp::Format::Parser;
 
 use Moose;
+use Readonly;
 
 extends 'Parser::MGC';
 
@@ -37,34 +38,32 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
+Readonly my $OPTIONAL_MODIFIERS => qr{ | [:] | [@] | [:][@] | [@][:] }x;
+Readonly my $INTEGER => qr{ [-+]\d+ }x;
+
 sub __token_a {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]
-          | [@]
-          | [vV][@][:]
-          | [vV],,\d+
-          | \d+,,[-+]? \d+
-          | [-+]\d+
-          |           [#]       [@]?
-          |           [vV] [:]? [@]?
-          |     \d+ , [#]       [@]?
-          |     [#] , [#]       [@]?
-          |     \d+ , \d+       [@]?
-          |     \d+ , [vV]      [@]?
-          |   \d+ , , [vV]      [@]?
-          | \d+ , , ,           [@]?
-          | \d+ , , , 'X        [@]?
-          | \d+ , , , [vV]      [@]?
+    ~ (?: |           [-+]?\d+
+          |           [#]
+          |           [vV]
+          |     [-+]?\d+ , [-+]?\d+
+          |     [-+]?\d+ , [#]
+          |     [-+]?\d+ , [vV]
+          |     [#] , [#]
+          |   [-+]?\d+ , , [vV]
+          |   [-+]?\d+ , , [-+]?\d+
+          |  [vV] , , [-+]?\d+
+          | [-+]?\d+ , , ,
+          | [-+]?\d+ , , , 'X
+          | [-+]?\d+ , , , [vV]
       )
+      $OPTIONAL_MODIFIERS
     [aA]
   }x );
-  my $rv = {
-    format => '~a',
-  };
-  if ( $match =~ m{ [:] [aA] $ }x ) {
-    $rv->{colon} = 1; 
-  }
+  my $rv = { format => '~a' };
+  $match =~ s{^~|[aA]$}{}g; # Nibble off the front and back
+$match =~ s{[:]$}{} and $rv->{colon} = 1;
   return $rv;
 }
 
@@ -99,13 +98,13 @@ sub __token_percent {
 sub __token_b {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]
-          | [vV]
-          | \d+,[vV]
-          | ,,[vV][:]
-          | ,,'[*],[vV][:]
-          | [-+]\d+         [@]?
+    ~ (?: | [vV]
+          | [-+]?\d+,[vV]
+          | ,,[vV]
+          | ,,'[*],[vV]
+          | [-+]\d+
       )
+      $OPTIONAL_MODIFIERS
     [bB]
   }x );
   my $rv = {
@@ -117,8 +116,9 @@ sub __token_b {
 sub __token_c {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]
+    ~ (?: 
       )
+      $OPTIONAL_MODIFIERS
     [cC]
   }x );
   my $rv = {
@@ -130,13 +130,13 @@ sub __token_c {
 sub __token_open_brace {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | \d+  [:]? [@]?
-          | [#]  [:]? [@]?
-          | [vV] [:]? [@]?
-          |      [:]  [@]?
-          | [@]  [:]?
-          | \d+[#][@]
+    ~ (?: | \d+
+          | [#]
+          | [vV]
+          | \d+[#]
+          
       )
+      $OPTIONAL_MODIFIERS
     \{
   }x );
   my $rv = {
@@ -148,8 +148,9 @@ sub __token_open_brace {
 sub __token_newline {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [@]
+    ~ (?:
       )
+      $OPTIONAL_MODIFIERS
     \n
   }x );
   my $rv = {
@@ -161,8 +162,9 @@ sub __token_newline {
 sub __token_close_brace {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]
+    ~ (?: 
       )
+      $OPTIONAL_MODIFIERS
     \}
   }x );
   my $rv = {
@@ -174,37 +176,31 @@ sub __token_close_brace {
 sub __token_circumflex {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: |               [vV] [:]?
-          |               'X   [:]?
-          |               [#]  [:]?
-          |               \d+  [:]?
-          |        [#]  , \d+  [:]?
-          |        \d+  , [#]  [:]?
-          |        [#]  , [#]  [:]?
-          |        \d+  , [vV] [:]?
-          |        [vV] , [#]  [:]?
-          |        [vV] , \d+  [:]?
-          | \d+  , \d+  , [vV] [:]?
-          | \d+  , [vV] , [vV] [:]?
-          | [vV] , \d+  , [vV] [:]?
-          | [vV] , [vV] , [vV] [:]?
-          | \d+  , [vV] , \d+  [:]?
-          | [vV] , \d+  , \d+  [:]?
+    ~ (?: |               [vV]
+          |               'X
+          |               [#]
+          |               \d+
 
-          |        \d+  , \d+  [:]
-          |        [vV] , [vV] [:]
-          |        [#]  , [vV] [:]
-          |        'X   , 'Y   [:]
-          |        'X   , 'X   [:]
-          | [vV] , [vV] , \d+  [:]
-          | [#]  , [#]  , [vV]
           |        ',   , ',
           |        'x   , \d+
           |        \d+  , 'x
-          |                    [:]
-          | ( [#] | \d+ ),( [#] | \d+ ),( [#] | \d+ ) [:]? # 1,1,1 .. #,#,#
-          | ( [vV] | '[xX] ),( [vV] | '[xX] )              # v,v .. 'x,'x
+          |        'X   , 'Y
+
+          |        ( \d+ | [#] | [vV] ) , ( \d+ | [#] | [vV] )
+
+          | \d+  , \d+  , [vV]
+          | \d+  , [vV] , [vV]
+          | \d+  , [vV] , \d+
+          | [vV] , \d+  , [vV]
+          | [vV] , \d+  , \d+
+          | [vV] , [vV] , [vV]
+          | [vV] , [vV] , \d+
+          | [#]  , [#]  , [vV]
+
+          | ( [#] | \d+ ),( [#] | \d+ ),( [#] | \d+ ) # 1,1,1 .. #,#,#
+          | ( [vV] | '[xX] ),( [vV] | '[xX] )         # v,v .. 'x,'x
       )
+      $OPTIONAL_MODIFIERS
     \^
   }x );
   my $rv = {
@@ -213,24 +209,12 @@ sub __token_circumflex {
   return $rv;
 }
 
-sub __token_colon {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?: | [@]
-      )
-    [:]
-  }x );
-  my $rv = {
-    format => '~:',
-  };
-  return $rv;
-}
-
 sub __token_question {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [@]
+    ~ (?:
       )
+      $OPTIONAL_MODIFIERS
     [?]
   }x );
   my $rv = {
@@ -244,8 +228,8 @@ sub __token_open_bracket {
   my $match = $self->expect( qr{
     ~ (?: | [-]? \d+
           | [#]
-          | [@]
       )
+      $OPTIONAL_MODIFIERS
     \[
   }x );
   my $rv = {
@@ -270,9 +254,9 @@ sub __token_close_bracket {
 sub __token_open_paren {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [@]
-          | [:][@]
+    ~ (?:
       )
+      $OPTIONAL_MODIFIERS
     \(
   }x );
   my $rv = {
@@ -297,8 +281,9 @@ sub __token_close_paren {
 sub __token_semicolon {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]
+    ~ (?:
       )
+      $OPTIONAL_MODIFIERS
     [;]
   }x );
   my $rv = {
@@ -311,12 +296,12 @@ sub __token_d {
   my $self = shift;
   my $match = $self->expect( qr{
     ~ (?: | [vV]
-          | \d+,[vV]
-          | ,,[vV][:]
-          | ,,'\*,[vV][:]
-          | [-+]\d+[:]
-          | [-+]\d+       [@]?
+          | \d+ , [vV]
+          | , , [vV]
+          | , , '\* , [vV]
+          | [-+]\d+
       )
+      $OPTIONAL_MODIFIERS
     [dD]
   }x );
   my $rv = {
@@ -341,14 +326,11 @@ sub __token_f {
 sub __token_asterisk {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | \d+     [@]?
-          | [vV]    [@]?
-          | [vV][:]
-          |    [:]
-          | \d+[:]
-          | \d+[vV][@]
-          | [@]
+    ~ (?: | \d+
+          | [vV]
+          | \d+[vV]
       )
+      $OPTIONAL_MODIFIERS
     [*]
   }x );
   my $rv = {
@@ -362,10 +344,11 @@ sub __token_o {
   my $match = $self->expect( qr{
     ~ (?: | [vV]
           | \d+,[vV]
-          | ,,[vV][:]
-          | ,,'[*],[vV][:]
-          | [-+]\d+          [@]?
+          | ,,[vV]
+          | ,,'[*],[vV]
+          | [-+]\d+
       )
+      $OPTIONAL_MODIFIERS
     [oO]
   }x );
   my $rv = {
@@ -377,9 +360,9 @@ sub __token_o {
 sub __token_p {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [:]   [@]?
-          | [@]   [:]?
+    ~ (?:
       )
+      $OPTIONAL_MODIFIERS
     [pP]
   }x );
   my $rv = {
@@ -405,22 +388,22 @@ sub __token_pipe {
 sub __token_r {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | \d+   [@]?  [:]?
-          | [vV]
+    ~ (?: | [vV]
           | [#]
-          | \d+,,,,\d+  [:]?
-          | \d+,\d+[:][@]
-          | \d+,\d+,,'[*][:]
-          | \d+,\d+,'X,',[:]
+          | \d+,,,,\d+
+          | \d+,\d+
+          | \d+,\d+,,'[*]
+          | \d+,\d+,'X,',
           | \d+,[vV]
           | \d+,[#]
           | \d+,\d+,[vV]
-          | \d+,,,,[vV][:]
-          | \d+,,,,[#][:]
-          | \d+,,,[vV][:]
-          | [-+]\d+
+          | \d+,,,,[vV]
+          | \d+,,,,[#]
+          | \d+,,,[vV]
+          | [-+]?\d+
           | \d+, [-+]? \d+
       )
+      $OPTIONAL_MODIFIERS
     [rR]
   }x );
   my $rv = {
@@ -432,17 +415,16 @@ sub __token_r {
 sub __token_s {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | [vV]  [:]? [@]?
-          | \d+,\d+    [@]?
-          | \d+,[vV]   [@]?
-          | \d+,,[vV]  [@]?
-          | \d+,,,     [@]?
-          | \d+,,,'X   [@]?
-          | \d+,,,[vV] [@]?
-          | [@]
-          | [vV][@][:]
-          | \d+,, [-+]? \d+
+    ~ (?: |           [vV]
+          |     \d+ , \d+
+          |     \d+ , [vV]
+          |   \d+ , , [vV]
+          |   \d+ , , [-+]?\d+
+          | \d+ , , ,
+          | \d+ , , , 'X
+          | \d+ , , , [vV]
       )
+      $OPTIONAL_MODIFIERS
     [sS]
   }x );
   my $rv = {
@@ -456,10 +438,11 @@ sub __token_x {
   my $match = $self->expect( qr{
     ~ (?: | [vV]
           | \d+,[vV]
-          | ,,[vV][:]
-          | ,,'[*],[vV][:]
-          | [-+]\d+    [@]?
+          | ,,[vV]
+          | ,,'[*],[vV]
+          | [-+]\d+
       )
+      $OPTIONAL_MODIFIERS
     [xX]
   }x );
   my $rv = {
@@ -508,7 +491,6 @@ sub parse {
       sub { $self->__token_close_bracket },
       sub { $self->__token_close_paren },
       sub { $self->__token_circumflex },
-      sub { $self->__token_colon },
       sub { $self->__token_d },
       sub { $self->__token_question },
       sub { $self->__token_f },

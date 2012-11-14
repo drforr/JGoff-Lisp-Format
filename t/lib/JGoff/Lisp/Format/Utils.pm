@@ -1,11 +1,14 @@
 package JGoff::Lisp::Format::Utils;
 
 use JGoff::Lisp::Format;
+use JGoff::Lisp::Format::Utils::Character; # XXX
 use Test::More;
+use Carp qw( croak );
 use YAML;
 
 use base 'Exporter';
 our @EXPORT = qw(
+  string
   char_name
   def_format_test
   deftest
@@ -17,8 +20,17 @@ our @EXPORT = qw(
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
 our $most_negative_fixnum = -(~0); # XXX Probably wrong
-our @standard_chars = split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
+our @standard_chars =
+  map { JGoff::Lisp::Format::Utils::Character->new( character => $_ ) }
+      split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
 our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
+
+sub string {
+  my ( $c ) = shift;
+  croak "string() not given a character!" unless
+     ref( $c ) and ref( $c ) =~ /Character/;
+  return $c; # XXX actually don't convert the string?
+}
 
 sub char_name {
   my $char = shift;

@@ -2,16 +2,19 @@ package JGoff::Lisp::Format;
 
 use Moose;
 
+use Readonly;
+
 use JGoff::Lisp::Format::Parser;
 use Carp qw( croak );
 
-our $upcase = 'upcase';
-our $downcase = 'downcase';
-our $capitalize = 'capitalize';
+Readonly our $upcase => 'upcase';
+Readonly our $downcase => 'downcase';
+Readonly our $capitalize => 'capitalize';
+
 our $print_case = $upcase; # default value from the CLISP spec
 
-our $most_positive_fixnum = 2**32-1;#~0; # XXX Probably wrong
-our $most_negative_fixnum = -(2**32-1);#~0; # XXX Probably wrong
+Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
+Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
 =head1 NAME
 
@@ -52,6 +55,10 @@ sub _print_case {
   my $self = shift;
   my ( $argument ) = @_;
   if ( $print_case eq $upcase ) {
+    if ( ref( $argument ) and
+         ref( $argument ) eq 'JGoff::Lisp::Format::Utils::Character' ) { # XXX
+      return $argument;
+    }
     return uc( $argument );
   }
   elsif ( $print_case eq $downcase ) {
@@ -102,12 +109,18 @@ sub format {
   if ( my $tree = $parser->from_string( $format ) ) {
     my $output;
     for my $element ( @{ $tree } ) {
+if( ref( $element ) ) {
       if ( $element->{format} eq '~a' ) {
         $output .= $self->__format_a( $element, $arguments );
       }
       else {
         $output = 'UNIMPLEMENTED FORMAT'; last;
       }
+}
+else {
+  $output .= $element;
+}
+
     }
     return $output;
   }
