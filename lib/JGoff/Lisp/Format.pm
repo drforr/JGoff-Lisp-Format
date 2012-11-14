@@ -48,36 +48,50 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
+sub _print_case {
+  my $self = shift;
+  my ( $argument ) = @_;
+  if ( $print_case eq $upcase ) {
+    return uc( $argument );
+  }
+  elsif ( $print_case eq $downcase ) {
+    return lc( $argument );
+  }
+  elsif ( $print_case eq $capitalize ) {
+    return ucfirst( lc( $argument ) );
+  }
+  else {
+    croak "Unknown or missing print_case '$print_case'";
+  }
+}
+
 sub __format_a {
   my $self = shift;
   my ( $element , $arguments ) = @_;
 
-  if ( $print_case eq $upcase ) { # default
-    if ( !defined( $arguments->[0] ) ) {
-      if ( $element->{colon} ) {
-        return '[]';
-      }
-      else {
-        return 'UNDEF';
-      }
+  my $argument = shift @$arguments;
+  if ( !defined $argument ) {
+    if ( $element->{colon} ) {
+      return '[]';
     }
-    elsif ( !ref( $arguments->[0] ) ) {
-      return $arguments->[0];
+    else {
+      return $self->_print_case( 'undef' );
     }
-    elsif ( !defined( $arguments->[0][0] ) ) {
-      return '[UNDEF]';
-    }
-  }
-  elsif ( $print_case eq $downcase ) {
-    return 'undef';
-  }
-  elsif ( $print_case eq $capitalize ) {
-    return 'Undef';
   }
   else {
-    croak "Unknown print_case setting '$print_case'!";
+    if ( ref( $argument ) and
+         ref( $argument ) eq 'ARRAY' and
+         !defined( $argument->[0] ) ) {
+      if ( $element->{colon} ) {
+        return '[' . $self->_print_case( 'undef' ) . ']';
+      }
+    }
+    else {
+      return $self->_print_case( $argument );
+    }
   }
-return 'UNIMPLEMENTED';
+
+  return 'UNIMPLEMENTED';
 }
 
 sub format {
@@ -86,14 +100,16 @@ sub format {
 
   my $parser = JGoff::Lisp::Format::Parser->new;
   if ( my $tree = $parser->from_string( $format ) ) {
-    return 'PARSED';
-#    my $output;
-#    for my $element ( @{ $tree } ) {
-#      if ( $element->{format} eq '~a' ) {
-#        $output .= $self->__format_a( $element, $arguments );
-#      }
-#    }
-#    return $output;
+    my $output;
+    for my $element ( @{ $tree } ) {
+      if ( $element->{format} eq '~a' ) {
+        $output .= $self->__format_a( $element, $arguments );
+      }
+      else {
+        $output = 'UNIMPLEMENTED FORMAT'; last;
+      }
+    }
+    return $output;
   }
 
   if ( $format eq '~a' ) {

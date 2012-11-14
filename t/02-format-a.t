@@ -15,7 +15,9 @@ use warnings;
 my $f = JGoff::Lisp::Format->new;
 
 def_format_test 'format.a.1' =>
-  "~a", [ undef ], "UNDEF";
+  "~a",
+  [ undef ],
+  "UNDEF";
 
 deftest 'format.a.2' => sub {
   with_standard_io_syntax {
@@ -55,10 +57,14 @@ deftest 'formatter.a.3' => sub {
 }, "Undef";
 
 def_format_test 'format.a.4' =>
-  "~:a", [ undef ], "[]";
+  "~:a",
+  [ undef ],
+  "[]";
 
 def_format_test 'format.a.5' =>
-  "~:A", [ [ undef ] ], "[UNDEF]";
+  "~:A",
+  [ [ undef ] ],
+  "[UNDEF]";
 
 #def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
 #  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
@@ -78,22 +84,34 @@ deftest 'format.a.7' => sub {
 }, [];
 
 def_format_test 'format.a.15' =>
-  "~va", [ undef, undef ], "UNDEF";
+  "~va",
+  [ undef, undef ],
+  "UNDEF";
 
 def_format_test 'format.a.16' =>
-  "~v:A", [ undef, undef ], "[]";
+  "~v:A",
+  [ undef, undef ],
+  "[]";
 
 def_format_test 'format.a.17' =>
-  '~@a', [ undef ], "UNDEF";
+  '~@a',
+  [ undef ],
+  "UNDEF";
 
 def_format_test 'format.a.18' =>
-  '~v@A', [ undef, undef ], "UNDEF";
+  '~v@A',
+  [ undef, undef ],
+  "UNDEF";
 
 def_format_test 'format.a.19' =>
-  '~v:@a', [ undef, undef ], "[]";
+  '~v:@a',
+  [ undef, undef ],
+  "[]";
 
 def_format_test 'format.a.20' =>
-  '~v@:a', [ undef, undef ], "[]";
+  '~v@:a',
+  [ undef, undef ],
+  "[]";
 
 ### With colinc specified
 
@@ -111,28 +129,44 @@ def_format_test 'format.a.20' =>
 # spirit of the original test.
 
 def_format_test 'format.a.21' =>
-  "~5,1a", [ undef ], "UNDEF";
+  "~5,1a",
+  [ undef ],
+  "UNDEF";
 
 def_format_test 'format.a.22' =>
-  "~6,5a", [ undef ], "UNDEF     ";
+  "~6,5a",
+  [ undef ],
+  "UNDEF     ";
 
 def_format_test 'format.a.23' =>
-  '~5,5@a', [ undef ], "UNDEF";
+  '~5,5@a',
+  [ undef ],
+  "UNDEF";
 
 def_format_test 'format.a.24' =>
-  '~6,6@a', [ undef ], "      UNDEF";
+  '~6,6@a',
+  [ undef ],
+  "      UNDEF";
 
 def_format_test 'format.a.25' =>
-  '~9,5@a', [ undef ], "     UNDEF";
+  '~9,5@a',
+  [ undef ],
+  "     UNDEF";
 
 def_format_test 'format.a.26' =>
-  "~9,5A", [ undef ], "UNDEF     ";
+  "~9,5A",
+  [ undef ],
+  "UNDEF     ";
 
 def_format_test 'format.a.27' =>
-  '~11,5@a', [ undef ], "          UNDEF";
+  '~11,5@a',
+  [ undef ],
+  "          UNDEF";
 
 def_format_test 'format.a.28' =>
-  "~11,5A", [ undef ], "UNDEF          ";
+  "~11,5A",
+  [ undef ],
+  "UNDEF          ";
 
 deftest 'format.a.29' => sub {
   my $fn = $f->formatter( "~v,,2A" );
@@ -165,53 +199,83 @@ deftest 'format.a.29' => sub {
 ### With padchar
 
 def_format_test 'format.a.30' =>
-  "~3,,+2A",  [ "ABC" ], "ABC  ";
+  "~3,,+2A",
+  [ "ABC" ],
+  "ABC  ";
 
 def_format_test 'format.a.31' =>
-  "~3,,0A", [ "ABC" ], "ABC";
+  "~3,,0A",
+  [ "ABC" ],
+  "ABC";
 
 def_format_test 'format.a.32' =>
-  "~3,,-1A", [ "ABC" ], "ABC";
+  "~3,,-1A",
+  [ "ABC" ],
+  "ABC";
 
 def_format_test 'format.a.33' =>
-  "~3,,0A", [ "ABCD" ], "ABCD";
+  "~3,,0A",
+  [ "ABCD" ],
+  "ABCD";
 
 def_format_test 'format.a.34' =>
-  "~3,,-1A", [ "ABCD" ], "ABCD";
+  "~3,,-1A",
+  [ "ABCD" ],
+  "ABCD";
 
 ### With padchar
 
 def_format_test 'format.a.35' =>
-  "~4,,,'XA", [ "AB" ], "ABXX";
+  "~4,,,'XA",
+  [ "AB" ],
+  "ABXX";
 
 def_format_test 'format.a.36' =>
-  "~4,,,a", [ "AB" ], "AB  ";
+  "~4,,,a",
+  [ "AB" ],
+  "AB  ";
 
 def_format_test 'format.a.37' =>
-  q{~4,,,'X@a}, [ "AB" ], "XXAB";
+  q{~4,,,'X@a},
+  [ "AB" ],
+  "XXAB";
 
 def_format_test 'format.a.38' =>
-  '~4,,,@A', [ "AB" ], "  AB";
+  '~4,,,@A',
+  [ "AB" ],
+  "  AB";
 
 def_format_test 'format.a.39' =>
-  "~10,,,vA", [ undef, "abcde" ], "abcde     ";
+  "~10,,,vA",
+  [ undef, "abcde" ],
+  "abcde     ";
 
 def_format_test 'format.a.40' =>
-  '~10,,,v@A', [ undef, "abcde" ], "     abcde";
+  '~10,,,v@A',
+  [ undef, "abcde" ],
+  "     abcde";
 
 def_format_test 'format.a.41' =>
-  "~10,,,va", [ '*', "abcde" ], "abcde*****";
+  "~10,,,va",
+  [ '*', "abcde" ],
+  "abcde*****";
 
 def_format_test 'format.a.42' =>
-  '~10,,,v@a', [ '*', "abcde" ], "*****abcde";
+  '~10,,,v@a',
+  [ '*', "abcde" ],
+  "*****abcde";
 
 ### Other tests
 
 def_format_test 'format.a.43' =>
-  "~3,,vA", [ undef, "ABC" ], "ABC";
+  "~3,,vA",
+  [ undef, "ABC" ],
+  "ABC";
 
 def_format_test 'format.a.45' =>
-  "~4,,va", [ -1, "abcd" ], "abcd";
+  "~4,,va",
+  [ -1, "abcd" ],
+  "abcd";
 
 deftest 'format.a.44' => sub {
   my $fn = $f->formatter( "~3,,vA" );
@@ -254,45 +318,77 @@ deftest 'format.a.44a' => sub {
 ];
 
 def_format_test 'format.a.46' =>
-  "~5,vA", [ undef, "abc" ], "abc  ";
+  "~5,vA",
+  [ undef, "abc" ],
+  "abc  ";
 
 def_format_test 'format.a.47' =>
-  "~5,vA", [ 3, "abc" ], "abc   ";
+  "~5,vA",
+  [ 3, "abc" ],
+  "abc   ";
 
 def_format_test 'format.a.48' =>
-  '~5,v@A', [ 3, "abc" ], "   abc";
+  '~5,v@A',
+  [ 3, "abc" ],
+  "   abc";
 
 ### # parameters
 
 def_format_test 'format.a.49' =>
-  "~#A", [ "abc", undef, undef, undef ], "abc ", 3;
+  "~#A",
+  [ "abc", undef, undef, undef ],
+  "abc ",
+  3;
 
 def_format_test 'format.a.50' =>
-  '~#@a', [ "abc", undef, undef, undef, undef, undef ], "   abc", 5;
+  '~#@a',
+  [ "abc", undef, undef, undef, undef, undef ],
+  "   abc",
+  5;
 
 def_format_test 'format.a.51' =>
-  "~5,#a", [ "abc", undef, undef, undef ], "abc    ", 3;
+  "~5,#a",
+  [ "abc", undef, undef, undef ],
+  "abc    ", 3;
 
 def_format_test 'format.a.52' =>
-  '~5,#@A', [ "abc", undef, undef, undef ], "    abc", 3;
+  '~5,#@A',
+  [ "abc", undef, undef, undef ],
+  "    abc", 3;
 
 def_format_test 'format.a.53' =>
-  "~4,#A", [ "abc", undef, undef ], "abc   ", 2;
+  "~4,#A",
+  [ "abc", undef, undef ],
+  "abc   ",
+  2;
 
 def_format_test 'format.a.54' =>
-  '~4,#@A', [ "abc", undef, undef ], "   abc", 2;
+  '~4,#@A',
+  [ "abc", undef, undef ],
+  "   abc",
+  2;
 
 def_format_test 'format.a.55' =>
-  "~#,#A", [ "abc", undef, undef, undef ], "abc    ", 3;
+  "~#,#A",
+  [ "abc", undef, undef, undef ],
+  "abc    ",
+  3;
 
 def_format_test 'format.a.56' =>
-  '~#,#@A', [ "abc", undef, undef, undef ], "    abc", 3;
+  '~#,#@A',
+  [ "abc", undef, undef, undef ],
+  "    abc",
+  3;
 
 def_format_test 'format.a.57' =>
-  "~-100A", [ "xyz" ], "xyz";
+  "~-100A",
+  [ "xyz" ],
+  "xyz";
 
 def_format_test 'format.a.58' =>
-  "~-100000000000000000000a", [ "xyz" ], "xyz";
+  "~-100000000000000000000a",
+  [ "xyz" ],
+  "xyz";
 
 =pod
 
