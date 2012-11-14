@@ -105,7 +105,7 @@ sub format {
   my $self = shift;
   my ( $stream, $format, $arguments ) = @_;
 
-  my $parser = JGoff::Lisp::Format::Parser->new;
+  my $parser = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
   if ( my $tree = $parser->from_string( $format ) ) {
     my $output;
     for my $element ( @{ $tree } ) {
