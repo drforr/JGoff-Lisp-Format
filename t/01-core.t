@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 225;
+use Test::More tests => 223;
 
 BEGIN {
     use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
@@ -11,15 +11,89 @@ use warnings;
 
 my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
 
+sub parse_deeply {
+  my ( $str, $res ) = @_;
+  is_deeply( $p->from_string( $str ), [ $res ], qq{q{$str}} );
+}
+
+parse_deeply q{~a} => { format => '~a' };
+parse_deeply q{~A} => { format => '~a' };
+parse_deeply q{~:A} => { format => '~a', colon => 1 };
+parse_deeply q{~@A} => { format => '~a', at => 1 };
+parse_deeply q{~@:A} => { format => '~a', at => 1, colon => 1 };
+parse_deeply q{~0a} => { format => '~a', arguments => [ 0 ] };
+parse_deeply q{~1a} => { format => '~a', arguments => [ 1 ] };
+parse_deeply q{~9a} => { format => '~a', arguments => [ 9 ] };
+parse_deeply q{~99a} => { format => '~a', arguments => [ 99 ] };
+parse_deeply q{~+0a} => { format => '~a', arguments => [ 0 ] };
+parse_deeply q{~+1a} => { format => '~a', arguments => [ 1 ] };
+parse_deeply q{~+9a} => { format => '~a', arguments => [ 9 ] };
+parse_deeply q{~+99a} => { format => '~a', arguments => [ 99 ] };
+parse_deeply q{~-0a} => { format => '~a', arguments => [ 0 ] };
+parse_deeply q{~-1a} => { format => '~a', arguments => [ -1 ] };
+parse_deeply q{~-9a} => { format => '~a', arguments => [ -9 ] };
+parse_deeply q{~-99a} => { format => '~a', arguments => [ -99 ] };
+parse_deeply q{~,a} => { format => '~a', arguments => [ undef, undef ] };
+parse_deeply q{~-0,a} => { format => '~a', arguments => [ 0, undef ] };
+parse_deeply q{~-1,a} => { format => '~a', arguments => [ -1, undef ] };
+parse_deeply q{~-9,a} => { format => '~a', arguments => [ -9, undef ] };
+parse_deeply q{~-99,a} => { format => '~a', arguments => [ -99, undef ] };
+parse_deeply q{~-0,0a} => { format => '~a', arguments => [ 0, 0 ] };
+parse_deeply q{~-1,0a} => { format => '~a', arguments => [ -1, 0 ] };
+parse_deeply q{~-9,0a} => { format => '~a', arguments => [ -9, 0 ] };
+parse_deeply q{~-99,0a} => { format => '~a', arguments => [ -99, 0 ] };
+parse_deeply q{~-0,-0a} => { format => '~a', arguments => [ 0, 0 ] };
+parse_deeply q{~-1,-0a} => { format => '~a', arguments => [ -1, 0 ] };
+parse_deeply q{~-9,-0a} => { format => '~a', arguments => [ -9, 0 ] };
+parse_deeply q{~-99,-0a} => { format => '~a', arguments => [ -99, 0 ] };
+parse_deeply q{~-0,-9a} => { format => '~a', arguments => [ 0, -9 ] };
+parse_deeply q{~-1,-9a} => { format => '~a', arguments => [ -1, -9 ] };
+parse_deeply q{~-9,-9a} => { format => '~a', arguments => [ -9, -9 ] };
+parse_deeply q{~-99,-9a} => { format => '~a', arguments => [ -99, -9 ] };
+
+=pod
+
 sub ok_parse {
   my ( $str ) = @_;
   eval { $p->from_string( $str ) };
-  ok( !$@ ) or
+  ok( !$@, qq{q{$str}} ) or
     diag( "q{$str} : $@" );
 }
 
-ok_parse( q{~0a}   );
-ok_parse( q{~1a}   );
+ok_parse( q{~0,0,0a} );
+ok_parse( q{~0,0,0,0a} );
+ok_parse( q{~1,1,1a} );
+ok_parse( q{~1,1,1,1a} );
+ok_parse( q{~#a} );
+ok_parse( q{~#,#a} );
+ok_parse( q{~#,#,#a} );
+ok_parse( q{~#,#,#,#a} );
+ok_parse( q{~va} );
+ok_parse( q{~v,va} );
+ok_parse( q{~v,v,va} );
+ok_parse( q{~v,v,v,va} );
+ok_parse( q{~v@a} );
+ok_parse( q{~v,v@a} );
+ok_parse( q{~v,v,v@a} );
+ok_parse( q{~v,v,v,v@a} );
+ok_parse( q{~v@:a} );
+ok_parse( q{~v,v@:a} );
+ok_parse( q{~v,v,v@:a} );
+ok_parse( q{~v,v,v,v@:a} );
+ok_parse( q{~,@:a} );
+ok_parse( q{~,,@:a} );
+ok_parse( q{~,,,@:a} );
+ok_parse( q{~,'@@:a} );
+ok_parse( q{~,,'@@:a} );
+ok_parse( q{~,,,'@@:a} );
+ok_parse( q{~,'@:a} );
+ok_parse( q{~,,'@:a} );
+ok_parse( q{~,,,'@:a} );
+
+=cut
+
+=pod
+
 ok_parse( q{~-1a}  );
 ok_parse( q{~+1a}  );
 ok_parse( q{~'xa}  );
@@ -37,13 +111,21 @@ ok_parse( q{~'@@a} );
 
 ok_parse( q{~0,0a} );
 
+=cut
 
+=pod
+
+# Naked
+#
 is_deeply( $p->from_string( q{~a} ), [ {
   format => '~a'
 } ] );
 is_deeply( $p->from_string( q{~A} ), [ {
   format => '~a'
 } ] );
+
+# Modifiers
+#
 is_deeply( $p->from_string( q{~:A} ), [ {
   format => '~a',
   colon => 1
@@ -62,6 +144,53 @@ is_deeply( $p->from_string( q{~@:A} ), [ {
   at => 1,
   colon => 1
 } ] );
+
+# Single argument
+#
+is_deeply( $p->from_string( q{~0a} ), [ {
+  format => '~a',
+  argument => [ 0 ]
+} ] );
+is_deeply( $p->from_string( q{~1a} ), [ {
+  format => '~a',
+  argument => [ 1 ]
+} ] );
+is_deeply( $p->from_string( q{~9a} ), [ {
+  format => '~a',
+  argument => [ 9 ]
+} ] );
+is_deeply( $p->from_string( q{~99a} ), [ {
+  format => '~a',
+  argument => [ 99 ]
+} ] );
+is_deeply( $p->from_string( q{~-0a} ), [ {
+  format => '~a',
+  argument => [ 0 ]
+} ] );
+is_deeply( $p->from_string( q{~-1a} ), [ {
+  format => '~a',
+  argument => [ -1 ]
+} ] );
+is_deeply( $p->from_string( q{~-9a} ), [ {
+  format => '~a',
+  argument => [ -9 ]
+} ] );
+is_deeply( $p->from_string( q{~-99a} ), [ {
+  format => '~a',
+  argument => [ -99 ]
+} ] );
+is_deeply( $p->from_string( q{~#a} ), [ {
+  format => '~a',
+  argument => [ '#' ]
+} ] );
+is_deeply( $p->from_string( q{~va} ), [ {
+  format => '~a',
+  argument => [ 'v' ]
+} ] );
+
+=cut
+
+=pod
 
 
 #
@@ -278,3 +407,5 @@ ok_parse( q{~{~A~}} );
 ok_parse( q{~:{~A~}} );
 ok_parse( q{~:@{~A~}} );
 ok_parse( q{~:@{~A ~A~}} );
+
+=cut
