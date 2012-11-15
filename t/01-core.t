@@ -1,6 +1,7 @@
 #!perl
 
-use Test::More tests => 223;
+use Test::More tests => 162;
+use YAML;
 
 BEGIN {
     use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
@@ -12,12 +13,40 @@ use warnings;
 my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
 
 sub parse_deeply {
-  my ( $str, $res ) = @_;
-  is_deeply( $p->from_string( $str ), [ $res ], qq{q{$str}} );
+  my ( $str, $expected ) = @_;
+  my ( $package, $filename, $line ) = caller();
+  my $actual = $p->from_string( $str );
+  is_deeply( $actual, [ $expected ], qq{q{$str}} ) or
+      diag( "  at test file $filename line $line\n" . Dump( $actual ) );
 }
 
 parse_deeply q{~a} => { format => q{~a} };
 parse_deeply q{~A} => { format => q{~a} };
+
+# {{{ Single parameter
+#
+parse_deeply q{~#a} => { format => q{~a}, arguments => [ q{#} ] };
+parse_deeply q{~va} => { format => q{~a}, arguments => [ q{v} ] };
+parse_deeply q{~Va} => { format => q{~a}, arguments => [ q{v} ] };
+
+# (potential edge cases)
+#
+parse_deeply q{~' a} => { format => q{~a}, arguments => [ q{' } ] };
+parse_deeply q{~''a} => { format => q{~a}, arguments => [ q{''} ] };
+parse_deeply q{~',a} => { format => q{~a}, arguments => [ q{',} ] };
+parse_deeply q{~'aa} => { format => q{~a}, arguments => [ q{'a} ] };
+parse_deeply q{~':a} => { format => q{~a}, arguments => [ q{':} ] };
+parse_deeply q{~'@a} => { format => q{~a}, arguments => [ q{'@} ] };
+parse_deeply q{~'va} => { format => q{~a}, arguments => [ q{'v} ] };
+parse_deeply q{~'Va} => { format => q{~a}, arguments => [ q{'V} ] };
+parse_deeply q{~'#a} => { format => q{~a}, arguments => [ q{'#} ] };
+parse_deeply q{~'-a} => { format => q{~a}, arguments => [ q{'-} ] };
+parse_deeply q{~'+a} => { format => q{~a}, arguments => [ q{'+} ] };
+parse_deeply q{~'0a} => { format => q{~a}, arguments => [ q{'0} ] };
+parse_deeply q{~'9a} => { format => q{~a}, arguments => [ q{'9} ] };
+
+# (numeric arguments)
+#
 parse_deeply q{~0a} => { format => q{~a}, arguments => [ 0 ] };
 parse_deeply q{~1a} => { format => q{~a}, arguments => [ 1 ] };
 parse_deeply q{~9a} => { format => q{~a}, arguments => [ 9 ] };
@@ -30,91 +59,235 @@ parse_deeply q{~-0a} => { format => q{~a}, arguments => [ 0 ] };
 parse_deeply q{~-1a} => { format => q{~a}, arguments => [ -1 ] };
 parse_deeply q{~-9a} => { format => q{~a}, arguments => [ -9 ] };
 parse_deeply q{~-99a} => { format => q{~a}, arguments => [ -99 ] };
-parse_deeply q{~,a} => { format => q{~a}, arguments => [ undef, undef ] };
-parse_deeply q{~-0,a} => { format => q{~a}, arguments => [ 0, undef ] };
-parse_deeply q{~-1,a} => { format => q{~a}, arguments => [ -1, undef ] };
-parse_deeply q{~-9,a} => { format => q{~a}, arguments => [ -9, undef ] };
-parse_deeply q{~-99,a} => { format => q{~a}, arguments => [ -99, undef ] };
-parse_deeply q{~-0,0a} => { format => q{~a}, arguments => [ 0, 0 ] };
-parse_deeply q{~-1,0a} => { format => q{~a}, arguments => [ -1, 0 ] };
-parse_deeply q{~-9,0a} => { format => q{~a}, arguments => [ -9, 0 ] };
-parse_deeply q{~-99,0a} => { format => q{~a}, arguments => [ -99, 0 ] };
-parse_deeply q{~-0,-0a} => { format => q{~a}, arguments => [ 0, 0 ] };
-parse_deeply q{~-1,-0a} => { format => q{~a}, arguments => [ -1, 0 ] };
-parse_deeply q{~-9,-0a} => { format => q{~a}, arguments => [ -9, 0 ] };
-parse_deeply q{~-99,-0a} => { format => q{~a}, arguments => [ -99, 0 ] };
-parse_deeply q{~-0,-9a} => { format => q{~a}, arguments => [ 0, -9 ] };
-parse_deeply q{~-1,-9a} => { format => q{~a}, arguments => [ -1, -9 ] };
-parse_deeply q{~-9,-9a} => { format => q{~a}, arguments => [ -9, -9 ] };
-parse_deeply q{~-99,-9a} => { format => q{~a}, arguments => [ -99, -9 ] };
-parse_deeply q{~-99,-99,-99a} => {
-  format => q{~a}, arguments => [ -99, -99, -99 ] };
-parse_deeply q{~-99,-99,-99,-99a} => {
-  format => q{~a}, arguments => [ -99, -99, -99, -99 ] };
-
-parse_deeply q{~:A} => { format => q{~a}, colon => 1 };
-parse_deeply q{~@A} => { format => q{~a}, at => 1 };
-parse_deeply q{~@:A} => { format => q{~a}, at => 1, colon => 1 };
-parse_deeply q{~:@A} => { format => q{~a}, at => 1, colon => 1 };
-
-parse_deeply q{~#A} => { format => q{~a}, arguments => [ '#' ] };
-parse_deeply q{~#@A} => {
-  format => q{~a}, at => 1, arguments => [ '#' ] };
-parse_deeply q{~#:A} => {
-  format => q{~a}, colon => 1, arguments => [ '#' ] };
-parse_deeply q{~#@:A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ '#' ] };
-parse_deeply q{~#:@A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ '#' ] };
-
-parse_deeply q{~vA} => { format => q{~a}, arguments => [ 'v' ] };
-parse_deeply q{~VA} => { format => q{~a}, arguments => [ 'V' ] };
-parse_deeply q{~v@A} => {
-  format => q{~a}, at => 1, arguments => [ 'v' ] };
-parse_deeply q{~v:A} => {
-  format => q{~a}, colon => 1, arguments => [ 'v' ] };
-parse_deeply q{~v@:A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ 'v' ] };
-parse_deeply q{~v:@A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ 'v' ] };
-
-# Edge cases for 'x
 #
-parse_deeply q{~':A} => { format => q{~a}, arguments => [ q{':} ] };
-parse_deeply q{~'@A} => { format => q{~a}, arguments => [ q{'@} ] };
-parse_deeply q{~'#A} => { format => q{~a}, arguments => [ q{'#} ] };
-parse_deeply q{~'vA} => { format => q{~a}, arguments => [ q{'v} ] };
-parse_deeply q{~'VA} => { format => q{~a}, arguments => [ q{'V} ] };
-parse_deeply q{~''A} => { format => q{~a}, arguments => [ q{''} ] };
-parse_deeply q{~',A} => { format => q{~a}, arguments => [ q{',} ] };
-parse_deeply q{~'0A} => { format => q{~a}, arguments => [ q{'0} ] };
-parse_deeply q{~'-A} => { format => q{~a}, arguments => [ q{'-} ] };
-parse_deeply q{~'+A} => { format => q{~a}, arguments => [ q{'+} ] };
-parse_deeply q{~' A} => { format => q{~a}, arguments => [ q{' } ] };
+# }}}
 
-# Edge cases for ': with modifiers
+# {{{ Single parameter with ':' modifier
 #
-parse_deeply q{~'::A} => {
-  format => q{~a}, colon => 1, arguments => [ q{':} ] };
-parse_deeply q{~':@A} => {
-  format => q{~a}, at => 1, arguments => [ q{':} ] };
-parse_deeply q{~'::@A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ q{':} ] };
-parse_deeply q{~':@:A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ q{':} ] };
+parse_deeply q{~#:a} => { format => q{~a}, colon => 1, arguments => [ q{#} ] };
+parse_deeply q{~v:a} => { format => q{~a}, colon => 1, arguments => [ q{v} ] };
+parse_deeply q{~V:a} => { format => q{~a}, colon => 1, arguments => [ q{v} ] };
 
-# Edge cases for '@ with modifiers
+# (potential edge cases)
 #
-parse_deeply q{~'@:A} => {
-  format => q{~a}, colon => 1, arguments => [ q{'@} ] };
-parse_deeply q{~'@@A} => {
-  format => q{~a}, at => 1, arguments => [ q{'@} ] };
-parse_deeply q{~'@:@A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ q{'@} ] };
-parse_deeply q{~'@@:A} => {
-  format => q{~a}, at => 1, colon => 1, arguments => [ q{'@} ] };
+parse_deeply q{~' :a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{' } ] };
+parse_deeply q{~'':a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{''} ] };
+parse_deeply q{~',:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{',} ] };
+parse_deeply q{~'a:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'a} ] };
+parse_deeply q{~'::a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{':} ] };
+parse_deeply q{~'@:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'@} ] };
+parse_deeply q{~'v:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'v} ] };
+parse_deeply q{~'V:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'V} ] };
+parse_deeply q{~'#:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'#} ] };
+parse_deeply q{~'-:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'-} ] };
+parse_deeply q{~'+:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'+} ] };
+parse_deeply q{~'0:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'0} ] };
+parse_deeply q{~'9:a} =>
+  { format => q{~a}, colon => 1, arguments => [ q{'9} ] };
 
-# Run permutations of { (null), #, v, \d+, -\d+, +\d+, ', } on 2 args
+# (numeric colon => 1, arguments)
+#
+parse_deeply q{~0:a}   => { format => q{~a}, colon => 1, arguments => [ 0 ] };
+parse_deeply q{~1:a}   => { format => q{~a}, colon => 1, arguments => [ 1 ] };
+parse_deeply q{~9:a}   => { format => q{~a}, colon => 1, arguments => [ 9 ] };
+parse_deeply q{~99:a}  => { format => q{~a}, colon => 1, arguments => [ 99 ] };
+parse_deeply q{~+0:a}  => { format => q{~a}, colon => 1, arguments => [ 0 ] };
+parse_deeply q{~+1:a}  => { format => q{~a}, colon => 1, arguments => [ 1 ] };
+parse_deeply q{~+9:a}  => { format => q{~a}, colon => 1, arguments => [ 9 ] };
+parse_deeply q{~+99:a} => { format => q{~a}, colon => 1, arguments => [ 99 ] };
+parse_deeply q{~-0:a}  => { format => q{~a}, colon => 1, arguments => [ 0 ] };
+parse_deeply q{~-1:a}  => { format => q{~a}, colon => 1, arguments => [ -1 ] };
+parse_deeply q{~-9:a}  => { format => q{~a}, colon => 1, arguments => [ -9 ] };
+parse_deeply q{~-99:a} => { format => q{~a}, colon => 1, arguments => [ -99 ] };
+#
+# }}}
+
+# {{{ Single parameter with ':@' modifier
+#
+parse_deeply q{~#:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{#} ] };
+parse_deeply q{~v:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{v} ] };
+parse_deeply q{~V:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{v} ] };
+
+# (potential edge cases)
+#
+parse_deeply q{~' :@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{' } ] };
+parse_deeply q{~'':@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{''} ] };
+parse_deeply q{~',:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{',} ] };
+parse_deeply q{~'a:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'a} ] };
+parse_deeply q{~'::@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{':} ] };
+parse_deeply q{~'@:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'@} ] };
+parse_deeply q{~'v:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'v} ] };
+parse_deeply q{~'V:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'V} ] };
+parse_deeply q{~'#:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'#} ] };
+parse_deeply q{~'-:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'-} ] };
+parse_deeply q{~'+:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'+} ] };
+parse_deeply q{~'0:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'0} ] };
+parse_deeply q{~'9:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'9} ] };
+
+# (numeric colon => 1, at => 1, arguments)
+#
+parse_deeply q{~0:@a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~1:@a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 1 ] };
+parse_deeply q{~9:@a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 9 ] };
+parse_deeply q{~99:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 99 ] };
+parse_deeply q{~+0:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~+1:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 1 ] };
+parse_deeply q{~+9:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 9 ] };
+parse_deeply q{~+99:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 99 ] };
+parse_deeply q{~-0:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~-1:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -1 ] };
+parse_deeply q{~-9:@a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -9 ] };
+parse_deeply q{~-99:@a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -99 ] };
+#
+# }}}
+
+# {{{ Single parameter with '@' modifier
+#
+parse_deeply q{~#@a} => { format => q{~a}, at => 1, arguments => [ q{#} ] };
+parse_deeply q{~v@a} => { format => q{~a}, at => 1, arguments => [ q{v} ] };
+parse_deeply q{~V@a} => { format => q{~a}, at => 1, arguments => [ q{v} ] };
+
+# (potential edge cases)
+#
+parse_deeply q{~' @a} => { format => q{~a}, at => 1, arguments => [ q{' } ] };
+parse_deeply q{~''@a} => { format => q{~a}, at => 1, arguments => [ q{''} ] };
+parse_deeply q{~',@a} => { format => q{~a}, at => 1, arguments => [ q{',} ] };
+parse_deeply q{~'a@a} => { format => q{~a}, at => 1, arguments => [ q{'a} ] };
+parse_deeply q{~':@a} => { format => q{~a}, at => 1, arguments => [ q{':} ] };
+parse_deeply q{~'@@a} => { format => q{~a}, at => 1, arguments => [ q{'@} ] };
+parse_deeply q{~'v@a} => { format => q{~a}, at => 1, arguments => [ q{'v} ] };
+parse_deeply q{~'V@a} => { format => q{~a}, at => 1, arguments => [ q{'V} ] };
+parse_deeply q{~'#@a} => { format => q{~a}, at => 1, arguments => [ q{'#} ] };
+parse_deeply q{~'-@a} => { format => q{~a}, at => 1, arguments => [ q{'-} ] };
+parse_deeply q{~'+@a} => { format => q{~a}, at => 1, arguments => [ q{'+} ] };
+parse_deeply q{~'0@a} => { format => q{~a}, at => 1, arguments => [ q{'0} ] };
+parse_deeply q{~'9@a} => { format => q{~a}, at => 1, arguments => [ q{'9} ] };
+
+# (numeric colon => 1, arguments)
+#
+parse_deeply q{~0@a}   => { format => q{~a}, at => 1, arguments => [ 0 ] };
+parse_deeply q{~1@a}   => { format => q{~a}, at => 1, arguments => [ 1 ] };
+parse_deeply q{~9@a}   => { format => q{~a}, at => 1, arguments => [ 9 ] };
+parse_deeply q{~99@a}  => { format => q{~a}, at => 1, arguments => [ 99 ] };
+parse_deeply q{~+0@a}  => { format => q{~a}, at => 1, arguments => [ 0 ] };
+parse_deeply q{~+1@a}  => { format => q{~a}, at => 1, arguments => [ 1 ] };
+parse_deeply q{~+9@a}  => { format => q{~a}, at => 1, arguments => [ 9 ] };
+parse_deeply q{~+99@a} => { format => q{~a}, at => 1, arguments => [ 99 ] };
+parse_deeply q{~-0@a}  => { format => q{~a}, at => 1, arguments => [ 0 ] };
+parse_deeply q{~-1@a}  => { format => q{~a}, at => 1, arguments => [ -1 ] };
+parse_deeply q{~-9@a}  => { format => q{~a}, at => 1, arguments => [ -9 ] };
+parse_deeply q{~-99@a} => { format => q{~a}, at => 1, arguments => [ -99 ] };
+#
+# }}}
+
+# {{{ Single parameter with '@:' modifier
+#
+parse_deeply q{~#@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{#} ] };
+parse_deeply q{~v@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{v} ] };
+parse_deeply q{~V@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{v} ] };
+
+# (potential edge cases)
+#
+parse_deeply q{~' @:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{' } ] };
+parse_deeply q{~''@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{''} ] };
+parse_deeply q{~',@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{',} ] };
+parse_deeply q{~'a@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'a} ] };
+parse_deeply q{~':@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{':} ] };
+parse_deeply q{~'@@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'@} ] };
+parse_deeply q{~'v@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'v} ] };
+parse_deeply q{~'V@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'V} ] };
+parse_deeply q{~'#@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'#} ] };
+parse_deeply q{~'-@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'-} ] };
+parse_deeply q{~'+@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'+} ] };
+parse_deeply q{~'0@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'0} ] };
+parse_deeply q{~'9@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ q{'9} ] };
+
+# (numeric colon => 1, at => 1, arguments)
+#
+parse_deeply q{~0@:a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~1@:a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 1 ] };
+parse_deeply q{~9@:a}   =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 9 ] };
+parse_deeply q{~99@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 99 ] };
+parse_deeply q{~+0@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~+1@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 1 ] };
+parse_deeply q{~+9@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 9 ] };
+parse_deeply q{~+99@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 99 ] };
+parse_deeply q{~-0@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ 0 ] };
+parse_deeply q{~-1@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -1 ] };
+parse_deeply q{~-9@:a}  =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -9 ] };
+parse_deeply q{~-99@:a} =>
+  { format => q{~a}, colon => 1, at => 1, arguments => [ -99 ] };
+#
+# }}}
+
+# {{{ Two parameters from { (null), #, v, \d+, -\d+, +\d+, ', }
 #
 parse_deeply q{~,A} => { format => q{~a}, arguments => [ undef, undef ] };
 parse_deeply q{~,#A} => { format => q{~a}, arguments => [ undef, '#' ] };
@@ -171,6 +344,38 @@ parse_deeply q{~',,9A} => { format => q{~a}, arguments => [ q{',}, 9 ] };
 parse_deeply q{~',,-9A} => { format => q{~a}, arguments => [ q{',}, -9 ] };
 parse_deeply q{~',,+9A} => { format => q{~a}, arguments => [ q{',}, 9 ] };
 parse_deeply q{~',,',A} => { format => q{~a}, arguments => [ q{',}, q{',} ] };
+#
+# }}}
+
+# {{{ Three parameters, all the same term
+#
+parse_deeply q{~,,A} =>
+  { format => q{~a}, arguments => [ undef, undef, undef ] };
+parse_deeply q{~#,#,#A} =>
+  { format => q{~a}, arguments => [ q{#}, q{#}, q{#} ] };
+parse_deeply q{~v,v,vA} =>
+  { format => q{~a}, arguments => [ q{v}, q{v}, q{v} ] };
+parse_deeply q{~V,V,VA} =>
+  { format => q{~a}, arguments => [ q{v}, q{v}, q{v} ] };
+parse_deeply q{~-9,-9,-9A} =>
+  { format => q{~a}, arguments => [ -9, -9, -9 ] };
+#
+# }}}
+
+# {{{ Four parameters, all the same term
+#
+parse_deeply q{~,,,A} =>
+  { format => q{~a}, arguments => [ undef, undef, undef, undef ] };
+parse_deeply q{~#,#,#,#A} =>
+  { format => q{~a}, arguments => [ q{#}, q{#}, q{#}, q{#} ] };
+parse_deeply q{~v,v,v,vA} =>
+  { format => q{~a}, arguments => [ q{v}, q{v}, q{v}, q{v} ] };
+parse_deeply q{~V,V,V,VA} =>
+  { format => q{~a}, arguments => [ q{v}, q{v}, q{v}, q{v} ] };
+parse_deeply q{~-9,-9,-9,-9A} =>
+  { format => q{~a}, arguments => [ -9, -9, -9, -9 ] };
+#
+# }}}
 
 =pod
 
@@ -201,18 +406,11 @@ ok_parse( q{~,'@:a} );
 ok_parse( q{~,,'@:a} );
 ok_parse( q{~,,,'@:a} );
 
-=cut
-
-=pod
-
 #
 # Test parsing raw format strings, leave the higher-level tests for later.
 #
 # t/02-format-a
 #
-ok_parse( q{~va} );
-ok_parse( q{~v:A} );
-ok_parse( q{~v@A} );
 ok_parse( q{~v:@a} );
 ok_parse( q{~v@:a} );
 ok_parse( q{~5,5@a} );
@@ -237,22 +435,14 @@ ok_parse( q{~3,,vA} );
 ok_parse( q{~4,,va} );
 ok_parse( q{~3,,vA} );
 ok_parse( q{~3,,v@A} );
-ok_parse( q{~5,vA} );
 ok_parse( q{~5,v@A} );
-ok_parse( q{~#@a} );
-ok_parse( q{~5,#a} );
 ok_parse( q{~5,#@A} );
-ok_parse( q{~4,#A} );
 ok_parse( q{~4,#@A} );
-ok_parse( q{~#,#A} );
 ok_parse( q{~#,#@A} );
-ok_parse( q{~-100A} );
-ok_parse( q{~-100000000000000000000a} );
 ok_parse( q{~~~d@a} ); # format( "~~~d@a", 3 ) => "~3@a" so it *is* legitimate.
 ok_parse( q{~~~da} );
 ok_parse( q{~~~d@:A} );
 ok_parse( q{~~~d:a} );
-ok_parse( q{~V:a} );
 ok_parse( q{~V@:A} );
 
 # t/03-format-ampersand
