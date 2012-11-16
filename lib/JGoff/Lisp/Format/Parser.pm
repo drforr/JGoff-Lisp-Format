@@ -38,9 +38,9 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
-Readonly my $MODIFIERS => qr{ [:] | [@] | [:][@] | [@][:] }x;
+Readonly my $MODIFIERS => qr{ ( [:] | [@] | [:][@] | [@][:] ) }x;
 Readonly my $INTEGER   => qr{ [-+]?\d+ }x;
-Readonly my $PARAMETER => qr{ $INTEGER | '. | [vV] | [#] }x;
+Readonly my $PARAMETER => qr{ ( $INTEGER | '. | [vV] | [#] ) }x;
 
 sub ___parse_token {
   my $self = shift;
@@ -48,13 +48,13 @@ sub ___parse_token {
   my $rv = { format => $format };
 
   $match =~ s{^~}{}; # Remove the tilde
-  while ( $match =~ s{ ^ ( $PARAMETER )? , }{}x ) {
+  while ( $match =~ s{ ^ $PARAMETER? , }{}x ) {
     my $value = $1;
     $value = $value + 0 if $value and $value =~ m{ ^ [-+] }x; # Numify numbers
     $value = lc $value if $value and $value eq 'V';           # Canonicalize 'V'
     push @{ $rv->{arguments} }, $value;
   }
-  if ( $match =~ s{ ^ ( $PARAMETER ) }{}x ) {
+  if ( $match =~ s{ ^ $PARAMETER }{}x ) {
     my $value = $1;
     $value = $value + 0 if $value =~ m{ ^ [-+] }x;  # Numify numbers
     $value = lc $value if $value and $value eq 'V'; # Canonicalie 'V'
@@ -73,9 +73,9 @@ sub ___parse_token {
 sub __token_a {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [aA]
   }x );
   return $self->___parse_token( q{~a}, $match );
@@ -83,17 +83,15 @@ sub __token_a {
 
 sub __token_ampersand {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ (?: ( $PARAMETER )? ) [&] }x );
+  my $match = $self->expect( qr{ ~ (?: $PARAMETER? ) [&] }x );
   return $self->___parse_token( q{~&}, $match );
 }
 
 sub __token_asterisk {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER [vV]
-        | $PARAMETER
-      )?
-      ( $MODIFIERS )?
+    ~ $PARAMETER?
+      $MODIFIERS?
     [*]
   }x );
   return $self->___parse_token( q{~*}, $match );
@@ -102,9 +100,9 @@ sub __token_asterisk {
 sub __token_b {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [bB]
   }x );
   return $self->___parse_token( q{~b}, $match );
@@ -113,7 +111,7 @@ sub __token_b {
 sub __token_c {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( $MODIFIERS )?
+    ~ $MODIFIERS?
     [cC]
   }x );
   return $self->___parse_token( q{~c}, $match );
@@ -122,9 +120,9 @@ sub __token_c {
 sub __token_circumflex {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,2} # XXX Not sure if it's only 2 params, but...
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,2} # XXX Not sure if it's only 2 params, but...
+        $PARAMETER?
+        $MODIFIERS?
     \^
   }x );
   return $self->___parse_token( q{~^}, $match );
@@ -133,15 +131,10 @@ sub __token_circumflex {
 sub __token_close_brace {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: 
-      )
-      ( $MODIFIERS )?
+    ~ $MODIFIERS?
     \}
   }x );
-  my $rv = {
-    format => '~}',
-  };
-  return $rv;
+  return $self->___parse_token( q[~}], $match );
 }
 
 sub __token_close_bracket {
@@ -173,9 +166,9 @@ sub __token_close_paren {
 sub __token_d {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [dD]
   }x );
   return $self->___parse_token( q{~d}, $match );
@@ -184,9 +177,9 @@ sub __token_d {
 sub __token_f {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,4} # XXX Aha, something with 4 ','s
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,4} # XXX Aha, something with 4 ','s
+        $PARAMETER?
+        $MODIFIERS?
     [fF]
   }x );
   return $self->___parse_token( q{~f}, $match );
@@ -195,23 +188,18 @@ sub __token_f {
 sub __token_newline {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:
-      )
-      ( $MODIFIERS )?
+    ~ $MODIFIERS?
     \n
   }x );
-  my $rv = {
-    format => '~\\n',
-  };
-  return $rv;
+  return $self->___parse_token( q{~\n}, $match );
 }
 
 sub __token_o {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [oO]
   }x );
   return $self->___parse_token( q{~o}, $match );
@@ -220,29 +208,21 @@ sub __token_o {
 sub __token_open_brace {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $PARAMETER
-      )?
-      ( $MODIFIERS )?
+    ~ $PARAMETER?
+      $MODIFIERS?
     \{
   }x );
-  my $rv = {
-    format => '~{',
-  };
-  return $rv;
+  return $self->___parse_token( q{~o}, $match );
 }
 
 sub __token_open_bracket {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $PARAMETER
-      )?
-      ( $MODIFIERS )?
+    ~ $PARAMETER?
+      $MODIFIERS?
     \[
   }x );
-  my $rv = {
-    format => '~[',
-  };
-  return $rv;
+  return $self->___parse_token( q{~[}, $match );
 }
 
 sub __token_open_paren {
@@ -250,7 +230,7 @@ sub __token_open_paren {
   my $match = $self->expect( qr{
     ~ (?:
       )
-      ( $MODIFIERS )?
+      $MODIFIERS?
     \(
   }x );
   my $rv = {
@@ -264,7 +244,7 @@ sub __token_p {
   my $match = $self->expect( qr{
     ~ (?:
       )
-      ( $MODIFIERS )?
+      $MODIFIERS?
     [pP]
   }x );
   my $rv = {
@@ -276,49 +256,36 @@ sub __token_p {
 sub __token_percent {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:$PARAMETER
-      )?
+    ~ $PARAMETER?
     [%]
   }x );
-  my $rv = {
-    format => '~%',
-  };
-  return $rv;
+  return $self->___parse_token( q{~%}, $match );
 }
 
 sub __token_pipe {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $PARAMETER
-      )?
+    ~ $PARAMETER?
     [|]
   }x );
-  my $rv = {
-    format => '~|',
-  };
-  return $rv;
+  return $self->___parse_token( q{~|}, $match );
 }
 
 sub __token_question {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:
-      )
-      ( $MODIFIERS )?
+    ~ $MODIFIERS?
     [?]
   }x );
-  my $rv = {
-    format => '~?',
-  };
-  return $rv;
+  return $self->___parse_token( q{~?}, $match );
 }
 
 sub __token_r {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,4}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,4}
+        $PARAMETER?
+        $MODIFIERS?
     [rR]
   }x );
   return $self->___parse_token( q{~r}, $match );
@@ -327,9 +294,9 @@ sub __token_r {
 sub __token_s {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [sS]
   }x );
   return $self->___parse_token( q{~s}, $match );
@@ -338,15 +305,10 @@ sub __token_s {
 sub __token_semicolon {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?:
-      )
-      ( $MODIFIERS )?
+    ~ $MODIFIERS?
     [;]
   }x );
-  my $rv = {
-    format => '~;',
-  };
-  return $rv;
+  return $self->___parse_token( q{~:}, $match );
 }
 
 sub __token_tilde {
@@ -365,9 +327,9 @@ sub __token_tilde {
 sub __token_x {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ ( (?: $PARAMETER )? , ){0,3}
-      ( $PARAMETER )?
-      ( $MODIFIERS )?
+    ~ ( $PARAMETER? , ){0,3}
+        $PARAMETER?
+        $MODIFIERS?
     [xX]
   }x );
   return $self->___parse_token( q{~x}, $match );
