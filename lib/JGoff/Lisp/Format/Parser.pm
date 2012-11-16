@@ -2,6 +2,7 @@ package JGoff::Lisp::Format::Parser;
 
 use Moose;
 use Readonly;
+use Carp qw( croak );
 
 extends 'Parser::MGC';
 
@@ -20,17 +21,12 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+Internal format-string parser for Lisp::Format::Parser.
 
     use JGoff::Lisp::Format::Parser;
 
-    my $foo = JGoff::Lisp::Format->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
+    my $tree = $p->from_string( '~~d@:a' );
 
 =head1 METHODS
 
@@ -38,14 +34,20 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
-Readonly my $MODIFIERS => qr{ ( [:] | [@] | [:][@] | [@][:] ) }x;
-Readonly my $INTEGER   => qr{ [-+]?\d+ }x;
-Readonly my $PARAMETER => qr{ ( $INTEGER | '. | [vV] | [#] ) }x;
+# Regular expressions for later use.
+#
+Readonly my $MODIFIERS  => qr{ ( [:] | [@] | [:][@] | [@][:] ) }x;
+Readonly my $INTEGER    => qr{ [-+]?\d+ }x;
+Readonly my $PARAMETER  => qr{ ( $INTEGER | '. | [vV] | [#] ) }x;
+Readonly my $PARAMETERS => qr{ ( $PARAMETER? , ) }x;
 
+# Tear apart the token to get at the component args.
+# This will probably be replaced with REs when I figure out a nice way to do so.
+#
 sub ___parse_token {
   my $self = shift;
-  my ( $format, $match ) = @_;
-  my $rv = { format => $format };
+  my ( $match ) = @_;
+  my $rv = {};
 
   $match =~ s{^~}{}; # Remove the tilde
   while ( $match =~ s{ ^ $PARAMETER? , }{}x ) {
@@ -67,272 +69,64 @@ sub ___parse_token {
     $rv->{colon} = 1 if $1 eq ':';
     $rv->{at} = 1 if $1 eq '@';
   }
+  croak "format has too many characters remaining! ($match)" if
+    length($match) > 1;
+  $match = q{\n} if $match eq qq{\n};
+  $rv->{format} = q{~} . lc( $match );
   return $rv;
 }
 
-sub __token_a {
+# Upper-level token types.
+#
+sub __token_a_b_d_o_s_x {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [aA]
-  }x );
-  return $self->___parse_token( q{~a}, $match );
+  my $match =
+    $self->expect( qr{
+      ~ $PARAMETERS{0,3} $PARAMETER? $MODIFIERS?
+        [aAbBdDoOsSxX]
+    }x );
+  return $self->___parse_token( $match );
 }
 
-sub __token_ampersand {
+sub __token_f_r {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ (?: $PARAMETER? ) [&] }x );
-  return $self->___parse_token( q{~&}, $match );
+  my $match =
+    $self->expect( qr{ ~ $PARAMETERS{0,4} $PARAMETER? $MODIFIERS? [fFrR] }x );
+  return $self->___parse_token( $match );
 }
 
-sub __token_asterisk {
+sub __token_ampersand_percent_pipe_tilde {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $PARAMETER?
-      $MODIFIERS?
-    [*]
-  }x );
-  return $self->___parse_token( q{~*}, $match );
+  my $match = $self->expect( qr{ ~ $PARAMETER? [&%|~] }x );
+  return $self->___parse_token( $match );
 }
 
-sub __token_b {
+sub __token_asterisk_open_brace_open_bracket {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [bB]
-  }x );
-  return $self->___parse_token( q{~b}, $match );
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\{\[] }x );
+  return $self->___parse_token( $match );
 }
 
-sub __token_c {
+sub __token_c_close_brace_newline_open_paren_p_question_semi {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $MODIFIERS?
-    [cC]
-  }x );
-  return $self->___parse_token( q{~c}, $match );
+  my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\}\(\npP?;] }x );
+  return $self->___parse_token( $match );
 }
 
 sub __token_circumflex {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,2} # XXX Not sure if it's only 2 params, but...
-        $PARAMETER?
-        $MODIFIERS?
-    \^
-  }x );
-  return $self->___parse_token( q{~^}, $match );
+  my $match =
+    $self->expect( qr{ ~ $PARAMETERS{0,2} $PARAMETER? $MODIFIERS? \^ }x );
+  return $self->___parse_token( $match );
 }
 
-sub __token_close_brace {
+sub __token_close_bracket_close_paren {
   my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $MODIFIERS?
-    \}
-  }x );
-  return $self->___parse_token( q[~}], $match );
-}
-
-sub __token_close_bracket {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?:
-      )
-    \]
-  }x );
+  my $match = $self->expect( qr{ ~ [\]\)] }x );
   my $rv = {
-    format => '~]',
+    format => $match
   };
   return $rv;
-}
-
-sub __token_close_paren {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?:
-      )
-    \)
-  }x );
-  my $rv = {
-    format => '~)',
-  };
-  return $rv;
-}
-
-sub __token_d {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [dD]
-  }x );
-  return $self->___parse_token( q{~d}, $match );
-}
-
-sub __token_f {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,4} # XXX Aha, something with 4 ','s
-        $PARAMETER?
-        $MODIFIERS?
-    [fF]
-  }x );
-  return $self->___parse_token( q{~f}, $match );
-}
-
-sub __token_newline {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $MODIFIERS?
-    \n
-  }x );
-  return $self->___parse_token( q{~\n}, $match );
-}
-
-sub __token_o {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [oO]
-  }x );
-  return $self->___parse_token( q{~o}, $match );
-}
-
-sub __token_open_brace {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $PARAMETER?
-      $MODIFIERS?
-    \{
-  }x );
-  return $self->___parse_token( q{~o}, $match );
-}
-
-sub __token_open_bracket {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $PARAMETER?
-      $MODIFIERS?
-    \[
-  }x );
-  return $self->___parse_token( q{~[}, $match );
-}
-
-sub __token_open_paren {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?:
-      )
-      $MODIFIERS?
-    \(
-  }x );
-  my $rv = {
-    format => '~(',
-  };
-  return $rv;
-}
-
-sub __token_p {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?:
-      )
-      $MODIFIERS?
-    [pP]
-  }x );
-  my $rv = {
-    format => '~p',
-  };
-  return $rv;
-}
-
-sub __token_percent {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $PARAMETER?
-    [%]
-  }x );
-  return $self->___parse_token( q{~%}, $match );
-}
-
-sub __token_pipe {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $PARAMETER?
-    [|]
-  }x );
-  return $self->___parse_token( q{~|}, $match );
-}
-
-sub __token_question {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $MODIFIERS?
-    [?]
-  }x );
-  return $self->___parse_token( q{~?}, $match );
-}
-
-sub __token_r {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,4}
-        $PARAMETER?
-        $MODIFIERS?
-    [rR]
-  }x );
-  return $self->___parse_token( q{~r}, $match );
-}
-
-sub __token_s {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [sS]
-  }x );
-  return $self->___parse_token( q{~s}, $match );
-}
-
-sub __token_semicolon {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ $MODIFIERS?
-    [;]
-  }x );
-  return $self->___parse_token( q{~:}, $match );
-}
-
-sub __token_tilde {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ (?: | [vV]
-      )
-    ~
-  }x );
-  my $rv = {
-    format => '~~',
-  };
-  return $rv;
-}
-
-sub __token_x {
-  my $self = shift;
-  my $match = $self->expect( qr{
-    ~ ( $PARAMETER? , ){0,3}
-        $PARAMETER?
-        $MODIFIERS?
-    [xX]
-  }x );
-  return $self->___parse_token( q{~x}, $match );
 }
 
 sub parse {
@@ -342,36 +136,16 @@ sub parse {
     $self->any_of(
       sub { $self->expect( '!@#$%^&*this' ) },
       sub { $self->expect( qr{
-        ABC | ,,' | ,' | cat | penn | XXyy | uuVV | this | is7a | is | TEST[.]
-            | [@][ab] | :a | [@]:A | [a-zA-Z()] | NO | FOO | XYZ | \[ | \]
+        ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \]
             | [,':&]
       }x ) },
-      sub { $self->__token_p },
-      sub { $self->__token_asterisk },
-      sub { $self->__token_semicolon },
-      sub { $self->__token_a },
-      sub { $self->__token_ampersand },
-      sub { $self->__token_percent },
-      sub { $self->__token_b },
-      sub { $self->__token_open_brace },
-      sub { $self->__token_open_bracket },
-      sub { $self->__token_c },
-      sub { $self->__token_open_paren },
-      sub { $self->__token_newline },
-      sub { $self->__token_close_brace },
-      sub { $self->__token_close_bracket },
-      sub { $self->__token_close_paren },
+      sub { $self->__token_asterisk_open_brace_open_bracket },
+      sub { $self->__token_a_b_d_o_s_x },
+      sub { $self->__token_ampersand_percent_pipe_tilde },
+      sub { $self->__token_c_close_brace_newline_open_paren_p_question_semi },
+      sub { $self->__token_close_bracket_close_paren },
       sub { $self->__token_circumflex },
-      sub { $self->__token_d },
-      sub { $self->__token_question },
-      sub { $self->__token_f },
-      sub { $self->__token_asterisk },
-      sub { $self->__token_o },
-      sub { $self->__token_pipe },
-      sub { $self->__token_r },
-      sub { $self->__token_s },
-      sub { $self->__token_tilde },
-      sub { $self->__token_x },
+      sub { $self->__token_f_r },
     );
   } );
 }
