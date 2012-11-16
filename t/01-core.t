@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 162;
+use Test::More tests => 202;
 use YAML;
 
 BEGIN {
@@ -386,10 +386,6 @@ sub ok_parse {
     diag( "q{$str} : $@" );
 }
 
-ok_parse( q{~#,#,#a} );
-ok_parse( q{~#,#,#,#a} );
-ok_parse( q{~v,v,va} );
-ok_parse( q{~v,v,v,va} );
 ok_parse( q{~v,v@a} );
 ok_parse( q{~v,v,v@a} );
 ok_parse( q{~v,v,v,v@a} );

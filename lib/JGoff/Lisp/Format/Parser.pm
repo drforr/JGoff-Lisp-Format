@@ -67,9 +67,6 @@ sub ___parse_token {
     $rv->{colon} = 1 if $1 eq ':';
     $rv->{at} = 1 if $1 eq '@';
   }
-#  if ( $match !~ m{ [a\&*bc\^})df\no{(p%|?rs;\~x] }x ) {
-#    croak "Leftover character is not a valid token char!";
-#  }
   return $rv;
 }
 
@@ -81,7 +78,6 @@ sub __token_a {
       ( $MODIFIERS )?
     [aA]
   }x );
-
   return $self->___parse_token( q{~a}, $match );
 }
 
@@ -106,11 +102,8 @@ sub __token_asterisk {
 sub __token_b {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: ( $PARAMETER )? , ( $PARAMETER )? , ( $PARAMETER )? , ( $PARAMETER )?
-        |                   ( $PARAMETER )? , ( $PARAMETER )? , ( $PARAMETER )?
-        |                                       $PARAMETER    , ( $PARAMETER )?
-        |                                                       ( $PARAMETER )?
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,3}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [bB]
   }x );
@@ -129,17 +122,12 @@ sub __token_c {
 sub __token_circumflex {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $PARAMETER , $PARAMETER , $PARAMETER
-        |              $PARAMETER , $PARAMETER
-        |                           $PARAMETER
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,2} # XXX Not sure if it's only 2 params, but...
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     \^
   }x );
-  my $rv = {
-    format => '~^',
-  };
-  return $rv;
+  return $self->___parse_token( q{~^}, $match );
 }
 
 sub __token_close_brace {
@@ -185,31 +173,23 @@ sub __token_close_paren {
 sub __token_d {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER ,       [vV]
-        |        , ,       [vV]
-        |  , , '\* ,       [vV]
-        |            $PARAMETER
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,3}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [dD]
   }x );
-  my $rv = {
-    format => '~d',
-  };
-  return $rv;
+  return $self->___parse_token( q{~d}, $match );
 }
 
 sub __token_f {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: | ,,,,',
-      )
+    ~ ( (?: $PARAMETER )? , ){0,4} # XXX Aha, something with 4 ','s
+      ( $PARAMETER )?
+      ( $MODIFIERS )?
     [fF]
   }x );
-  my $rv = {
-    format => '~f',
-  };
-  return $rv;
+  return $self->___parse_token( q{~f}, $match );
 }
 
 sub __token_newline {
@@ -229,18 +209,12 @@ sub __token_newline {
 sub __token_o {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER , [vV]
-        | ,        , [vV]
-        | ,,'[*],[vV]
-        |            $PARAMETER
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,3}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [oO]
   }x );
-  my $rv = {
-    format => '~o',
-  };
-  return $rv;
+  return $self->___parse_token( q{~o}, $match );
 }
 
 sub __token_open_brace {
@@ -342,41 +316,23 @@ sub __token_question {
 sub __token_r {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER , ,,,$INTEGER
-        | $INTEGER , $INTEGER , , '[*]
-        | $INTEGER , $INTEGER , 'X,',
-        | $INTEGER , $INTEGER , [vV]
-        | $INTEGER , , , , $PARAMETER
-        |   $INTEGER , , , $PARAMETER
-        |       $INTEGER , $PARAMETER
-        |                  $PARAMETER
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,4}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [rR]
   }x );
-  my $rv = {
-    format => '~r',
-  };
-  return $rv;
+  return $self->___parse_token( q{~r}, $match );
 }
 
 sub __token_s {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER , , ,
-        | $INTEGER , , , 'X
-        | $INTEGER , , , [vV]
-        |   $INTEGER , , $PARAMETER
-        |     $INTEGER , $PARAMETER
-        |                [vV]
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,3}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [sS]
   }x );
-  my $rv = {
-    format => '~s',
-  };
-  return $rv;
+  return $self->___parse_token( q{~s}, $match );
 }
 
 sub __token_semicolon {
@@ -409,18 +365,12 @@ sub __token_tilde {
 sub __token_x {
   my $self = shift;
   my $match = $self->expect( qr{
-    ~ (?: $INTEGER,[vV]
-        | ,,[vV]
-        | ,,'[*],[vV]
-        | $PARAMETER
-      )?
+    ~ ( (?: $PARAMETER )? , ){0,3}
+      ( $PARAMETER )?
       ( $MODIFIERS )?
     [xX]
   }x );
-  my $rv = {
-    format => '~x',
-  };
-  return $rv;
+  return $self->___parse_token( q{~x}, $match );
 }
 
 sub parse {
