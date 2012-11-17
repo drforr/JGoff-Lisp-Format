@@ -52,14 +52,20 @@ sub ___parse_token {
   $match =~ s{^~}{}; # Remove the tilde
   while ( $match =~ s{ ^ $PARAMETER? , }{}x ) {
     my $value = $1;
-    $value = $value + 0 if $value and $value =~ m{ ^ [-+] }x; # Numify numbers
-    $value = lc $value if $value and $value eq 'V';           # Canonicalize 'V'
+    if ( $value ) {
+      $value = $value + 0 if $value =~ m{ ^ [-+] }x; # Numify numbers
+      $value = lc $value if $value eq 'V';           # Canonicalize 'V'
+      $value =~ s{'(.)}{$1};
+    }
     push @{ $rv->{arguments} }, $value;
   }
   if ( $match =~ s{ ^ $PARAMETER }{}x ) {
     my $value = $1;
-    $value = $value + 0 if $value =~ m{ ^ [-+] }x;  # Numify numbers
-    $value = lc $value if $value and $value eq 'V'; # Canonicalie 'V'
+    if ( $value ) {
+      $value = $value + 0 if $value =~ m{ ^ [-+] }x;  # Numify numbers
+      $value = lc $value if $value eq 'V'; # Canonicalie 'V'
+      $value =~ s{'(.)}{$1};
+    }
     push @{ $rv->{arguments} }, $value;
   }
   elsif ( $rv->{arguments} ) {

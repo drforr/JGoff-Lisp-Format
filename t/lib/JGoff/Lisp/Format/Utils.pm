@@ -29,7 +29,7 @@ sub string {
   my ( $c ) = shift;
   croak "string() not given a character!" unless
      ref( $c ) and ref( $c ) =~ /Character/;
-  return $c; # XXX actually don't convert the string?
+  return $c->toString;
 }
 
 sub char_name {
