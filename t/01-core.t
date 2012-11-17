@@ -386,24 +386,9 @@ sub ok_parse {
     diag( "q{$str} : $@" );
 }
 
-ok_parse( q{~v,v@a} );
-ok_parse( q{~v,v,v@a} );
-ok_parse( q{~v,v,v,v@a} );
-ok_parse( q{~v,v@:a} );
-ok_parse( q{~v,v,v@:a} );
-ok_parse( q{~v,v,v,v@:a} );
-ok_parse( q{~,@:a} );
-ok_parse( q{~,,@:a} );
-ok_parse( q{~,,,@:a} );
-ok_parse( q{~,'@@:a} );
-ok_parse( q{~,,'@@:a} );
-ok_parse( q{~,,,'@@:a} );
-ok_parse( q{~,'@:a} );
-ok_parse( q{~,,'@:a} );
-ok_parse( q{~,,,'@:a} );
-
 #
-# Test parsing raw format strings, leave the higher-level tests for later.
+# Test parsing format strings from the wild,
+# Leave the higher-level tests for later.
 #
 # t/02-format-a
 #

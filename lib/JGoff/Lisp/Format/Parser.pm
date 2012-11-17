@@ -76,6 +76,16 @@ sub ___parse_token {
   return $rv;
 }
 
+# Basic Output - c % & | ~
+# Radix Control - r d b o x
+# Floating-point printers - f e g $
+# Printer operations - a s w
+# Pretty-printer operations - _ < i /
+# Layout control - t < >
+# Control flow - * [ ] { } ?
+# Miscellaneous operations - ( ) p
+# Miscellaneous pseudo-operations ; ^ \n
+
 # Upper-level token types.
 #
 sub __token_a_b_d_o_s_x {

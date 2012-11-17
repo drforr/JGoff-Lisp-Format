@@ -72,17 +72,49 @@ sub _print_case {
   }
 }
 
+# ~mincol,colinc,minpad,padcharA
+#
 sub __format_a {
   my $self = shift;
   my ( $element , $arguments ) = @_;
+  my $padchar = ' ';
+  if ( $element->{arguments} ) {
+    $element->{mincol} = shift @{ $element->{arguments} }
+      if $element->{arguments};
+    $element->{colinc} = shift @{ $element->{arguments} }
+      if $element->{arguments};
+    $element->{minpad} = shift @{ $element->{arguments} }
+      if $element->{arguments};
+    $element->{padchar} = shift @{ $element->{arguments} }
+      if $element->{arguments};
+  }
+  delete $element->{arguments};   
+  $padchar ||= $element->{padchar};
 
-  my $argument = shift @$arguments;
+  if ( $element->{mincol} and $element->{mincol} eq 'v' ) {
+    $element->{mincol} = shift @{ $arguments };
+  }
+
+  my $argument = shift @{ $arguments };
   if ( !defined $argument ) {
     if ( $element->{colon} ) {
       return '[]';
     }
     else {
-      return $self->_print_case( 'undef' );
+      my $str = 'undef';
+      if ( $element->{mincol} ) {
+        if ( $element->{colinc} ) {
+          while ( length($str) < $element->{mincol} ) {
+            if ( $element->{at} ) {
+              $str = $padchar x $element->{colinc} . $str;
+            }
+            else {
+              $str .= $padchar x $element->{colinc}
+            }
+          }
+        }
+      }
+      return $self->_print_case( $str );
     }
   }
   else {
@@ -94,7 +126,19 @@ sub __format_a {
       }
     }
     else {
-      return $self->_print_case( $argument );
+      my $str = $argument;
+      if ( $element->{mincol} ) {
+        if ( $element->{colinc} ) {
+          while ( length($str) < $element->{mincol} ) {
+            $str .= $padchar x $element->{colinc}
+          }
+        }
+        elsif ( $element->{minpad} ) {
+          $str .= $padchar x $element->{minpad};
+          $str .= $padchar x ( $element->{mincol} - length( $str ) );
+        }
+      }
+      return $self->_print_case( $str );
     }
   }
 
