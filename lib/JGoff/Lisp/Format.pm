@@ -185,6 +185,28 @@ sub __format_ampersand {
   return "\n" x $element->{n};
 }
 
+sub __format_percent {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  $element->{n} = 0;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
+  }
+  $element->{n} = 0 unless defined $element->{n};
+
+  return "\n" x $element->{n};
+}
+
 sub format {
   my $self = shift;
   my ( $stream, $format, $arguments ) = @_;
@@ -202,6 +224,9 @@ sub format {
           $output .= $self->__format_ampersand(
             $element, $arguments, ( $id > 0 )
           );
+        }
+        elsif ( $element->{format} eq '~%' ) {
+          $output .= $self->__format_percent( $element, $arguments );
         }
         else {
           $output = 'UNIMPLEMENTED FORMAT'; last;
