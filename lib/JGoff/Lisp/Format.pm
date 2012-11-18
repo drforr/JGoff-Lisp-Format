@@ -97,14 +97,6 @@ sub _padding {
   }
 }
 
-# An arg, any object, is printed without escape characters (as by princ). If arg is a string, its characters will be output verbatim. If arg is nil it will be printed as nil; the colon modifier (~:A) will cause an arg of nil to be printed as (), but if arg is a composite structure, such as a list or vector, any contained occurrences of nil will still be printed as nil.
-
-#~mincolA inserts spaces on the right, if necessary, to make the width at least mincol columns. The @ modifier causes the spaces to be inserted on the left rather than the right.
-
-#~mincol,colinc,minpad,padcharA is the full form of ~A, which allows control of the padding. The string is padded on the right (or on the left if the @ modifier is used) with at least minpad copies of padchar; padding characters are then inserted colinc characters at a time until the total width is at least mincol. The defaults are 0 for mincol and minpad, 1 for colinc, and the space character for padchar. 
-
-# ~mincol,colinc,minpad,padcharA
-#
 sub __format_a {
   my $self = shift;
   my ( $element , $arguments ) = @_;
@@ -142,25 +134,55 @@ sub __format_a {
 
 # Strip escape characters
 
-if ( !defined $argument ) {
-  if ( $element->{colon} ) {
-    return '[]';
+  if ( !defined $argument ) {
+    if ( $element->{colon} ) {
+      return '[]';
+    }
+    $argument = $self->_padding( $element, 'undef' );
+    return $self->_print_case( $argument );
   }
-  $argument = $self->_padding( $element, 'undef' );
-  return $self->_print_case( $argument );
-}
-elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
- return '[' . $self->format( undef, $element->{format}, @{ $argument } ) . ']';
-}
-elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
-  return $argument->toString;
-}
-else {
-  $argument = $self->_padding( $element, $argument );
+  elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
+   return '[' .
+          $self->format( undef, $element->{format}, @{ $argument } ) .
+          ']';
+  }
+  elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
+    return $argument->toString;
+  }
+  else {
+    $argument = $self->_padding( $element, $argument );
+    return $argument;
+  }
+  
   return $argument;
 }
 
-return $argument;
+sub __format_ampersand {
+  my $self = shift;
+  my ( $element , $arguments, $is_not_first ) = @_;
+  $element->{n} = 0;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = scalar @{ $arguments };
+  }
+  $element->{n} = 0 unless defined $element->{n};
+
+  my $argument = shift @{ $arguments };
+
+  if ( $is_not_first ) {
+    return "\n";
+  }
+
+  return "\n" x $element->{n};
 }
 
 sub format {
@@ -170,18 +192,24 @@ sub format {
   my $parser = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
   if ( my $tree = $parser->from_string( $format ) ) {
     my $output;
-    for my $element ( @{ $tree } ) {
-if( ref( $element ) ) {
-      if ( $element->{format} eq '~a' ) {
-        $output .= $self->__format_a( $element, $arguments );
+    for my $id ( 0 .. $#{ $tree } ) {
+      my $element = $tree->[ $id ];
+      if( ref( $element ) ) {
+        if ( $element->{format} eq '~a' ) {
+          $output .= $self->__format_a( $element, $arguments );
+        }
+        elsif ( $element->{format} eq '~&' ) {
+          $output .= $self->__format_ampersand(
+            $element, $arguments, ( $id > 0 )
+          );
+        }
+        else {
+          $output = 'UNIMPLEMENTED FORMAT'; last;
+        }
       }
       else {
-        $output = 'UNIMPLEMENTED FORMAT'; last;
+        $output .= $element;
       }
-}
-else {
-  $output .= $element;
-}
 
     }
     return $output;
