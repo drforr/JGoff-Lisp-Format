@@ -55,7 +55,6 @@ sub ___parse_token {
     if ( $value ) {
       $value = $value + 0 if $value =~ m{ ^ [-+] }x; # Numify numbers
       $value = lc $value if $value eq 'V';           # Canonicalize 'V'
-      $value =~ s{'(.)}{$1};
     }
     push @{ $rv->{arguments} }, $value;
   }
@@ -64,7 +63,6 @@ sub ___parse_token {
     if ( $value ) {
       $value = $value + 0 if $value =~ m{ ^ [-+] }x;  # Numify numbers
       $value = lc $value if $value eq 'V'; # Canonicalie 'V'
-      $value =~ s{'(.)}{$1};
     }
     push @{ $rv->{arguments} }, $value;
   }

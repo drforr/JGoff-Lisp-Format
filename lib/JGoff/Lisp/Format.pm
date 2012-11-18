@@ -136,6 +136,7 @@ sub __format_a {
   $element->{minpad} = 0 unless defined $element->{minpad};
   $element->{colinc} = 1 unless defined $element->{colinc};
   $element->{padchar} = ' ' unless defined $element->{padchar};
+  $element->{padchar} =~ s{^'}{};
 
   my $argument = shift @{ $arguments };
 
