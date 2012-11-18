@@ -6,6 +6,7 @@ use Readonly;
 
 use JGoff::Lisp::Format::Parser;
 use Carp qw( croak );
+use POSIX qw( abs );
 
 Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
@@ -97,6 +98,8 @@ sub _padding {
   }
 }
 
+# {{{ __format_a
+
 sub __format_a {
   my $self = shift;
   my ( $element , $arguments ) = @_;
@@ -157,6 +160,10 @@ sub __format_a {
   return $argument;
 }
 
+# }}}
+
+# {{{ __format_ampersand
+
 sub __format_ampersand {
   my $self = shift;
   my ( $element , $arguments, $is_not_first ) = @_;
@@ -185,6 +192,67 @@ sub __format_ampersand {
   return "\n" x $element->{n};
 }
 
+# }}}
+
+# {{{ __format_b
+
+sub __format_b {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  $element->{mincol} = 0;
+  $element->{padchar} = ' ';
+  $element->{commachar} = 1;
+  $element->{'comma-interval'} = ' ';
+  if ( $element->{arguments} ) {
+    my $mincol = shift @{ $element->{arguments} };
+    my $padchar = shift @{ $element->{arguments} };
+    my $commachar = shift @{ $element->{arguments} };
+    my $comma_interval = shift @{ $element->{arguments} };
+
+    $element->{mincol} = $mincol if defined $mincol;
+    $element->{padchar} = $padchar if defined $padchar;
+    $element->{commachar} = $commachar if defined $commachar;
+    $element->{'comma-interval'} = $comma_interval if defined $comma_interval;
+  }
+  delete $element->{arguments};   
+
+  for my $arg ( qw( mincol padchar commachar comma-interval ) ) {
+    if ( $element->{$arg} and $element->{$arg} eq 'v' ) {
+      $element->{$arg} = shift @{ $arguments };
+    }
+    elsif ( $element->{$arg} and $element->{$arg} eq '#' ) {
+      $element->{$arg} = scalar @{ $arguments };
+    }
+  }
+  $element->{minpad} = 0 unless defined $element->{minpad};
+  $element->{padchar} = ' ' unless defined $element->{padchar};
+  $element->{commachar} = ' ' unless defined $element->{commachar};
+  $element->{'comma-interval'} =~ s{^'}{};
+
+  my $argument = shift @{ $arguments };
+
+  my $bits = '';
+  my $sign = $argument < 0 ? -1 : 1;
+  $argument = abs( $argument );
+
+  while ( $argument > 0 ) {
+    my $bit = $argument % 2;
+    $bits = $bit . $bits;
+    $argument -= $bit;
+    $argument /= 2;
+  }
+  $bits = '-'. $bits if $sign == -1;
+  $bits .= '+' if $sign == +1 and $element->{at};
+
+  $bits = $self->_padding( $element, $bits );
+
+  return $bits;
+}
+
+# }}}
+
+# {{{ __format_percent
+
 sub __format_percent {
   my $self = shift;
   my ( $element , $arguments ) = @_;
@@ -207,6 +275,10 @@ sub __format_percent {
   return "\n" x $element->{n};
 }
 
+# }}}
+
+# {{{ format
+
 sub format {
   my $self = shift;
   my ( $stream, $format, $arguments ) = @_;
@@ -228,6 +300,9 @@ sub format {
         elsif ( $element->{format} eq '~%' ) {
           $output .= $self->__format_percent( $element, $arguments );
         }
+        elsif ( $element->{format} eq '~b' ) {
+          $output .= $self->__format_b( $element, $arguments );
+        }
         else {
           $output = 'UNIMPLEMENTED FORMAT'; last;
         }
@@ -242,6 +317,8 @@ sub format {
   
   return 'Not Caught';
 }
+
+# }}}
 
 =head2 formatter
 

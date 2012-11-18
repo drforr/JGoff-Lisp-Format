@@ -83,6 +83,147 @@ deftest 'format.a.7' => sub {
   return $list;
 }, [];
 
+#(deftest format.a.8
+#          for s1 = (and c (string c))
+#          for s2 = (and c (format nil "~A" s1))
+#          for s3 = (and c (formatter-call-to-string fn s1))
+#          unless (or (null c) (string= s1 s2) (string= s2 s3))
+#          do (incf count) and collect (list c s1 s2 s3)
+#          when (> count 100) collect "count limit exceeded" and do (loop-finish)))
+#  nil)
+
+#(deftest format.a.9
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (loop for i from 1 to 10
+#          for fmt = (format nil "~~~d@a" i)
+#          for s = (format nil fmt nil)
+#          for fn = (eval `(formatter ,fmt))
+#          for s2 = (formatter-call-to-string fn nil)
+#          do (assert (string= s s2))
+#          collect s)))
+#  "NIL"
+#  "NIL"
+#  "NIL"
+#  " NIL"
+#  "  NIL"
+#  "   NIL"
+#  "    NIL"
+#  "     NIL"
+#  "      NIL"
+#  "       NIL")
+
+#(deftest format.a.10
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (loop for i from 1 to 10
+#          for fmt = (format nil "~~~da" i)
+#          for s = (format nil fmt nil)
+#          for fn = (eval `(formatter ,fmt))
+#          for s2 = (formatter-call-to-string fn nil)
+#          do (assert (string= s s2))
+#          collect s)))
+#  "NIL"
+#  "NIL"
+#  "NIL"
+#  "NIL "
+#  "NIL  "
+#  "NIL   "
+#  "NIL    "
+#  "NIL     "
+#  "NIL      "
+#  "NIL       ")
+
+#(deftest format.a.11
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (loop for i from 1 to 10
+#          for fmt = (format nil "~~~d@:A" i)
+#          for s = (format nil fmt nil)
+#          for fn = (eval `(formatter ,fmt))
+#          for s2 = (formatter-call-to-string fn nil)
+#          do (assert (string= s s2))
+#          collect s)))
+#  "()"
+#  "()"
+#  " ()"
+#  "  ()"
+#  "   ()"
+#  "    ()"
+#  "     ()"
+#  "      ()"
+#  "       ()"
+#  "        ()")
+
+#(deftest format.a.12
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (loop for i from 1 to 10
+#          for fmt = (format nil "~~~d:a" i)
+#          for s = (format nil fmt nil)
+#          for fn = (eval `(formatter ,fmt))
+#          for s2 = (formatter-call-to-string fn nil)
+#          do (assert (string= s s2))
+#          collect s)))
+#  "()"
+#  "()"
+#  "() "
+#  "()  "
+#  "()   "
+#  "()    "
+#  "()     "
+#  "()      "
+#  "()       "
+#  "()        ")
+
+#(deftest format.a.13
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (let ((fn (formatter "~V:a")))
+#      (loop for i from 1 to 10
+#            for s = (format nil "~v:A" i nil)
+#            for s2 = (formatter-call-to-string fn i nil)
+#            do (assert (string= s s2))
+#            collect s))))
+#  "()"
+#  "()"
+#  "() "
+#  "()  "
+#  "()   "
+#  "()    "
+#  "()     "
+#  "()      "
+#  "()       "
+#  "()        ")
+
+#(deftest format.a.14
+#  (with-standard-io-syntax
+#   (apply
+#    #'values
+#    (let ((fn (formatter "~V@:A")))
+#      (loop for i from 1 to 10
+#            for s = (format nil "~v:@a" i nil)
+#            for s2 = (formatter-call-to-string fn i nil)
+#            do (assert (string= s s2))
+#            collect s))))
+#  "()"
+#  "()"
+#  " ()"
+#  "  ()"
+#  "   ()"
+#  "    ()"
+#  "     ()"
+#  "      ()"
+#  "       ()"
+#  "        ()")
+
+### With padchar
+
 def_format_test 'format.a.15' =>
   "~va",
   [ undef, undef ],
@@ -387,152 +528,3 @@ def_format_test 'format.a.58' =>
   "~-100000000000000000000a",
   [ "xyz" ],
   "xyz";
-
-=pod
-
-(deftest format.a.8
-  (let ((fn (formatter "~A")))
-    (loop with count = 0
-          for i from 0 below (min #x10000 char-code-limit)
-          for c = (code-char i)
-          for s1 = (and c (string c))
-          for s2 = (and c (format nil "~A" s1))
-          for s3 = (and c (formatter-call-to-string fn s1))
-          unless (or (null c) (string= s1 s2) (string= s2 s3))
-          do (incf count) and collect (list c s1 s2 s3)
-          when (> count 100) collect "count limit exceeded" and do (loop-finish)))
-  nil)
-
-(deftest format.a.9
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (loop for i from 1 to 10
-          for fmt = (format nil "~~~d@a" i)
-          for s = (format nil fmt nil)
-          for fn = (eval `(formatter ,fmt))
-          for s2 = (formatter-call-to-string fn nil)
-          do (assert (string= s s2))
-          collect s)))
-  "NIL"
-  "NIL"
-  "NIL"
-  " NIL"
-  "  NIL"
-  "   NIL"
-  "    NIL"
-  "     NIL"
-  "      NIL"
-  "       NIL")
-
-(deftest format.a.10
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (loop for i from 1 to 10
-          for fmt = (format nil "~~~da" i)
-          for s = (format nil fmt nil)
-          for fn = (eval `(formatter ,fmt))
-          for s2 = (formatter-call-to-string fn nil)
-          do (assert (string= s s2))
-          collect s)))
-  "NIL"
-  "NIL"
-  "NIL"
-  "NIL "
-  "NIL  "
-  "NIL   "
-  "NIL    "
-  "NIL     "
-  "NIL      "
-  "NIL       ")
-
-(deftest format.a.11
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (loop for i from 1 to 10
-          for fmt = (format nil "~~~d@:A" i)
-          for s = (format nil fmt nil)
-          for fn = (eval `(formatter ,fmt))
-          for s2 = (formatter-call-to-string fn nil)
-          do (assert (string= s s2))
-          collect s)))
-  "()"
-  "()"
-  " ()"
-  "  ()"
-  "   ()"
-  "    ()"
-  "     ()"
-  "      ()"
-  "       ()"
-  "        ()")
-
-(deftest format.a.12
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (loop for i from 1 to 10
-          for fmt = (format nil "~~~d:a" i)
-          for s = (format nil fmt nil)
-          for fn = (eval `(formatter ,fmt))
-          for s2 = (formatter-call-to-string fn nil)
-          do (assert (string= s s2))
-          collect s)))
-  "()"
-  "()"
-  "() "
-  "()  "
-  "()   "
-  "()    "
-  "()     "
-  "()      "
-  "()       "
-  "()        ")
-
-(deftest format.a.13
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (let ((fn (formatter "~V:a")))
-      (loop for i from 1 to 10
-            for s = (format nil "~v:A" i nil)
-            for s2 = (formatter-call-to-string fn i nil)
-            do (assert (string= s s2))
-            collect s))))
-  "()"
-  "()"
-  "() "
-  "()  "
-  "()   "
-  "()    "
-  "()     "
-  "()      "
-  "()       "
-  "()        ")
-
-(deftest format.a.14
-  (with-standard-io-syntax
-   (apply
-    #'values
-    (let ((fn (formatter "~V@:A")))
-      (loop for i from 1 to 10
-            for s = (format nil "~v:@a" i nil)
-            for s2 = (formatter-call-to-string fn i nil)
-            do (assert (string= s s2))
-            collect s))))
-  "()"
-  "()"
-  " ()"
-  "  ()"
-  "   ()"
-  "    ()"
-  "     ()"
-  "      ()"
-  "       ()"
-  "        ()")
-
-### With padchar
-
-=cut
