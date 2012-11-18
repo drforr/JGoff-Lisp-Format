@@ -179,9 +179,7 @@ deftest 'format.a.29' => sub {
   };
   return $list;
 }, [
-  "ABC  ",
-  "ABC  ",
-  "ABC  ",
+  "ABC  ", "ABC  ", "ABC  ",
   "ABC  ",
   "ABC  ",
   "ABC  ",
