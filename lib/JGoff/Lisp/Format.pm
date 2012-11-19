@@ -7,6 +7,7 @@ use Readonly;
 use JGoff::Lisp::Format::Parser;
 use Carp qw( croak );
 use POSIX qw( abs );
+use Storable qw( dclone );
 
 Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
@@ -315,25 +316,79 @@ sub __format_percent {
 
 sub __format_open_brace {
   my $self = shift;
-  my ( $element , $arguments ) = @_;
+  my ( $open, $element, $close , $arguments ) = @_;
+  my $max_iterations;
 
-  $element->{n} = 0;
-  if ( $element->{arguments} ) {
-    my $n = shift @{ $element->{arguments} };
-
-    $element->{n} = $n if defined $n;
+  my $output;
+my $count = 10;
+  while ( @{ $arguments } ) {
+    last if defined $max_iterations and $max_iterations-- <= 0;
+if ( $count-- < 0 ) {
+  warn "*** Tripped the ~{..~}' alamr.";
+  last;
+}
+    $output .= $self->_format( $element, $arguments );
   }
-  delete $element->{arguments};   
+  return $output;
+}
 
-  if ( $element->{n} and $element->{n} eq 'v' ) {
-    $element->{n} = shift @{ $arguments };
-  }
-  elsif ( $element->{n} and $element->{n} eq '#' ) {
-    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
-  }
-  $element->{n} = 0 unless defined $element->{n};
+# }}}
 
-  return "\n" x $element->{n};
+# {{{ _format
+
+sub _format {
+  my $self = shift;
+  my ( $tree, $arguments ) = @_;
+  my $output;
+  for my $id ( 0 .. $#{ $tree } ) {
+    my $element = $tree->[ $id ];
+    if( ref( $element ) and ref( $element ) eq 'HASH' ) {
+      if ( $element->{format} eq '~a' ) {
+        $output .= $self->__format_a( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~&' ) {
+        $output .= $self->__format_ampersand(
+          $element, $arguments, ( $id > 0 )
+        );
+      }
+      elsif ( $element->{format} eq '~%' ) {
+        $output .= $self->__format_percent( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~b' ) {
+        $output .= $self->__format_b( $element, $arguments );
+      }
+      else {
+        $output = 'UNIMPLEMENTED FORMAT'; last;
+      }
+    }
+    elsif ( ref( $element ) and ref( $element ) eq 'ARRAY' ) {
+      my ( $open, $_element, $close ) = @{ $element };
+      my $_arguments;
+      if ( $arguments and ref( $arguments ) ) {
+        $_arguments = $arguments->[0];
+      }
+      if ( $open->{format} eq '~{' ) {
+        $output .= $self->__format_open_brace(
+          $open, $_element, $close, $_arguments
+        );
+      }
+      elsif ( $open->{format} eq '~(' ) {
+        $output .= $self->__format_open_paren(
+          $open, $_element, $close, $_arguments
+        );
+      }
+      elsif ( $open->{format} eq '~[' ) {
+        $output .= $self->__format_open_bracket(
+          $open, $_element, $close, $_arguments
+        );
+      }
+    }
+    else {
+      $output .= $element;
+    }
+
+  }
+  return $output;
 }
 
 # }}}
@@ -345,34 +400,7 @@ sub format {
   my ( $stream, $format, $arguments ) = @_;
 
   if ( my $tree = $self->parser->from_string( $format ) ) {
-    my $output;
-    for my $id ( 0 .. $#{ $tree } ) {
-      my $element = $tree->[ $id ];
-      if( ref( $element ) and ref( $element ) eq 'HASH' ) {
-        if ( $element->{format} eq '~a' ) {
-          $output .= $self->__format_a( $element, $arguments );
-        }
-        elsif ( $element->{format} eq '~&' ) {
-          $output .= $self->__format_ampersand(
-            $element, $arguments, ( $id > 0 )
-          );
-        }
-        elsif ( $element->{format} eq '~%' ) {
-          $output .= $self->__format_percent( $element, $arguments );
-        }
-        elsif ( $element->{format} eq '~b' ) {
-          $output .= $self->__format_b( $element, $arguments );
-        }
-        else {
-          $output = 'UNIMPLEMENTED FORMAT'; last;
-        }
-      }
-      else {
-        $output .= $element;
-      }
-
-    }
-    return $output;
+    return $self->_format( $tree, $arguments );
   }
   
   return 'Not Caught';
