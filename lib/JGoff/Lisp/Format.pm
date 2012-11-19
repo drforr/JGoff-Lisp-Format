@@ -199,10 +199,8 @@ sub __format_ampersand {
 sub __format_b {
   my $self = shift;
   my ( $element , $arguments ) = @_;
-  $element->{mincol} = 0;
-  $element->{padchar} = ' ';
-  $element->{commachar} = 1;
-  $element->{'comma-interval'} = ' ';
+  @{ $element }{qw( mincol padchar commachar comma-interval )} =
+    ( 0, ' ', ',', 3 );
   if ( $element->{arguments} ) {
     my $mincol = shift @{ $element->{arguments} };
     my $padchar = shift @{ $element->{arguments} };
@@ -224,10 +222,13 @@ sub __format_b {
       $element->{$arg} = scalar @{ $arguments };
     }
   }
+  $element->{mincol} = 0 unless defined $element->{mincol};
   $element->{minpad} = 0 unless defined $element->{minpad};
   $element->{padchar} = ' ' unless defined $element->{padchar};
-  $element->{commachar} = ' ' unless defined $element->{commachar};
-  $element->{'comma-interval'} =~ s{^'}{};
+  $element->{commachar} = ',' unless defined $element->{commachar};
+  $element->{'comma-interval'} = 3 unless defined $element->{'comma-interval'};
+  $element->{padchar} =~ s{^'(.)}{$1};
+  $element->{commachar} =~ s{^'(.)}{$1};
 
   my $argument = shift @{ $arguments };
 
@@ -241,10 +242,24 @@ sub __format_b {
     $argument -= $bit;
     $argument /= 2;
   }
-  $bits = '-'. $bits if $sign == -1;
-  $bits .= '+' if $sign == +1 and $element->{at};
 
-  $bits = $self->_padding( $element, $bits );
+  if ( $element->{colon} ) {
+    my @chunk;
+    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
+      unshift @chunk, substr(
+        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
+        ''
+      );
+    }
+    unshift @chunk, $bits if $bits and $bits ne '';
+    $bits = join $element->{commachar}, @chunk;
+  }
+  $bits = '-' . $bits if $sign == -1;
+  $bits = '+' . $bits if $sign == +1 and $element->{at};
+
+  if ( $bits and $element->{mincol} > 0 and length( $bits ) < $element->{mincol} ) {
+    $bits = ' ' x ( $element->{mincol} - length( $bits ) ) . $bits;
+  }
 
   return $bits;
 }
