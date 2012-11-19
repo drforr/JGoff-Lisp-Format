@@ -41,6 +41,8 @@ Readonly my $INTEGER    => qr{ [-+]?\d+ }x;
 Readonly my $PARAMETER  => qr{ ( $INTEGER | '. | [vV] | [#] ) }x;
 Readonly my $PARAMETERS => qr{ ( $PARAMETER? , ) }x;
 
+# {{{ ___parse_token
+
 # Tear apart the token to get at the component args.
 # This will probably be replaced with REs when I figure out a nice way to do so.
 #
@@ -80,6 +82,8 @@ sub ___parse_token {
   return $rv;
 }
 
+# }}}
+
 # Basic Output - c % & | ~
 # Radix Control - r d b o x
 # Floating-point printers - f e g $
@@ -115,15 +119,15 @@ sub __token_ampersand_percent_pipe_tilde {
   return $self->___parse_token( $match );
 }
 
-sub __token_asterisk_open_brace_open_bracket {
+sub __token_asterisk_open_bracket {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\{\[] }x );
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\[] }x );
   return $self->___parse_token( $match );
 }
 
-sub __token_c_close_brace_newline_open_paren_p_question_semi {
+sub __token_c_newline_open_paren_p_question_semi {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\}\(\npP?;] }x );
+  my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\(\npP?;] }x );
   return $self->___parse_token( $match );
 }
 
@@ -143,25 +147,55 @@ sub __token_close_bracket_close_paren {
   return $rv;
 }
 
-sub parse {
+sub __token_open_brace {
+  my $self = shift;
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \{ }x );
+  return $self->___parse_token( $match );
+}
+
+sub __token_close_brace {
+  my $self = shift;
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \} }x );
+  return $self->___parse_token( $match );
+}
+
+# {{{ _atom
+
+sub _atom {
   my $self = shift;
 
-  $self->sequence_of( sub {
-    $self->any_of(
-      sub { $self->expect( '!@#$%^&*this' ) },
-      sub { $self->expect( qr{
-        ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \]
-            | [,':&]
-      }x ) },
-      sub { $self->__token_asterisk_open_brace_open_bracket },
-      sub { $self->__token_a_b_d_o_s_x },
-      sub { $self->__token_ampersand_percent_pipe_tilde },
-      sub { $self->__token_c_close_brace_newline_open_paren_p_question_semi },
-      sub { $self->__token_close_bracket_close_paren },
-      sub { $self->__token_circumflex },
-      sub { $self->__token_f_r },
-    );
-  } );
+  $self->any_of(
+    sub { [
+      $self->__token_open_brace,
+      $self->_atoms,
+      $self->__token_close_brace
+    ] },
+    sub { $self->expect( '!@#$%^&*this' ) },
+    sub { $self->expect( qr{
+      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \]
+          | [,':&]
+    }x ) },
+    sub { $self->__token_asterisk_open_bracket },
+    sub { $self->__token_a_b_d_o_s_x },
+    sub { $self->__token_ampersand_percent_pipe_tilde },
+    sub { $self->__token_c_newline_open_paren_p_question_semi },
+    sub { $self->__token_close_bracket_close_paren },
+    sub { $self->__token_circumflex },
+    sub { $self->__token_f_r },
+  );
+}
+
+# }}}
+
+sub _atoms {
+  my $self = shift;
+
+  $self->sequence_of( sub { $self->_atom } );
+}
+
+sub parse {
+  my $self = shift;
+  $self->_atoms;
 }
 
 =head1 AUTHOR

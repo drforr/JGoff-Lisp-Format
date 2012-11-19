@@ -17,6 +17,14 @@ our $print_case = $upcase; # default value from the CLISP spec
 Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
+has parser => (
+  is => 'rw',
+  isa => 'JGoff::Lisp::Format::Parser',
+  default => sub{
+    JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
+  }
+);
+
 =head1 NAME
 
 JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
@@ -52,6 +60,8 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
+# {{{ _print_case( $argument )
+
 sub _print_case {
   my $self = shift;
   my ( $argument ) = @_;
@@ -72,6 +82,10 @@ sub _print_case {
     croak "Unknown or missing print_case '$print_case'";
   }
 }
+
+# }}}
+
+# {{{ _padding ( $element, $argument )
 
 sub _padding {
   my ( $self, $element, $argument ) = @_;
@@ -97,6 +111,8 @@ sub _padding {
     $argument = $argument . $padding;
   }
 }
+
+# }}}
 
 # {{{ __format_a
 
@@ -133,7 +149,10 @@ sub __format_a {
   $element->{padchar} = ' ' unless defined $element->{padchar};
   $element->{padchar} =~ s{^'}{};
 
-  my $argument = shift @{ $arguments };
+  my $argument;
+  if ( $arguments and ref( $arguments ) and ref( $arguments ) eq 'ARRAY' ) {
+    $argument = shift @{ $arguments };
+  }
 
 # Strip escape characters
 
@@ -292,18 +311,44 @@ sub __format_percent {
 
 # }}}
 
+# {{{ __format_open_brace
+
+sub __format_open_brace {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+
+  $element->{n} = 0;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
+  }
+  $element->{n} = 0 unless defined $element->{n};
+
+  return "\n" x $element->{n};
+}
+
+# }}}
+
 # {{{ format
 
 sub format {
   my $self = shift;
   my ( $stream, $format, $arguments ) = @_;
 
-  my $parser = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
-  if ( my $tree = $parser->from_string( $format ) ) {
+  if ( my $tree = $self->parser->from_string( $format ) ) {
     my $output;
     for my $id ( 0 .. $#{ $tree } ) {
       my $element = $tree->[ $id ];
-      if( ref( $element ) ) {
+      if( ref( $element ) and ref( $element ) eq 'HASH' ) {
         if ( $element->{format} eq '~a' ) {
           $output .= $self->__format_a( $element, $arguments );
         }
@@ -339,6 +384,8 @@ sub format {
 
 =cut
 
+# {{{ formatter
+
 sub formatter {
   my $self = shift;
   my ( $format ) = @_;
@@ -348,6 +395,8 @@ sub formatter {
     return $self->format( $stream, $format, $args );
   };
 }
+
+# }}}
 
 =head1 AUTHOR
 
