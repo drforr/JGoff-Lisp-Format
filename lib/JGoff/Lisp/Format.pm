@@ -251,6 +251,10 @@ sub __format_b {
   $element->{commachar} =~ s{^'(.)}{$1};
 
   my $argument = shift @{ $arguments };
+  my %binary = (
+    0  => '0',
+    1  => '1',
+  );
 
   my $bits = '';
   my $sign = $argument < 0 ? -1 : 1;
@@ -258,9 +262,248 @@ sub __format_b {
 
   while ( $argument > 0 ) {
     my $bit = $argument % 2;
-    $bits = $bit . $bits;
+    $bits = $binary{$bit} . $bits;
     $argument -= $bit;
     $argument /= 2;
+  }
+
+  if ( $element->{colon} ) {
+    my @chunk;
+    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
+      unshift @chunk, substr(
+        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
+        ''
+      );
+    }
+    unshift @chunk, $bits if $bits and $bits ne '';
+    $bits = join $element->{commachar}, @chunk;
+  }
+  $bits = '-' . $bits if $sign == -1;
+  $bits = '+' . $bits if $sign == +1 and $element->{at};
+
+  if ( $bits and $element->{mincol} > 0 and length( $bits ) < $element->{mincol} ) {
+    $bits = ' ' x ( $element->{mincol} - length( $bits ) ) . $bits;
+  }
+
+  return $bits;
+}
+
+# }}}
+
+# {{{ __format_d
+
+sub __format_d {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  @{ $element }{qw( mincol padchar commachar comma-interval )} =
+    ( 0, ' ', ',', 3 );
+  if ( $element->{arguments} ) {
+    my $mincol = shift @{ $element->{arguments} };
+    my $padchar = shift @{ $element->{arguments} };
+    my $commachar = shift @{ $element->{arguments} };
+    my $comma_interval = shift @{ $element->{arguments} };
+
+    $element->{mincol} = $mincol if defined $mincol;
+    $element->{padchar} = $padchar if defined $padchar;
+    $element->{commachar} = $commachar if defined $commachar;
+    $element->{'comma-interval'} = $comma_interval if defined $comma_interval;
+  }
+  delete $element->{arguments};   
+
+  for my $arg ( qw( mincol padchar commachar comma-interval ) ) {
+    if ( $element->{$arg} and $element->{$arg} eq 'v' ) {
+      $element->{$arg} = shift @{ $arguments };
+    }
+    elsif ( $element->{$arg} and $element->{$arg} eq '#' ) {
+      $element->{$arg} = scalar @{ $arguments };
+    }
+  }
+  $element->{mincol} = 0 unless defined $element->{mincol};
+  $element->{minpad} = 0 unless defined $element->{minpad};
+  $element->{padchar} = ' ' unless defined $element->{padchar};
+  $element->{commachar} = ',' unless defined $element->{commachar};
+  $element->{'comma-interval'} = 3 unless defined $element->{'comma-interval'};
+  $element->{padchar} =~ s{^'(.)}{$1};
+  $element->{commachar} =~ s{^'(.)}{$1};
+
+  my $argument = shift @{ $arguments };
+
+  my $bits = '';
+  my $sign = $argument < 0 ? -1 : 1;
+  $argument = abs( $argument );
+
+  $bits = $argument;
+
+  if ( $element->{colon} ) {
+    my @chunk;
+    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
+      unshift @chunk, substr(
+        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
+        ''
+      );
+    }
+    unshift @chunk, $bits if $bits and $bits ne '';
+    $bits = join $element->{commachar}, @chunk;
+  }
+  $bits = '-' . $bits if $sign == -1;
+  $bits = '+' . $bits if $sign == +1 and $element->{at};
+
+  if ( $bits and $element->{mincol} > 0 and length( $bits ) < $element->{mincol} ) {
+    $bits = ' ' x ( $element->{mincol} - length( $bits ) ) . $bits;
+  }
+
+  return $bits;
+}
+
+# }}}
+
+# {{{ __format_o
+
+sub __format_o {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  @{ $element }{qw( mincol padchar commachar comma-interval )} =
+    ( 0, ' ', ',', 3 );
+  if ( $element->{arguments} ) {
+    my $mincol = shift @{ $element->{arguments} };
+    my $padchar = shift @{ $element->{arguments} };
+    my $commachar = shift @{ $element->{arguments} };
+    my $comma_interval = shift @{ $element->{arguments} };
+
+    $element->{mincol} = $mincol if defined $mincol;
+    $element->{padchar} = $padchar if defined $padchar;
+    $element->{commachar} = $commachar if defined $commachar;
+    $element->{'comma-interval'} = $comma_interval if defined $comma_interval;
+  }
+  delete $element->{arguments};   
+
+  for my $arg ( qw( mincol padchar commachar comma-interval ) ) {
+    if ( $element->{$arg} and $element->{$arg} eq 'v' ) {
+      $element->{$arg} = shift @{ $arguments };
+    }
+    elsif ( $element->{$arg} and $element->{$arg} eq '#' ) {
+      $element->{$arg} = scalar @{ $arguments };
+    }
+  }
+  $element->{mincol} = 0 unless defined $element->{mincol};
+  $element->{minpad} = 0 unless defined $element->{minpad};
+  $element->{padchar} = ' ' unless defined $element->{padchar};
+  $element->{commachar} = ',' unless defined $element->{commachar};
+  $element->{'comma-interval'} = 3 unless defined $element->{'comma-interval'};
+  $element->{padchar} =~ s{^'(.)}{$1};
+  $element->{commachar} =~ s{^'(.)}{$1};
+
+  my $argument = shift @{ $arguments };
+  my %octal = (
+    0  => '0',
+    1  => '1',
+    2  => '2',
+    3  => '3',
+    4  => '4',
+    5  => '5',
+    6  => '6',
+    7  => '7',
+  );
+
+  my $bits = '';
+  my $sign = $argument < 0 ? -1 : 1;
+  $argument = abs( $argument );
+
+  while ( $argument > 0 ) {
+    my $bit = $argument % 8;
+    $bits = $octal{$bit} . $bits;
+    $argument -= $bit;
+    $argument /= 8;
+  }
+
+  if ( $element->{colon} ) {
+    my @chunk;
+    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
+      unshift @chunk, substr(
+        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
+        ''
+      );
+    }
+    unshift @chunk, $bits if $bits and $bits ne '';
+    $bits = join $element->{commachar}, @chunk;
+  }
+  $bits = '-' . $bits if $sign == -1;
+  $bits = '+' . $bits if $sign == +1 and $element->{at};
+
+  if ( $bits and $element->{mincol} > 0 and length( $bits ) < $element->{mincol} ) {
+    $bits = ' ' x ( $element->{mincol} - length( $bits ) ) . $bits;
+  }
+
+  return $bits;
+}
+
+# }}}
+
+# {{{ __format_x
+
+sub __format_x {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  @{ $element }{qw( mincol padchar commachar comma-interval )} =
+    ( 0, ' ', ',', 3 );
+  if ( $element->{arguments} ) {
+    my $mincol = shift @{ $element->{arguments} };
+    my $padchar = shift @{ $element->{arguments} };
+    my $commachar = shift @{ $element->{arguments} };
+    my $comma_interval = shift @{ $element->{arguments} };
+
+    $element->{mincol} = $mincol if defined $mincol;
+    $element->{padchar} = $padchar if defined $padchar;
+    $element->{commachar} = $commachar if defined $commachar;
+    $element->{'comma-interval'} = $comma_interval if defined $comma_interval;
+  }
+  delete $element->{arguments};   
+
+  for my $arg ( qw( mincol padchar commachar comma-interval ) ) {
+    if ( $element->{$arg} and $element->{$arg} eq 'v' ) {
+      $element->{$arg} = shift @{ $arguments };
+    }
+    elsif ( $element->{$arg} and $element->{$arg} eq '#' ) {
+      $element->{$arg} = scalar @{ $arguments };
+    }
+  }
+  $element->{mincol} = 0 unless defined $element->{mincol};
+  $element->{minpad} = 0 unless defined $element->{minpad};
+  $element->{padchar} = ' ' unless defined $element->{padchar};
+  $element->{commachar} = ',' unless defined $element->{commachar};
+  $element->{'comma-interval'} = 3 unless defined $element->{'comma-interval'};
+  $element->{padchar} =~ s{^'(.)}{$1};
+  $element->{commachar} =~ s{^'(.)}{$1};
+
+  my $argument = shift @{ $arguments };
+  my %hexadecimal = (
+    0  => '0',
+    1  => '1',
+    2  => '2',
+    3  => '3',
+    4  => '4',
+    5  => '5',
+    6  => '6',
+    7  => '7',
+    8  => '8',
+    9  => '9',
+    10 => 'a',
+    11 => 'b',
+    12 => 'c',
+    13 => 'd',
+    14 => 'e',
+    15 => 'f',
+  );
+
+  my $bits = '';
+  my $sign = $argument < 0 ? -1 : 1;
+  $argument = abs( $argument );
+
+  while ( $argument > 0 ) {
+    my $bit = $argument % 16;
+    $bits = $hexadecimal{$bit} . $bits;
+    $argument -= $bit;
+    $argument /= 16;
   }
 
   if ( $element->{colon} ) {
@@ -334,6 +577,58 @@ if ( $count-- < 0 ) {
 
 # }}}
 
+# {{{ __format_tilde
+
+sub __format_tilde {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  $element->{n} = 1;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
+  }
+  $element->{n} = 0 unless defined $element->{n};
+
+  return "~" x $element->{n};
+}
+
+# }}}
+
+# {{{ __format_vertical_bar
+
+sub __format_vertical_bar {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  $element->{n} = 1;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
+  }
+  $element->{n} = 1 unless defined $element->{n};
+
+  return "\cL" x $element->{n};
+}
+
+# }}}
+
 # {{{ _format
 
 sub _format {
@@ -351,11 +646,26 @@ sub _format {
           $element, $arguments, ( $id > 0 )
         );
       }
+      elsif ( $element->{format} eq '~b' ) {
+        $output .= $self->__format_b( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~d' ) {
+        $output .= $self->__format_d( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~o' ) {
+        $output .= $self->__format_o( $element, $arguments );
+      }
       elsif ( $element->{format} eq '~%' ) {
         $output .= $self->__format_percent( $element, $arguments );
       }
-      elsif ( $element->{format} eq '~b' ) {
-        $output .= $self->__format_b( $element, $arguments );
+      elsif ( $element->{format} eq '~~' ) {
+        $output .= $self->__format_tilde( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~x' ) {
+        $output .= $self->__format_x( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~|' ) {
+        $output .= $self->__format_vertical_bar( $element, $arguments );
       }
       else {
         $output = 'UNIMPLEMENTED FORMAT'; last;
