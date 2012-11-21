@@ -11,6 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 28;
 ### Test of various radixes
 
 #(deftest format.r.1
@@ -541,3 +544,5 @@ def_format_test 'format.r.38' =>
 #                 (string= s1 s3))
 #     collect (list radix mincol padchar commachar commaint fmt x s1 s2 s3)))
 #  nil)
+
+}

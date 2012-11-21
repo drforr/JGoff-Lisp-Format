@@ -26,6 +26,8 @@ has parser => (
   }
 );
 
+has arguments => ( is => 'rw', isa => 'ArrayRef' );
+
 =head1 NAME
 
 JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
@@ -86,6 +88,24 @@ sub _print_case {
 
 # }}}
 
+# {{{ _commify( $argument, $interval, $commachar )
+
+sub _commify {
+  my $self = shift;
+  my ( $argument, $interval, $commachar ) = @_;
+
+  my @chunk;
+  while ( $argument and
+          length( $argument ) > $interval ) {
+    unshift @chunk, substr( $argument, -$interval, $interval, '' );
+  }
+  unshift @chunk, $argument if $argument and $argument ne '';
+  $argument = join $commachar, @chunk;
+  return $argument;
+}
+
+# }}}
+
 # {{{ _padding ( $element, $argument )
 
 sub _padding {
@@ -120,10 +140,8 @@ sub _padding {
 sub __format_a {
   my $self = shift;
   my ( $element , $arguments ) = @_;
-  $element->{mincol} = 0;
-  $element->{minpad} = 0;
-  $element->{colinc} = 1;
-  $element->{padchar} = ' ';
+  @{ $element }{qw( mincol minpad colinc padchar )} =
+    ( 0, 0, 1, ' ' );
   if ( $element->{arguments} ) {
     my $mincol = shift @{ $element->{arguments} };
     my $colinc = shift @{ $element->{arguments} };
@@ -268,15 +286,9 @@ sub __format_b {
   }
 
   if ( $element->{colon} ) {
-    my @chunk;
-    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
-      unshift @chunk, substr(
-        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
-        ''
-      );
-    }
-    unshift @chunk, $bits if $bits and $bits ne '';
-    $bits = join $element->{commachar}, @chunk;
+    $bits = $self->_commify(
+      $bits, $element->{'comma-interval'}, $element->{commachar}
+    );
   }
   $bits = '-' . $bits if $sign == -1;
   $bits = '+' . $bits if $sign == +1 and $element->{at};
@@ -327,32 +339,97 @@ sub __format_d {
   $element->{commachar} =~ s{^'(.)}{$1};
 
   my $argument = shift @{ $arguments };
+  my $sign = 1;
 
-  my $bits = '';
-  my $sign = $argument < 0 ? -1 : 1;
-  $argument = abs( $argument );
-
-  $bits = $argument;
+  if ( $argument and $argument < 0 ) {
+    $sign = -1;
+    $argument = abs( $argument );
+  }
 
   if ( $element->{colon} ) {
-    my @chunk;
-    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
-      unshift @chunk, substr(
-        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
-        ''
-      );
+    $argument = $self->_commify(
+      $argument, $element->{'comma-interval'}, $element->{commachar}
+    );
+  }
+  $argument = '-' . $argument if $sign == -1;
+  $argument = '+' . $argument if $sign == +1 and $element->{at};
+
+  if ( $argument and
+       $element->{mincol} > 0 and
+       length( $argument ) < $element->{mincol} ) {
+    $argument = ' ' x ( $element->{mincol} - length( $argument ) ) . $argument;
+  }
+
+  return $argument;
+}
+
+# }}}
+
+# {{{ __format_f
+
+sub __format_f {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+#  @{ $element }{qw( w d k overflowchar padchar )} =
+#    ( 0, ' ', ',', 3 );
+  if ( $element->{arguments} ) {
+    my $w = shift @{ $element->{arguments} };
+    my $d = shift @{ $element->{arguments} };
+    my $k = shift @{ $element->{arguments} };
+    my $overflowchar = shift @{ $element->{arguments} };
+    my $padchar = shift @{ $element->{arguments} };
+
+    $element->{w} = $w if defined $w;
+    $element->{d} = $d if defined $d;
+    $element->{k} = $k if defined $k;
+    $element->{overflowchar} = $overflowchar if defined $overflowchar;
+    $element->{padchar} = $padchar if defined $padchar;
+  }
+  delete $element->{arguments};   
+
+  for my $arg ( qw( w d k overflowchar padchar ) ) {
+    if ( $element->{$arg} and $element->{$arg} eq 'v' ) {
+      $element->{$arg} = shift @{ $arguments };
     }
-    unshift @chunk, $bits if $bits and $bits ne '';
-    $bits = join $element->{commachar}, @chunk;
+    elsif ( $element->{$arg} and $element->{$arg} eq '#' ) {
+      $element->{$arg} = scalar @{ $arguments };
+    }
   }
-  $bits = '-' . $bits if $sign == -1;
-  $bits = '+' . $bits if $sign == +1 and $element->{at};
+  $element->{w} = 0 unless defined $element->{w};
+  $element->{d} = 0 unless defined $element->{d};
+  $element->{k} = 0 unless defined $element->{k};
+  $element->{overflowchar} = ',' unless defined $element->{overflowchar};
+  $element->{padchar} = ',' unless defined $element->{padchar};
+  $element->{overflowchar} =~ s{^'(.)}{$1};
+  $element->{padchar} =~ s{^'(.)}{$1};
 
-  if ( $bits and $element->{mincol} > 0 and length( $bits ) < $element->{mincol} ) {
-    $bits = ' ' x ( $element->{mincol} - length( $bits ) ) . $bits;
+  my $argument = shift @{ $arguments };
+  my $sign = 1;
+
+  if ( $argument and $argument < 0 ) {
+    $sign = -1;
+    $argument = abs( $argument );
+  }
+  $argument = sprintf "%f", $argument;
+  if ( $argument =~ m{ [.] [0]+ $ }x ) {
+    $argument =~ s{ [.] [0]+ $ }{.0}x;
   }
 
-  return $bits;
+  if ( $element->{colon} ) {
+    $argument = $self->_commify(
+      $argument, $element->{'comma-interval'}, $element->{commachar}
+    );
+  }
+  $argument = '-' . $argument if $sign == -1;
+  $argument = '+' . $argument if $sign == +1 and $element->{at};
+
+  if ( $argument and
+       $element->{w} > 0 and
+       length( $argument ) < $element->{w} ) {
+    $argument = ' ' x ( $element->{w} - length( $argument ) ) . $argument;
+  }
+
+  return $argument;
 }
 
 # }}}
@@ -417,15 +494,9 @@ sub __format_o {
   }
 
   if ( $element->{colon} ) {
-    my @chunk;
-    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
-      unshift @chunk, substr(
-        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
-        ''
-      );
-    }
-    unshift @chunk, $bits if $bits and $bits ne '';
-    $bits = join $element->{commachar}, @chunk;
+    $bits = $self->_commify(
+      $bits, $element->{'comma-interval'}, $element->{commachar}
+    );
   }
   $bits = '-' . $bits if $sign == -1;
   $bits = '+' . $bits if $sign == +1 and $element->{at};
@@ -435,6 +506,38 @@ sub __format_o {
   }
 
   return $bits;
+}
+
+# }}}
+
+# {{{ __format_p
+
+sub __format_p {
+  my $self = shift;
+  my ( $element, $arguments ) = @_;
+
+  my $argument = shift @{ $arguments };
+  $argument = 0 unless defined $argument;
+  if ( $argument == 0 ) {
+    if ( $element->{at} ) {
+      return 'ies';
+    }
+    return 's';
+  }
+  elsif ( $argument == 1 ) {
+    if ( $element->{at} ) {
+      return 'y';
+    }
+    return '';
+  }
+  elsif ( $argument eq 'No' or $argument >= 2 ) {
+    if ( $element->{at} ) {
+      return 'ies';
+    }
+    return 's';
+  }
+
+  return '';
 }
 
 # }}}
@@ -507,15 +610,9 @@ sub __format_x {
   }
 
   if ( $element->{colon} ) {
-    my @chunk;
-    while ( $bits and length( $bits ) > $element->{'comma-interval'} ) {
-      unshift @chunk, substr(
-        $bits, -$element->{'comma-interval'}, $element->{'comma-interval'}, 
-        ''
-      );
-    }
-    unshift @chunk, $bits if $bits and $bits ne '';
-    $bits = join $element->{commachar}, @chunk;
+    $bits = $self->_commify(
+      $bits, $element->{'comma-interval'}, $element->{commachar}
+    );
   }
   $bits = '-' . $bits if $sign == -1;
   $bits = '+' . $bits if $sign == +1 and $element->{at};
@@ -525,6 +622,32 @@ sub __format_x {
   }
 
   return $bits;
+}
+
+# }}}
+
+# {{{ __format_newline
+
+sub __format_newline {
+  my $self = shift;
+  my ( $element , $arguments ) = @_;
+  $element->{n} = 1;
+  if ( $element->{arguments} ) {
+    my $n = shift @{ $element->{arguments} };
+
+    $element->{n} = $n if defined $n;
+  }
+  delete $element->{arguments};   
+
+  if ( $element->{n} and $element->{n} eq 'v' ) {
+    $element->{n} = shift @{ $arguments };
+  }
+  elsif ( $element->{n} and $element->{n} eq '#' ) {
+    $element->{n} = defined $arguments ? scalar @{ $arguments } : 0;
+  }
+  $element->{n} = 0 unless defined $element->{n};
+
+  return "\n" x $element->{n};
 }
 
 # }}}
@@ -562,14 +685,16 @@ sub __format_open_brace {
   my ( $open, $element, $close , $arguments ) = @_;
   my $max_iterations;
 
-  my $output;
+  my $output = '';
 my $count = 10;
-  while ( @{ $arguments } ) {
-    last if defined $max_iterations and $max_iterations-- <= 0;
+  if ( $arguments and ref( $arguments ) eq 'ARRAY' and @{ $arguments } ) {
+    while ( @{ $arguments } ) {
+      last if defined $max_iterations and $max_iterations-- <= 0;
 if ( $count-- < 0 ) {
-  warn "*** Tripped the ~{..~}' alamr.";
+  return 'OPEN BRACE';
   last;
 }
+    }
     $output .= $self->_format( $element, $arguments );
   }
   return $output;
@@ -652,8 +777,17 @@ sub _format {
       elsif ( $element->{format} eq '~d' ) {
         $output .= $self->__format_d( $element, $arguments );
       }
+      elsif ( $element->{format} eq '~f' ) {
+        $output .= $self->__format_f( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~\n' ) {
+        $output .= $self->__format_newline( $element, $arguments );
+      }
       elsif ( $element->{format} eq '~o' ) {
         $output .= $self->__format_o( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~p' ) {
+        $output .= $self->__format_p( $element, $arguments );
       }
       elsif ( $element->{format} eq '~%' ) {
         $output .= $self->__format_percent( $element, $arguments );
@@ -674,7 +808,7 @@ sub _format {
     elsif ( ref( $element ) and ref( $element ) eq 'ARRAY' ) {
       my ( $open, $_element, $close ) = @{ $element };
       my $_arguments;
-      if ( $arguments and ref( $arguments ) ) {
+      if ( $arguments and ref( $arguments ) eq 'ARRAY' ) {
         $_arguments = $arguments->[0];
       }
       if ( $open->{format} eq '~{' ) {

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,6 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 =pod
 
 (def-pprint-test format.justify.1
@@ -284,3 +287,5 @@ X CCC")
   t t)
 
 =cut
+
+}

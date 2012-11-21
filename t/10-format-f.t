@@ -527,7 +527,7 @@ use warnings;
 
 def_format_test 'format.f.43' =>
   "~,,,,',f",
-  [ 0,.0 ],
+  [ 0.0 ],
   "0.0";
 
 #(deftest format.f.44

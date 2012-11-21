@@ -65,19 +65,19 @@ sub def_format_test {
   my $stream = undef;
   if ( ref( $result ) and ref( $result ) eq 'CODE' ) {
     is_deeply( $f->format( $stream, $format, $args ), $result->(), $name ) or
-      diag( "  at test file $filename line $line" );
+      diag( "  at test file $filename line $line ($format)" );
   }
   elsif ( ref( $result ) ) {
     is_deeply( $f->format( $stream, $format, $args ), $result, $name ) or
-      diag( "  at test file $filename line $line" );
+      diag( "  at test file $filename line $line ($format)" );
   }
   else {
     is( $f->format( $stream, $format, $args ), $result, $name ) or
-      diag( "  at test file $filename line $line" );
+      diag( "  at test file $filename line $line ($format)" );
   }
   if ( $num_left ) {
     is( scalar @$args, $num_left, $name . " argument count" ) or
-      diag( "  at test file $filename line $line" );
+      diag( "  at test file $filename line $line ($format)" );
   }
 }
 

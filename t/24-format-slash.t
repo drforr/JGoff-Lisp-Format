@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,6 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 #(def-pprint-test format./.1
 #  (format nil "~/pprint-linear/" 1)
 #  "1")
@@ -131,3 +134,5 @@ use warnings;
 #      (format nil "~v,v,v,v,v,v,v,v,v,v@/cl-test::function-for-format-slash-19/" 1 2 3 4 5 6 7 8 9 10 12))
 #    ))
 #  ("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"))
+
+}
