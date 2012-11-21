@@ -21,12 +21,23 @@ Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 has parser => (
   is => 'rw',
   isa => 'JGoff::Lisp::Format::Parser',
-  default => sub{
+  default => sub {
     JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
   }
 );
 
-has arguments => ( is => 'rw', isa => 'ArrayRef' );
+has arguments => ( is => 'rw' );
+has argument_id => ( is => 'rw', isa => 'Int', default => 0 );
+
+sub inc_argument_id { $_[0]->argument_id( $_[0]->argument_id + 1 ) }
+
+sub current_argument { $_[0]->arguments->[ $_[0]->arguemnt_id ] }
+
+sub next_arguemnt {
+  my $self = shift;
+  $self->inc_argument_id;
+  $self->current_argument;
+}
 
 =head1 NAME
 
@@ -62,6 +73,17 @@ if you don't export anything, such as for a purely object-oriented module.
 =head2 format( $stream, $format, @args )
 
 =cut
+
+# {{{ char_name
+
+sub char_name {
+  my $self = shift;
+  my ( $char ) = @_;
+  return 'Space' if $char eq ' ';
+  return $char;
+}
+
+# }}}
 
 # {{{ _print_case( $argument )
 
@@ -139,9 +161,12 @@ sub _padding {
 
 sub __format_a {
   my $self = shift;
-  my ( $element , $arguments ) = @_;
+  my ( $element ) = @_;
+  my $arguments = $self->arguments;
+
   @{ $element }{qw( mincol minpad colinc padchar )} =
     ( 0, 0, 1, ' ' );
+
   if ( $element->{arguments} ) {
     my $mincol = shift @{ $element->{arguments} };
     my $colinc = shift @{ $element->{arguments} };
@@ -298,6 +323,21 @@ sub __format_b {
   }
 
   return $bits;
+}
+
+# }}}
+
+# {{{ __format_c
+
+sub __format_c {
+  my $self = shift;
+  my ( $element, $arguments ) = @_;
+
+  my $argument = shift @{ $arguments };
+  if ( $element->{colon} ) {
+    return $self->char_name( $argument );
+  }
+  return $argument;
 }
 
 # }}}
@@ -518,24 +558,85 @@ sub __format_p {
 
   my $argument = shift @{ $arguments };
   $argument = 0 unless defined $argument;
-  if ( $argument == 0 ) {
-    if ( $element->{at} ) {
-      return 'ies';
-    }
-    return 's';
+
+if ( $argument eq 'No' ) {
+  if ( $element->{at} and $element->{colon} ) {
+return '-A';
   }
-  elsif ( $argument == 1 ) {
-    if ( $element->{at} ) {
-      return 'y';
-    }
-    return '';
+  elsif ( $element->{colon} ) {
+return '-B';
   }
-  elsif ( $argument eq 'No' or $argument >= 2 ) {
-    if ( $element->{at} ) {
-      return 'ies';
-    }
-    return 's';
+  elsif ( $element->{at} ) {
+return '-C';
   }
+  else {
+return '-D';
+  }
+}
+elsif ( $argument == 0 ) {
+  if ( $element->{at} and $element->{colon} ) {
+return 'y';
+return 'A';
+  }
+  elsif ( $element->{colon} ) {
+return '';
+return 'B';
+  }
+  elsif ( $element->{at} ) {
+return 'ies';
+return 'C';
+  }
+  else {
+return 's';
+return 'D';
+  }
+}
+elsif ( $argument == 1 ) {
+  if ( $element->{at} and $element->{colon} ) {
+return 'E';
+  }
+  elsif ( $element->{colon} ) {
+return 'F';
+  }
+  elsif ( $element->{at} ) {
+return '';
+return 'G';
+  }
+  else {
+return '';
+return 'H';
+  }
+}
+elsif ( $argument >= 2 ) {
+  if ( $element->{at} and $element->{colon} ) {
+return 'I';
+  }
+  elsif ( $element->{colon} ) {
+return 'J';
+  }
+  elsif ( $element->{at} ) {
+return 'ies';
+return 'K';
+  }
+  else {
+return 's';
+return 'L';
+  }
+}
+else {
+  if ( $element->{at} and $element->{colon} ) {
+return 'M';
+  }
+  elsif ( $element->{colon} ) {
+return 'N';
+  }
+  elsif ( $element->{at} ) {
+return 'O';
+  }
+  else {
+return 'P';
+  }
+}
 
   return '';
 }
@@ -758,7 +859,8 @@ sub __format_vertical_bar {
 
 sub _format {
   my $self = shift;
-  my ( $tree, $arguments ) = @_;
+  my ( $tree ) = @_;
+  my $arguments = $self->arguments;
   my $output;
   for my $id ( 0 .. $#{ $tree } ) {
     my $element = $tree->[ $id ];
@@ -773,6 +875,9 @@ sub _format {
       }
       elsif ( $element->{format} eq '~b' ) {
         $output .= $self->__format_b( $element, $arguments );
+      }
+      elsif ( $element->{format} eq '~c' ) {
+        $output .= $self->__format_c( $element, $arguments );
       }
       elsif ( $element->{format} eq '~d' ) {
         $output .= $self->__format_d( $element, $arguments );
@@ -844,7 +949,9 @@ sub format {
   my ( $stream, $format, $arguments ) = @_;
 
   if ( my $tree = $self->parser->from_string( $format ) ) {
-    return $self->_format( $tree, $arguments );
+    $self->arguments( $arguments );
+    return $self->_format( $tree );
+    $self->arguments( undef );
   }
   
   return 'Not Caught';

@@ -9,7 +9,6 @@ use YAML;
 use base 'Exporter';
 our @EXPORT = qw(
   string
-  char_name
   def_format_test
   deftest
   formatter_call_to_string
@@ -30,12 +29,6 @@ sub string {
   croak "string() not given a character!" unless
      ref( $c ) and ref( $c ) =~ /Character/;
   return $c->toString;
-}
-
-sub char_name {
-  my $char = shift;
-  return 'Space' if $char eq ' ';
-  return $char;
 }
 
 sub with_standard_io_syntax(&) {

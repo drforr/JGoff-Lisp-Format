@@ -172,7 +172,7 @@ sub _atom {
     ] },
     sub { $self->expect( '!@#$%^&*this' ) },
     sub { $self->expect( qr{
-      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \]
+      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
           | [,':&]
     }x ) },
     sub { $self->__token_asterisk_open_bracket },
@@ -197,6 +197,7 @@ sub parse {
   my $self = shift;
   $self->_atoms;
 }
+sub pattern_ws { qr{} }
 
 =head1 AUTHOR
 

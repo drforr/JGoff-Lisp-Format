@@ -11,9 +11,8 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
+my $f = JGoff::Lisp::Format->new;
+
 ### Test of the ~C directive
 
 #(deftest format.c.1
@@ -61,7 +60,7 @@ SKIP: {
 def_format_test 'format.c.3' =>
   "~:C",
   [ " " ],
-  char_name( ' ' );
+  $f->char_name( ' ' );
 
 #(deftest format.c.4
 #  (loop for c across +standard-chars+
@@ -121,5 +120,3 @@ def_format_test 'format.c.3' =>
 #        do (incf count) and collect (list c s1 s2)
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
-
-}
