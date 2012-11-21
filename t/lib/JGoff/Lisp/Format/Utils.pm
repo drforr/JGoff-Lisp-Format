@@ -9,6 +9,7 @@ use YAML;
 use base 'Exporter';
 our @EXPORT = qw(
   string
+  char_name
   def_format_test
   deftest
   formatter_call_to_string
@@ -23,6 +24,12 @@ our @standard_chars =
   map { JGoff::Lisp::Format::Utils::Character->new( character => $_ ) }
       split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
 our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
+
+sub char_name {
+  my ( $char ) = @_;
+  return 'Space' if $char and $char eq ' ';
+  return $char;
+}
 
 sub string {
   my ( $c ) = shift;
@@ -68,10 +75,10 @@ sub def_format_test {
     is( $f->format( $stream, $format, $args ), $result, $name ) or
       diag( "  at test file $filename line $line ($format)" );
   }
-  if ( $num_left ) {
-    is( scalar @$args, $num_left, $name . " argument count" ) or
-      diag( "  at test file $filename line $line ($format)" );
-  }
+#  if ( $num_left ) {
+#    is( scalar @$args, $num_left, $name . " argument count" ) or
+#      diag( "  at test file $filename line $line ($format)" );
+#  }
 }
 
 sub deftest {

@@ -60,7 +60,7 @@ my $f = JGoff::Lisp::Format->new;
 def_format_test 'format.c.3' =>
   "~:C",
   [ " " ],
-  $f->char_name( ' ' );
+  char_name( ' ' );
 
 #(deftest format.c.4
 #  (loop for c across +standard-chars+

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 92;
+use Test::More tests => 84;
 use List::Util qw( min );
 
 BEGIN {

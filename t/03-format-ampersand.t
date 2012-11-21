@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 11;
+use Test::More tests => 10;
 
 BEGIN {
   use lib 't/lib';
