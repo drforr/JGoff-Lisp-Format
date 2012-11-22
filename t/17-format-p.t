@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 18;
+use Test::More tests => 16;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,9 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 16;
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 16;
 def_format_test 'format.p.1' =>
   "~p",
   [ 1 ],
@@ -29,7 +29,7 @@ def_format_test 'format.p.3' =>
   [ 0 ],
   "s";
 
-#def_format_test 'format.p.4' =>
+#def_format_test 'format.p.4' => # Perl has no useful float/integer distinction?
 #  "~P",
 #  [ 1.0 ],
 #  "s";
@@ -110,10 +110,10 @@ def_format_test 'format.p.16' =>
   [ 0 ],
   "ies";
 
-def_format_test 'format.p.17' =>
-  '~@P',
-  [ 1.0 ],
-  "ies";
+#def_format_test 'format.p.17' => # Again, perl doesn't distinguish well here.
+#  '~@P',
+#  [ 1.0 ],
+#  "ies";
 
 #(deftest format.p.18
 #  (loop for x in *universe*
@@ -130,4 +130,4 @@ def_format_test 'format.p.17' =>
 #          collect (list x s)))
 #  nil)
 
-}
+#}

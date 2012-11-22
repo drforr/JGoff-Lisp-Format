@@ -41,6 +41,15 @@ sub next_argument {
   return undef;
 }
 
+sub previous_argument {
+  my $self = shift;
+  if ( $self->arguments ) {
+    my $argument = $self->arguments->[ $self->argument_id - 2 ]; # XXX
+    return $argument;
+  }
+  return undef;
+}
+
 =head1 NAME
 
 JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
@@ -389,7 +398,7 @@ sub __format_d {
   my $argument = $self->next_argument;
   my $sign = 1;
 
-  if ( $argument and $argument < 0 ) {
+  if ( $argument and $argument !~ /[^-+0-9.]/ and $argument < 0 ) {
     $sign = -1;
     $argument = abs( $argument );
   }
@@ -565,86 +574,52 @@ sub __format_p {
   my ( $element ) = @_;
 
   my $argument = $self->next_argument;
-  $argument = 0 unless defined $argument;
 
-if ( $argument eq 'No' ) {
-  if ( $element->{at} and $element->{colon} ) {
-return '-A';
-  }
-  elsif ( $element->{colon} ) {
-return '-B';
-  }
-  elsif ( $element->{at} ) {
-return '-C';
-  }
-  else {
-return '-D';
-  }
-}
-elsif ( $argument == 0 ) {
-  if ( $element->{at} and $element->{colon} ) {
-return 'y';
-return 'A';
-  }
-  elsif ( $element->{colon} ) {
-return '';
-return 'B';
-  }
-  elsif ( $element->{at} ) {
-return 'ies';
-return 'C';
-  }
-  else {
-return 's';
-return 'D';
-  }
-}
-elsif ( $argument == 1 ) {
-  if ( $element->{at} and $element->{colon} ) {
-return 'E';
-  }
-  elsif ( $element->{colon} ) {
-return 'F';
+  if ( $element->{colon} ) {
+    $argument = $self->previous_argument;
+    if ( $element->{at} ) {
+      if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
+        return 'ies';
+      }
+      elsif ( $argument and $argument == 1 ) {
+        return 'y';
+      }
+      elsif ( $argument and $argument == 2 ) {
+        return 'ies';
+      }
+    }
+    if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
+      return 's';
+    }
+    elsif ( $argument and $argument == 1 ) {
+      return '';
+    }
+    elsif ( $argument and $argument == 2 ) {
+      return 's';
+    }
   }
   elsif ( $element->{at} ) {
-return '';
-return 'G';
+    if ( defined $argument and $argument == 0 ) {
+      return 'ies';
+    }
+    elsif ( $argument and $argument == 1 ) {
+      return 'y';
+    }
+    elsif ( $argument and $argument == 2 ) {
+      return 'ies';
+    }
   }
   else {
-return '';
-return 'H';
+    if ( defined $argument and $argument == 0 ) {
+      return 's';
+    }
+    elsif ( $argument and $argument == 1 ) {
+      return '';
+    }
+    elsif ( $argument and $argument == 2 ) {
+      return 's';
+    }
   }
-}
-elsif ( $argument >= 2 ) {
-  if ( $element->{at} and $element->{colon} ) {
-return 'I';
-  }
-  elsif ( $element->{colon} ) {
-return 'J';
-  }
-  elsif ( $element->{at} ) {
-return 'ies';
-return 'K';
-  }
-  else {
-return 's';
-return 'L';
-  }
-}
-else {
-  if ( $element->{at} and $element->{colon} ) {
-return 'M';
-  }
-  elsif ( $element->{colon} ) {
-return 'N';
-  }
-  elsif ( $element->{at} ) {
-return 'O';
-  }
-  else {
-return 'P';
-  }
-}
 
   return '';
 }
