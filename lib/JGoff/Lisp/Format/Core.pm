@@ -246,30 +246,12 @@ sub __format_a {
 
 sub __format_ampersand {
   my $self = shift;
-  my ( $element, $is_not_first ) = @_;
-  $element->{n} = 0;
-  if ( $element->{arguments} ) {
-    my $n = shift @{ $element->{arguments} };
-
-    $element->{n} = $n if defined $n;
-  }
-  delete $element->{arguments};   
-
-  if ( $element->{n} and $element->{n} eq 'v' ) {
-    $element->{n} = $self->next_argument;
-  }
-  elsif ( $element->{n} and $element->{n} eq '#' ) {
-    $element->{n} = scalar @{ $self->arguments };
-  }
-  $element->{n} = 0 unless defined $element->{n};
-
-  my $argument = $self->next_argument;
-
-  if ( $is_not_first ) {
+  my ( $element, $is_first, $before_percent ) = @_;
+  if ( !$is_first and !$before_percent ) {
     return "\n";
   }
 
-  return "\n" x $element->{n};
+  return "";
 }
 
 # }}}
@@ -741,7 +723,7 @@ sub __format_newline {
 sub __format_percent {
   my $self = shift;
   my ( $element ) = @_;
-  $element->{n} = 0;
+  $element->{n} = 1;
   if ( $element->{arguments} ) {
     my $n = shift @{ $element->{arguments} };
 
@@ -755,8 +737,7 @@ sub __format_percent {
   elsif ( $element->{n} and $element->{n} eq '#' ) {
     $element->{n} = defined $self->arguments ? scalar @{ $self->arguments } : 0;
   }
-  $element->{n} = 0 unless defined $element->{n};
-
+  $element->{n} = 1 unless defined $element->{n};
   return "\n" x $element->{n};
 }
 
@@ -851,8 +832,13 @@ sub _format {
         $output .= $self->__format_a( $element );
       }
       elsif ( $element->{format} eq '~&' ) {
-        $output .= $self->__format_ampersand( $element, ( $id > 0 )
-        );
+        my $is_first = $id == 0;
+        my $before_percent =
+          ( $id > 0 and
+            ref( $tree->[ $id - 1 ] ) and
+            ref( $tree->[ $id - 1 ] ) eq 'HASH' and
+            $tree->[ $id - 1 ]->{format} eq '~%' ) ? 1 : 0;
+        $output .= $self->__format_ampersand( $element, $is_first, $before_percent );
       }
       elsif ( $element->{format} eq '~b' ) {
         $output .= $self->__format_b( $element );
@@ -946,9 +932,6 @@ Jeff Goff, C<< <jgoff at cpan.org> >>
 Please report any bugs or feature requests to C<bug-jgoff-lisp-format at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=JGoff-Lisp-Format>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
-
 
 =head1 SUPPORT
 

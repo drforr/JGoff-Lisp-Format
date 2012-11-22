@@ -29,7 +29,7 @@ SKIP: {
 def_format_test 'format.s.2' =>
   "~:s",
   [ undef ],
-  "()";
+  "[]";
 
 #(deftest format.s.3
 #  (let ((*print-readably* nil)
@@ -247,7 +247,7 @@ def_format_test 'format.s.15' =>
 def_format_test 'format.s.16' =>
   "~v:S",
   [ undef, undef ],
-  "()";
+  "[]";
 
 def_format_test 'format.s.17' =>
   '~@S',
@@ -262,12 +262,12 @@ def_format_test 'format.s.18' =>
 def_format_test 'format.s.19' =>
   '~v:@s',
   [ undef, undef ],
-  "()";
+  "[]";
 
 def_format_test 'format.s.20' =>
   '~v@:s',
   [ undef, undef ],
-  "()";
+  "[]";
 
 ### With colinc specified
 

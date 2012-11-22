@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 16;
 def_format_test 'format.p.1' =>
   "~p",
   [ 1 ],
@@ -129,5 +126,3 @@ def_format_test 'format.p.16' =>
 #          unless (or (eql x 1) (string= s "ies"))
 #          collect (list x s)))
 #  nil)
-
-#}
