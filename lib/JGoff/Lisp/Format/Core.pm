@@ -139,7 +139,7 @@ sub _commify {
 
 # }}}
 
-# {{{ _padding ( $element, $argument )
+# {{{ _padding ( $element, $argumenet )
 
 sub _padding {
   my ( $self, $element, $argument ) = @_;
@@ -164,6 +164,22 @@ sub _padding {
   else {
     $argument = $argument . $padding;
   }
+}
+
+# }}}
+
+# {{{ __format_text
+
+sub __format_text {
+  my $self = shift;
+  my ( $element, $before_newline, $nl_colon ) = @_;
+  my $text = $element->{arguments}[0];
+  $text = '' unless defined $text;
+
+  if ( $before_newline and !$nl_colon ) {
+    $text =~ s{ ^ \s+ }{}x;
+  }
+  return $text;
 }
 
 # }}}
@@ -697,23 +713,8 @@ sub __format_x {
 sub __format_newline {
   my $self = shift;
   my ( $element ) = @_;
-  $element->{n} = 1;
-  if ( $element->{arguments} ) {
-    my $n = shift @{ $element->{arguments} };
-
-    $element->{n} = $n if defined $n;
-  }
-  delete $element->{arguments};   
-
-  if ( $element->{n} and $element->{n} eq 'v' ) {
-    $element->{n} = $self->next_argument;
-  }
-  elsif ( $element->{n} and $element->{n} eq '#' ) {
-    $element->{n} = defined $self->arguments ? scalar @{ $self->arguments } : 0;
-  }
-  $element->{n} = 0 unless defined $element->{n};
-
-  return "\n" x $element->{n};
+  return "\n" if $element->{at};
+  return "";
 }
 
 # }}}
@@ -824,20 +825,34 @@ sub __format_vertical_bar {
 sub _format {
   my $self = shift;
   my ( $tree ) = @_;
-  my $output;
+  my $output = '';
   for my $id ( 0 .. $#{ $tree } ) {
     my $element = $tree->[ $id ];
     if( ref( $element ) and ref( $element ) eq 'HASH' ) {
-      if ( $element->{format} eq '~a' ) {
+      if ( $element->{format} eq 'text' ) {
+        my $before_newline = 0;
+        $before_newline = 1 if
+          $id > 0 and
+          ref( $tree->[ $id - 1 ] ) and
+          ref( $tree->[ $id - 1 ] ) eq 'HASH' and
+          $tree->[ $id - 1 ]->{format} eq '~\n';
+        my $nl_colon = 0;
+        $nl_colon = 1 if
+          $before_newline and
+          $tree->[ $id - 1 ]->{colon};
+        $output .= $self->__format_text( $element, $before_newline, $nl_colon );
+      }
+      elsif ( $element->{format} eq '~a' ) {
         $output .= $self->__format_a( $element );
       }
       elsif ( $element->{format} eq '~&' ) {
         my $is_first = $id == 0;
-        my $before_percent =
-          ( $id > 0 and
-            ref( $tree->[ $id - 1 ] ) and
-            ref( $tree->[ $id - 1 ] ) eq 'HASH' and
-            $tree->[ $id - 1 ]->{format} eq '~%' ) ? 1 : 0;
+        my $before_percent = 0;
+        $before_percent = 1 if
+          $id > 0 and
+          ref( $tree->[ $id - 1 ] ) and
+          ref( $tree->[ $id - 1 ] ) eq 'HASH' and
+          $tree->[ $id - 1 ]->{format} eq '~%';
         $output .= $self->__format_ampersand( $element, $is_first, $before_percent );
       }
       elsif ( $element->{format} eq '~b' ) {
@@ -899,9 +914,9 @@ sub _format {
         );
       }
     }
-    else {
-      $output .= $element;
-    }
+#    else {
+#      $output .= $element;
+#    }
 
   }
   return $output;

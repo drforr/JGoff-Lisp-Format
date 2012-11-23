@@ -84,6 +84,22 @@ sub ___parse_token {
 
 # }}}
 
+# {{{ ___parse_text
+
+# Tear apart the token to get at the component args.
+# This will probably be replaced with REs when I figure out a nice way to do so.
+#
+sub ___parse_text {
+  my $self = shift;
+  my ( $match ) = @_;
+  return {
+   format => q{text},
+   arguments => [ $match ]
+  }
+}
+
+# }}}
+
 # Basic Output - c % & | ~
 # Radix Control - r d b o x
 # Floating-point printers - f e g $
@@ -159,6 +175,19 @@ sub __token_close_brace {
   return $self->___parse_token( $match );
 }
 
+sub __token_text {
+  my $self = shift;
+  my $match = $self->any_of(
+    sub { $self->expect( '!@#$%^&*this' ) },
+    sub { $self->expect( qr{
+      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
+          | [,':&]
+    }x ) },
+  );
+  my $rv = $self->___parse_text( $match );
+  return $rv;
+}
+
 # {{{ _atom
 
 sub _atom {
@@ -170,11 +199,7 @@ sub _atom {
       $self->_atoms,
       $self->__token_close_brace
     ] },
-    sub { $self->expect( '!@#$%^&*this' ) },
-    sub { $self->expect( qr{
-      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
-          | [,':&]
-    }x ) },
+    sub { $self->__token_text },
     sub { $self->__token_asterisk_open_bracket },
     sub { $self->__token_a_b_d_o_s_x },
     sub { $self->__token_ampersand_percent_pipe_tilde },

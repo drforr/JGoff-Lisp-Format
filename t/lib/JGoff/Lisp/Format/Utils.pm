@@ -33,8 +33,7 @@ sub char_name {
 
 sub string {
   my ( $c ) = shift;
-  croak "string() not given a character!" unless
-     ref( $c ) and ref( $c ) =~ /Character/;
+  return $c unless ref( $c ) =~ /Character/;
   return $c->toString;
 }
 

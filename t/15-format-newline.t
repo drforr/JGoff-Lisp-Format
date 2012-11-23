@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 3;
 def_format_test 'format.newline.1' =>
   concatenate( "~", "\n", "   X" ),
   undef,
@@ -27,6 +24,4 @@ def_format_test 'format.newline.2' =>
 def_format_test 'format.newline.3' =>
   concatenate( "A~@", "\n", " X" ),
   undef,
-  #.(concatenate 'string "A" (string #\Newline) "X");
-
-}
+  concatenate( string( "A" ), string( "\n" ), "X" );
