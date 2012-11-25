@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 37;
+use Test::More tests => 31;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -284,11 +284,12 @@ def_format_test 'format.r.16' =>
 
 SKIP: {
   diag "Make these tests work";
-  skip 'Not ready yet', 23;
+  skip 'Not ready yet', 1;
 def_format_test 'format.r.17' =>
   '~8,10:@r',
   [ 0526104 ],
   "  +526,104";
+}
 
 #(defparameter *english-ordinal-names*
 #  '("zeroth"
@@ -414,10 +415,14 @@ def_format_test 'format.r.22' =>
   [ 0b1011101 ],
   "1*011*101";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
   [ _ternary_to_decimal( '1021101' ) ],
   "XXXXX1,021,101";
+}
 
 ### v directive in various positions
 
@@ -441,6 +446,9 @@ def_format_test 'format.r.24' =>
 #          collect (list i s)))
 #  nil)
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 3;
 def_format_test 'format.r.26' =>
   "~10,#r",
   [ 12345, undef, undef, undef, undef, undef ],
@@ -456,6 +464,7 @@ def_format_test 'format.r.28' =>
   "~10,,,v:r",
   [ '/', 123456789 ],
   "123/456/789";
+}
 
 def_format_test 'format.r.29' =>
   "~10,,,v:r",
@@ -490,10 +499,14 @@ def_format_test 'format.r.34' =>
   [ 12345 ],
   "12345";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 def_format_test 'format.r.35' =>
   "~10,+8r",
   [ 12345 ],
   "   12345";
+}
 
 def_format_test 'format.r.36' =>
   "~10,0r",
@@ -539,5 +552,3 @@ def_format_test 'format.r.38' =>
 #                 (string= s1 s3))
 #     collect (list radix mincol padchar commachar commaint fmt x s1 s2 s3)))
 #  nil)
-
-}

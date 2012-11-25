@@ -561,8 +561,8 @@ sub __format_r {
   $self->_resolve_arguments(
     $operation, [
       [ 'radix' => 10 ],
-#      [ 'mincol' => 0 ],
-#      [ 'padchar' => ' ' ],
+      [ 'mincol' => 0 ],
+      [ 'colinc' => 1 ],
       [ 'commachar' => ',' ],
       [ 'comma-interval' => 3 ],
     ]
