@@ -364,16 +364,24 @@ deftest 'format.b.8' => sub {
 ### NIL arguments
 
 def_format_test 'format.b.14' =>
-  "~vb", [ undef, 0b110100 ], "110100";
+  "~vb",
+  [ undef, 0b110100 ],
+  "110100";
 
 def_format_test 'format.b.15' =>
-  "~6,vB", [ undef, 0b100 ], "   100";
+  "~6,vB",
+  [ undef, 0b100 ],
+  "   100";
 
 def_format_test 'format.b.16' =>
-  "~,,v:b", [ undef, 0b10011 ], "10,011";
+  "~,,v:b",
+  [ undef, 0b10011 ],
+  "10,011";
 
 def_format_test 'format.b.17' =>
-  "~,,'*,v:B", [ undef, 0b10110 ], "10*110";
+  "~,,'*,v:B",
+  [ undef, 0b10110 ],
+  "10*110";
 
 ### When the argument is not an integer, print as if using ~A and base 10
 
@@ -502,21 +510,31 @@ def_format_test 'format.b.17' =>
 #  "+1100100010")
 
 def_format_test 'format.b.25' =>
-  "~+10b",  [ 0b1101 ], "      1101";
+  "~+10b",
+   [ 0b1101 ],
+  "      1101";
 
 def_format_test 'format.b.26' =>
-  '~+10@B', [ 0b1101 ], "     +1101";
+  '~+10@B',
+  [ 0b1101 ],
+  "     +1101";
 
 def_format_test 'format.b.27' =>
-  "~-1b", [ 0b1101 ], "1101";
+  "~-1b",
+  [ 0b1101 ],
+  "1101";
 
 def_format_test 'format.b.28' =>
-  "~-1000000000000000000B", [ 0b1101 ], "1101";
+  "~-1000000000000000000B",
+  [ 0b1101 ],
+  "1101";
 
 def_format_test 'format.b.29' =>
-  "~vb", [ $JGoff::Lisp::Format::Utils::most_negative_fixnum, 0b1101 ], "1101";
+  "~vb",
+  [ $JGoff::Lisp::Format::Utils::most_negative_fixnum, 0b1101 ],
+  "1101";
 
-#;;; Randomized test
+### Randomized test
 
 #(deftest format.b.30
 #  (let ((fn (formatter "~V,V,V,VB")))

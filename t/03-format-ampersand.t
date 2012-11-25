@@ -11,16 +11,24 @@ use strict;
 use warnings;
 
 def_format_test 'format.&.1' =>
-  "~0&", undef, "";
+  "~0&",
+  undef,
+  "";
 
 def_format_test 'format.&.2' =>
-  "~&", undef, "";
+  "~&",
+  undef,
+  "";
 
 def_format_test 'format.&.3' =>
-  "X~&", undef, concatenate( "X", "\n" );
+  "X~&",
+  undef,
+  concatenate( "X", "\n" );
 
 def_format_test 'format.&.4' =>
-  "X~%~&", undef, concatenate( "X", "\n" );
+  "X~%~&",
+  undef,
+  concatenate( "X", "\n" );
 
 #(deftest format.&.5
 #  (loop for i from 1 to 100
@@ -65,10 +73,14 @@ def_format_test 'format.&.4' =>
 #  nil)
 
 def_format_test 'format.&.7' =>
-  "~v&", [ undef ], "";
+  "~v&",
+  [ undef ],
+  "";
 
 def_format_test 'format.&.8' =>
-  "X~v&", [ undef ], concatenate( "X", "\n" );
+  "X~v&",
+  [ undef ],
+  concatenate( "X", "\n" );
 
 #(deftest format.&.9
 #  (loop for i from 1 to 100
@@ -109,10 +121,14 @@ def_format_test 'format.&.8' =>
 #  nil)
 
 def_format_test 'format.&.11' =>
-  "X~V%", [ 0 ], "X";
+  "X~V%",
+  [ 0 ],
+  "X";
 
 def_format_test 'format.&.12' =>
-  "X~#%", undef, "X";
+  "X~#%",
+  undef,
+  "X";
 
 def_format_test 'format.&.13' =>
   "X~#%", [ "a", "b", "c" ], sub {

@@ -467,7 +467,7 @@ sub __format_p {
       elsif ( $argument and $argument == 1 ) {
         return 'y';
       }
-      elsif ( $argument and $argument == 2 ) {
+      elsif ( $argument and $argument >= 2 ) {
         return 'ies';
       }
     }
@@ -477,7 +477,7 @@ sub __format_p {
     elsif ( $argument and $argument == 1 ) {
       return '';
     }
-    elsif ( $argument and $argument == 2 ) {
+    elsif ( $argument and $argument >= 2 ) {
       return 's';
     }
   }
@@ -489,7 +489,7 @@ sub __format_p {
     elsif ( $argument and $argument == 1 ) {
       return 'y';
     }
-    elsif ( $argument and $argument == 2 ) {
+    elsif ( $argument and $argument >= 2 ) {
       return 'ies';
     }
   }
@@ -501,7 +501,7 @@ sub __format_p {
     elsif ( $argument and $argument == 1 ) {
       return '';
     }
-    elsif ( $argument and $argument == 2 ) {
+    elsif ( $argument and $argument >= 2 ) {
       return 's';
     }
   }
