@@ -612,6 +612,57 @@ sub __format_r {
 
 # }}}
 
+# {{{ __format_s
+
+sub __format_s {
+  my $self = shift;
+  my ( $operation ) = @_;
+  $self->_resolve_arguments(
+    $operation, [
+      [ 'mincol' => 0 ],
+      [ 'colinc' => 1 ],
+      [ 'minpad' => 0 ],
+      [ 'padchar' => ' ' ] ] );
+
+  my $argument;
+  if ( $self->arguments and
+       ref( $self->arguments ) and
+       ref( $self->arguments ) eq 'ARRAY' ) {
+    $argument = $self->advance_argument;
+  }
+
+# Strip escape characters
+
+  if ( !defined $argument ) {
+    if ( $operation->{colon} ) {
+      return '[]';
+    }
+    $argument = $self->_padding( $operation, 'undef' );
+    return $self->_print_case( $argument );
+  }
+  elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
+   my $sub = $self->new(
+     stream => $self->stream,
+     format => $operation->{format},
+     arguments => $argument,
+
+     print_case => $self->print_case,
+   );
+   return '[' . $sub->apply . ']';
+  }
+  elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
+    return $argument->toString;
+  }
+  else {
+    $argument = $self->_padding( $operation, $argument );
+    return $argument;
+  }
+  
+  return $argument;
+}
+
+# }}}
+
 # {{{ __format_x
 
 sub __format_x {
@@ -796,6 +847,9 @@ sub _format {
       }
       elsif ( $operation->{format} eq '~r' ) {
         $output .= $self->__format_r( $operation );
+      }
+      elsif ( $operation->{format} eq '~s' ) {
+        $output .= $self->__format_s( $operation );
       }
       elsif ( $operation->{format} eq '~~' ) {
         $output .= $self->__format_tilde( $operation );

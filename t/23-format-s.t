@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 33;
 #(deftest format.s.1
 #  (let ((*print-readably* nil)
 #        (*print-case* :upcase))
@@ -271,45 +268,49 @@ def_format_test 'format.s.20' =>
 
 ### With colinc specified
 
+#
+# Changed the constants in order to account for 'NIL' => 'UNDEF'.
+#
+
 def_format_test 'format.s.21' =>
-  "~3,1s",
+  "~5,1s",
   [ undef ],
   "UNDEF";
 
 def_format_test 'format.s.22' =>
-  "~4,3s",
+  "~6,3s",
   [ undef ],
-  "NIL   "; # XXX
+  "UNDEF   ";
 
 def_format_test 'format.s.23' =>
-  '~3,3@s',
-  [ undef ],
-  "UNDEF"; # XXX
-
-def_format_test 'format.s.24' =>
-  '~4,4@s',
-  [ undef ],
-  "    NIL"; # XXX
-
-def_format_test 'format.s.25' =>
   '~5,3@s',
   [ undef ],
-  "   NIL"; # XXX
+  "UNDEF";
+
+def_format_test 'format.s.24' =>
+  '~6,4@s',
+  [ undef ],
+  "    UNDEF";
+
+def_format_test 'format.s.25' =>
+  '~9,5@s',
+  [ undef ],
+  "     UNDEF";
 
 def_format_test 'format.s.26' =>
-  "~5,3S",
+  "~9,5S",
   [ undef ],
-  "NIL   "; # XXX
+  "UNDEF     ";
 
 def_format_test 'format.s.27' =>
-  '~7,3@s',
+  '~11,5@s',
   [ undef ],
-  "      NIL"; # XXX
+  "          UNDEF";
 
 def_format_test 'format.s.28' =>
-  "~7,3S",
+  "~11,5S",
   [ undef ],
-  "NIL      "; # XXX
+  "UNDEF          ";
 
 ### With minpad
 
@@ -468,5 +469,3 @@ def_format_test 'format.s.48' =>
   '~5,v@S',
   [ 3, 789 ],
   "   789";
-
-}
