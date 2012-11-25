@@ -54,7 +54,8 @@ sub ___parse_token {
   $match =~ s{^~}{}; # Remove the tilde
   while ( $match =~ s{ ^ $PARAMETER? , }{}x ) {
     my $value = $1;
-    if ( $value ) {
+    #if ( $value ) {
+    if ( defined $value ) {
       $value = $value + 0 if $value =~ m{ ^ [-+] }x; # Numify numbers
       $value = lc $value if $value eq 'V';           # Canonicalize 'V'
     }

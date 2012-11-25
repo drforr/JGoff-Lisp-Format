@@ -49,6 +49,22 @@ sub advance_argument {
   return undef;
 }
 
+sub reset_argument {
+  my $self = shift;
+  if ( $self->arguments ) {
+    $self->argument_id( 0 );
+  }
+}
+sub retard_argument {
+  my $self = shift;
+  if ( $self->arguments ) {
+    $self->argument_id( $self->argument_id - 1 );
+    my $argument = $self->arguments->[ $self->argument_id ];
+    return $argument;
+  }
+  return undef;
+}
+
 sub previous_argument {
   my $self = shift;
   if ( $self->arguments ) {
@@ -205,11 +221,11 @@ sub _resolve_arguments {
   }
   for my $tuple ( @$tuples ) {
     my ( $name, $default ) = @$tuple;
-    if ( $operation->{$name} and $operation->{$name} eq 'v' ) {
+    if ( defined $operation->{$name} and $operation->{$name} eq 'v' ) {
       $operation->{$name} = $self->advance_argument;
       $operation->{"$name-v"} = 1;
     }
-    elsif ( $operation->{$name} and $operation->{$name} eq '#' ) {
+    elsif ( defined $operation->{$name} and $operation->{$name} eq '#' ) {
       $operation->{$name} = scalar @{ $self->arguments };
     }
   }
@@ -320,6 +336,36 @@ sub __format_ampersand {
   my ( $operation, $is_first, $before_percent ) = @_;
   if ( !$is_first and !$before_percent ) {
     return "\n";
+  }
+
+  return "";
+}
+
+# }}}
+
+# {{{ __format_asterisk
+
+sub __format_asterisk {
+  my $self = shift;
+  my ( $operation ) = @_;
+  $self->_resolve_arguments(
+    $operation, [
+      [ 'n' => 1 ],
+    ]
+  );
+
+  if ( $operation->{colon} ) {
+    for ( 1 .. $operation->{n} ) {
+      $self->retard_argument;
+    }
+  }
+  elsif ( $operation->{at} ) {
+    $self->retard_argument;
+  }
+  else {
+    if ( defined $operation->{n} and $operation->{n} == 1 ) {
+      $self->advance_argument;
+    }
   }
 
   return "";
@@ -817,6 +863,9 @@ sub _format {
           ref( $tree->[ $id - 1 ] ) eq 'HASH' and
           $tree->[ $id - 1 ]->{format} eq '~%';
         $output .= $self->__format_ampersand( $operation, $is_first, $before_percent );
+      }
+      elsif ( $operation->{format} eq '~*' ) {
+        $output .= $self->__format_asterisk( $operation );
       }
       elsif ( $operation->{format} eq '~b' ) {
         $output .= $self->__format_b( $operation );

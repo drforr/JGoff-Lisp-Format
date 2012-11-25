@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 44;
 ### ~*
 
 def_format_test 'format.*.1' =>
@@ -42,6 +39,9 @@ def_format_test 'format.*.5' =>
   [ 1, undef, 2, 3 ],
   "13";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 4;
 def_format_test 'format.*.6' =>
   "~A~1{~A~*~A~}~A",
   [ 0, [ 1, 2, 3 ],  4 ],
@@ -61,6 +61,7 @@ def_format_test 'format.*.9' =>
   "~A~{~A~A~A~A~v*~^~A~A~A~A~}~A",
   [ 0, [ 1, 2, 3, 4, undef, 6, 7, 8, 9, 'A' ],  5 ],
   "01234789A5";
+}
 
 ### ~:*
 
@@ -87,6 +88,9 @@ def_format_test 'format.\:*.4' =>
   "121",
   2;
 
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 31;
 def_format_test 'format.\:*.5' =>
   "~A~A~v:*~A",
   [ 1, 2, 0, 3 ],
@@ -101,9 +105,12 @@ def_format_test 'format.\:*.6' =>
 def_format_test 'format.\:*.7' =>
   "~A~A~v:*~A",
   [ 6, 7, undef, 3 ],
-  "67NIL",
+  "67UNDEF",
   1;
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 6;
 def_format_test 'format.\:*.8' =>
   "~A~1{~A~:*~A~}~A",
   [ 0, [ 1, 2, 3 ],  4 ],
@@ -133,9 +140,13 @@ def_format_test 'format.\:*.13' =>
   "~A~{~A~A~A~A~v:*~^~A~}~A",
   [ 0, [ 1, 2, 3, 4, undef ],  5 ],
   "01234NIL5";
+}
 
 ### ~@*
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 22;
 def_format_test 'format.@*.1' =>
   '~A~A~@*~A~A',
   [ 1, 2, 3, 4 ],
