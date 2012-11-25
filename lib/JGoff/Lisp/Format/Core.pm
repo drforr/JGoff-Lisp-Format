@@ -511,6 +511,37 @@ sub __format_p {
 
 # }}}
 
+# {{{ __format_question
+
+sub __format_question {
+  my $self = shift;
+  my ( $operation ) = @_;
+
+  if ( $operation->{at} ) {
+    my $format = $self->advance_argument;
+    my $arguments = $self->advance_argument;
+    my $sub_self = $self->new(
+      stream => $self->stream,
+      format => $format,
+      arguments => $arguments
+    );
+    return $sub_self->apply;
+  }
+  else {
+    my $format = $self->advance_argument;
+    my $arguments = $self->advance_argument;
+    my $sub_self = $self->new(
+      stream => $self->stream,
+      format => $format,
+      arguments => $arguments
+    );
+    return $sub_self->apply;
+  }
+  return '';
+}
+
+# }}}
+
 # {{{ __format_x
 
 sub __format_x {
@@ -694,6 +725,9 @@ sub _format {
       }
       elsif ( $operation->{format} eq '~%' ) {
         $output .= $self->__format_percent( $operation );
+      }
+      elsif ( $operation->{format} eq '~?' ) {
+        $output .= $self->__format_question( $operation );
       }
       elsif ( $operation->{format} eq '~~' ) {
         $output .= $self->__format_tilde( $operation );
