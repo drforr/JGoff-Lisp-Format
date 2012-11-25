@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 28;
 ### Test of various radixes
 
 #(deftest format.r.1
@@ -47,6 +44,9 @@ SKIP: {
 #         collect (list i x s1 s2)))
 #  nil)
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 28;
 def_format_test 'format.r.2' =>
   "~2r",
   [ 14 ],
@@ -57,6 +57,9 @@ def_format_test 'format.r.3' =>
   [ 29 ],
   "1002";
 
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 26;
 #(deftest format.r.4
 #  (loop for base from 2 to 36
 #        nconc

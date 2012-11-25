@@ -225,6 +225,25 @@ sub _resolve_arguments {
 
 # }}}
 
+# {{{ _convert_base( $argument, $base ) # base 2-36
+
+sub _convert_base {
+  my $self = shift;
+  my ( $argument, $base ) = @_;
+  my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
+  my $digits = '';
+
+  while ( $argument > 0 ) {
+    my $digit = $argument % $base;
+    $digits = $radix[ $digit ] . $digits;
+    $argument -= $digit;
+    $argument /= $base;
+  }
+  return $digits;
+}
+
+# }}}
+
 # {{{ __format_text
 
 sub __format_text {
@@ -322,21 +341,16 @@ sub __format_b {
   );
 
   my $argument = $self->advance_argument;
-  my $bits = '';
-  while ( $argument > 0 ) {
-    my $bit = $argument % 2;
-    $bits = $bit . $bits;
-    $argument -= $bit;
-    $argument /= 2;
+  $argument = $self->_convert_base( $argument, 2 );
+  $argument = $self->_commify( $argument, $operation );
+
+  if ( $argument and
+       $operation->{mincol} > 0 and
+       length( $argument ) < $operation->{mincol} ) {
+    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
+                $argument;
   }
-
-  $bits = $self->_commify( $bits, $operation );
-
-  if ( $bits and $operation->{mincol} > 0 and length( $bits ) < $operation->{mincol} ) {
-    $bits = ' ' x ( $operation->{mincol} - length( $bits ) ) . $bits;
-  }
-
-  return $bits;
+  return $argument;
 }
 
 # }}}
@@ -433,21 +447,17 @@ sub __format_o {
   );
 
   my $argument = $self->advance_argument;
-  my $bits = '';
-  while ( $argument > 0 ) {
-    my $bit = $argument % 8;
-    $bits = $bit . $bits;
-    $argument -= $bit;
-    $argument /= 8;
+  $argument = $self->_convert_base( $argument, 8 );
+  $argument = $self->_commify( $argument, $operation );
+
+  if ( $argument and
+       $operation->{mincol} > 0 and
+       length( $argument ) < $operation->{mincol} ) {
+    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
+                $argument;
   }
 
-  $bits = $self->_commify( $bits, $operation );
-
-  if ( $bits and $operation->{mincol} > 0 and length( $bits ) < $operation->{mincol} ) {
-    $bits = ' ' x ( $operation->{mincol} - length( $bits ) ) . $bits;
-  }
-
-  return $bits;
+  return $argument;
 }
 
 # }}}
@@ -542,6 +552,35 @@ sub __format_question {
 
 # }}}
 
+# {{{ __format_r
+
+sub __format_r {
+  my $self = shift;
+  my ( $operation ) = @_;
+  $self->_resolve_arguments(
+    $operation, [
+      [ 'radix' => 10 ]
+#      [ 'mincol' => 0 ],
+#      [ 'padchar' => ' ' ],
+#      [ 'commachar' => ',' ],
+#      [ 'comma-interval' => 3 ],
+    ]
+  );
+
+  my $argument = $self->advance_argument;
+  $argument = $self->_commify( $argument, $operation );
+
+  if ( $argument and
+       $operation->{mincol} > 0 and
+       length( $argument ) < $operation->{mincol} ) {
+    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) . $argument;
+  }
+
+  return $argument;
+}
+
+# }}}
+
 # {{{ __format_x
 
 sub __format_x {
@@ -557,23 +596,18 @@ sub __format_x {
   );
 
   my $argument = $self->advance_argument;
-  my @hexadecimal = qw( 0 1 2 3 4 5 6 7 8 9 a b c d e f );
-  my $bits = '';
+  $argument = $self->_convert_base( $argument, 16 );
 
-  while ( $argument > 0 ) {
-    my $bit = $argument % 16;
-    $bits = $hexadecimal[ $bit ] . $bits;
-    $argument -= $bit;
-    $argument /= 16;
+  $argument = $self->_commify( $argument, $operation );
+
+  if ( $argument and
+       $operation->{mincol} > 0 and
+       length( $argument ) < $operation->{mincol} ) {
+    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
+                $argument;
   }
 
-  $bits = $self->_commify( $bits, $operation );
-
-  if ( $bits and $operation->{mincol} > 0 and length( $bits ) < $operation->{mincol} ) {
-    $bits = ' ' x ( $operation->{mincol} - length( $bits ) ) . $bits;
-  }
-
-  return $bits;
+  return $argument;
 }
 
 # }}}
