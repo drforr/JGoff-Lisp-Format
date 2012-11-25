@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 30;
+use Test::More tests => 37;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,21 @@ BEGIN {
 
 use strict;
 use warnings;
+
+sub _ternary_to_decimal {
+  my $ternary = shift;
+  my $decimal = 0;
+  for my $ch ( split //, $ternary ) {
+    $decimal *= 3;
+    $decimal += $ch;
+  }
+  return $decimal;
+}
+
+is( _ternary_to_decimal( '2' ), 2 );
+is( _ternary_to_decimal( '10' ), 3 );
+is( _ternary_to_decimal( '101' ), 10 );
+is( _ternary_to_decimal( '102' ), 11 );
 
 ### Test of various radixes
 
@@ -44,9 +59,6 @@ use warnings;
 #         collect (list i x s1 s2)))
 #  nil)
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 28;
 def_format_test 'format.r.2' =>
   "~2r",
   [ 14 ],
@@ -57,9 +69,6 @@ def_format_test 'format.r.3' =>
   [ 29 ],
   "1002";
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 26;
 #(deftest format.r.4
 #  (loop for base from 2 to 36
 #        nconc
@@ -273,6 +282,9 @@ def_format_test 'format.r.16' =>
   [ 17 ],
   "10001";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 23;
 def_format_test 'format.r.17' =>
   '~8,10:@r',
   [ 0526104 ],
@@ -401,26 +413,6 @@ def_format_test 'format.r.22' =>
   "~2,12,,'*:r",
   [ 0b1011101 ],
   "1*011*101";
-
-sub _ternary_to_decimal {
-  my $ternary = shift;
-  my $decimal = 0;
-  for my $ch ( reverse split //, $ternary ) {
-    $decimal *= 3;
-    $decimal += $ch;
-  }
-  return $decimal;
-}
-sub _decimal_to_ternary {
-  my $decimal = shift;
-  my $ternary = '';
-  while ( $decimal > 0 ) {
-    $ternary .= $decimal % 3;
-    $ternary -= $decimal % 3;
-    $ternary /= 3;
-  }
-  retuern $ternary;
-}
 
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
