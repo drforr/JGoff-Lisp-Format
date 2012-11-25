@@ -9,6 +9,8 @@ use Carp qw( croak );
 use POSIX qw( abs );
 use Storable qw( dclone );
 
+with 'JGoff::Lisp::Format::Role::IncDec'; # XXX Parametrize this
+
 has stream => ( is => 'rw' );
 has format => ( is => 'rw' );
 has arguments => ( is => 'rw' );
@@ -29,8 +31,6 @@ Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
 has print_case => ( is => 'ro', default => $upcase );
 
-has argument_id => ( is => 'rw', isa => 'Int', default => 0 );
-
 sub this_argument {
   my $self = shift;
   if ( $self->arguments ) {
@@ -43,7 +43,7 @@ sub advance_argument {
   my $self = shift;
   if ( $self->arguments ) {
     my $argument = $self->arguments->[ $self->argument_id ];
-    $self->argument_id( $self->argument_id + 1 );
+    $self->increment_argument_id;
     return $argument;
   }
   return undef;
@@ -58,7 +58,7 @@ sub reset_argument {
 sub retard_argument {
   my $self = shift;
   if ( $self->arguments ) {
-    $self->argument_id( $self->argument_id - 1 );
+    $self->decrement_argument_id;
     my $argument = $self->arguments->[ $self->argument_id ];
     return $argument;
   }
