@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 31;
+use Test::More tests => 30;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -282,14 +282,10 @@ def_format_test 'format.r.16' =>
   [ 17 ],
   "10001";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
 def_format_test 'format.r.17' =>
   '~8,10:@r',
   [ 0526104 ],
   "  +526,104";
-}
 
 #(defparameter *english-ordinal-names*
 #  '("zeroth"
@@ -410,14 +406,14 @@ def_format_test 'format.r.17' =>
 
 ### Combinations of mincol and comma chars
 
-def_format_test 'format.r.22' =>
-  "~2,12,,'*:r",
-  [ 0b1011101 ],
-  "1*011*101";
-
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 1;
+def_format_test 'format.r.22' =>
+  "~2,12,,'*:r",
+  [ 0b1011101 ],
+  "   1*011*101";
+
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
   [ _ternary_to_decimal( '1021101' ) ],

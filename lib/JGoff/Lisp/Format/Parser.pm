@@ -181,7 +181,7 @@ sub __token_text {
   my $match = $self->any_of(
     sub { $self->expect( '!@#$%^&*this' ) },
     sub { $self->expect( qr{
-      ,,' | ,' | [a-zA-Z0-9.()]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
+      ,,' | ,' | [a-zA-Z0-9.()<>]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
           | [,':&]
     }x ) },
   );

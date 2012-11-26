@@ -182,9 +182,10 @@ sub _padding {
     @{ $operation }{qw( padchar minpad mincol colinc )};
 
   my $padding = '';
-  if ( $minpad > 0 ) {
+  if ( $minpad and $minpad > 0 ) {
     $padding .= $padchar x $minpad;
   }
+if ( $padchar and $padchar =~ /./ ) {
   if ( $mincol and $mincol > length( $argument ) ) {
     if ( $colinc and $colinc > 0 ) {
       while ( length( $argument ) + length( $padding ) < $mincol ) {
@@ -192,6 +193,7 @@ sub _padding {
       }
     }
   }
+}
 
   if ( $operation->{at} ) {
     $argument = $padding . $argument;
@@ -199,6 +201,15 @@ sub _padding {
   else {
     $argument = $argument . $padding;
   }
+
+  if ( $argument and
+       $operation->{mincol} and
+$operation->{mincol} > 0 and
+       length( $argument ) < $operation->{mincol} ) {
+    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
+                $argument;
+  }
+  return $argument;
 }
 
 # }}}
@@ -228,9 +239,6 @@ sub _resolve_arguments {
     elsif ( defined $operation->{$name} and $operation->{$name} eq '#' ) {
       $operation->{$name} = scalar @{ $self->arguments };
     }
-  }
-  for my $tuple ( @$tuples ) {
-    my ( $name, $default ) = @$tuple;
     if ( !defined( $operation->{$name} ) ) {
       $operation->{$name} = $default;
     }
@@ -242,11 +250,11 @@ sub _resolve_arguments {
 
 # }}}
 
-# {{{ _convert_base( $argument, $base ) # base 2-36
+# {{{ _convert_base( $argument, $base, $operation ) # base 2-36
 
 sub _convert_base {
   my $self = shift;
-  my ( $argument, $base ) = @_;
+  my ( $argument, $base, $operation ) = @_;
   my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
   my $digits = '';
 
@@ -256,6 +264,7 @@ sub _convert_base {
     $argument -= $digit;
     $argument /= $base;
   }
+  $digits = $self->_commify( $digits, $operation );
   return $digits;
 }
 
@@ -321,7 +330,6 @@ sub __format_a {
   }
   else {
     $argument = $self->_padding( $operation, $argument );
-    return $argument;
   }
   
   return $argument;
@@ -388,15 +396,8 @@ sub __format_b {
   );
 
   my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 2 );
-  $argument = $self->_commify( $argument, $operation );
-
-  if ( $argument and
-       $operation->{mincol} > 0 and
-       length( $argument ) < $operation->{mincol} ) {
-    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
-                $argument;
-  }
+  $argument = $self->_convert_base( $argument, 2, $operation );
+  $argument = $self->_padding( $operation, $argument );
   return $argument;
 }
 
@@ -433,13 +434,7 @@ sub __format_d {
 
   my $argument = $self->advance_argument;
   $argument = $self->_commify( $argument, $operation );
-
-  if ( $argument and
-       $operation->{mincol} > 0 and
-       length( $argument ) < $operation->{mincol} ) {
-    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) . $argument;
-  }
-
+  $argument = $self->_padding( $operation, $argument );
   return $argument;
 }
 
@@ -494,16 +489,8 @@ sub __format_o {
   );
 
   my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 8 );
-  $argument = $self->_commify( $argument, $operation );
-
-  if ( $argument and
-       $operation->{mincol} > 0 and
-       length( $argument ) < $operation->{mincol} ) {
-    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
-                $argument;
-  }
-
+  $argument = $self->_convert_base( $argument, 8, $operation );
+  $argument = $self->_padding( $operation, $argument );
   return $argument;
 }
 
@@ -580,7 +567,7 @@ sub __format_question {
     my $sub_self = $self->new(
       stream => $self->stream,
       format => $format,
-      arguments => $arguments
+      arguments => [ $arguments ]
     );
     return $sub_self->apply;
   }
@@ -608,11 +595,13 @@ sub __format_r {
     $operation, [
       [ 'radix' => 10 ],
       [ 'mincol' => 0 ],
-      [ 'colinc' => 1 ],
+      [ 'padchar' => ' ' ],
+#      [ 'colinc' => 1 ],
       [ 'commachar' => ',' ],
       [ 'comma-interval' => 3 ],
     ]
   );
+$operation->{colinc} = 1;
   my @english_number_names = (
    "zero",
    "one", "two", "three", "four", "five",
@@ -642,16 +631,9 @@ sub __format_r {
     $argument = $english_number_names[$argument];
   }
   else {
-    $argument = $self->_convert_base( $argument, $operation->{radix} );
+    $argument = $self->_convert_base( $argument, $operation->{radix}, $operation );
+$argument = $self->_padding( $operation, $argument );
   }
-  $argument = $self->_commify( $argument, $operation );
-
-#  if ( $argument and
-#       $operation->{mincol} > 0 and
-#       length( $argument ) < $operation->{mincol} ) {
-#    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
-#                $argument;
-#  }
 
   return $argument;
 }
@@ -724,17 +706,8 @@ sub __format_x {
   );
 
   my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 16 );
-
-  $argument = $self->_commify( $argument, $operation );
-
-  if ( $argument and
-       $operation->{mincol} > 0 and
-       length( $argument ) < $operation->{mincol} ) {
-    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
-                $argument;
-  }
-
+  $argument = $self->_convert_base( $argument, 16, $operation );
+  $argument = $self->_padding( $operation, $argument );
   return $argument;
 }
 
