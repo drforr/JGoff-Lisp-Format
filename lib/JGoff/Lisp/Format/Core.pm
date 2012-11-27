@@ -9,11 +9,10 @@ use Carp qw( croak );
 use POSIX qw( abs );
 use Storable qw( dclone );
 
-with 'JGoff::Lisp::Format::Role::IncDec'; # XXX Parametrize this
+with 'JGoff::Lisp::Format::Role::Argument'; # XXX Parametrize this
 
 has stream => ( is => 'rw' );
 has format => ( is => 'rw' );
-has arguments => ( is => 'rw' );
 has parser => (
   is => 'rw',
   isa => 'JGoff::Lisp::Format::Parser',
@@ -30,49 +29,6 @@ Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
 has print_case => ( is => 'ro', default => $upcase );
-
-sub this_argument {
-  my $self = shift;
-  if ( $self->arguments ) {
-    return $self->arguments->[ $self->argument_id ];
-  }
-  return undef;
-}
-
-sub advance_argument {
-  my $self = shift;
-  if ( $self->arguments ) {
-    my $argument = $self->arguments->[ $self->argument_id ];
-    $self->increment_argument_id;
-    return $argument;
-  }
-  return undef;
-}
-
-sub reset_argument {
-  my $self = shift;
-  if ( $self->arguments ) {
-    $self->argument_id( 0 );
-  }
-}
-sub retard_argument {
-  my $self = shift;
-  if ( $self->arguments ) {
-    $self->decrement_argument_id;
-    my $argument = $self->arguments->[ $self->argument_id ];
-    return $argument;
-  }
-  return undef;
-}
-
-sub previous_argument {
-  my $self = shift;
-  if ( $self->arguments ) {
-    my $argument = $self->arguments->[ $self->argument_id - 1 ];
-    return $argument;
-  }
-  return undef;
-}
 
 =head1 NAME
 
@@ -167,8 +123,12 @@ sub _commify {
     unshift @chunk, $argument if $argument and $argument ne '';
     $argument = join $commachar, @chunk;
   }
-  $argument = '-' . $argument if $sign == -1;
-  $argument = '+' . $argument if $sign == +1 and $operation->{at};
+  if ( $sign < 0 ) {
+    return '-' . $argument;
+  }
+  elsif ( $sign > 0 and $operation->{at} ) {
+    return '+' . $argument;
+  }
   return $argument;
 }
 
@@ -185,15 +145,15 @@ sub _padding {
   if ( $minpad and $minpad > 0 ) {
     $padding .= $padchar x $minpad;
   }
-if ( $padchar and $padchar =~ /./ ) {
-  if ( $mincol and $mincol > length( $argument ) ) {
-    if ( $colinc and $colinc > 0 ) {
-      while ( length( $argument ) + length( $padding ) < $mincol ) {
-        $padding .= $padchar x $colinc;
+  if ( $padchar and $padchar =~ /./ ) {
+    if ( $mincol and $mincol > length( $argument ) ) {
+      if ( $colinc and $colinc > 0 ) {
+        while ( length( $argument ) + length( $padding ) < $mincol ) {
+          $padding .= $padchar x $colinc;
+        }
       }
     }
   }
-}
 
   if ( $operation->{at} ) {
     $argument = $padding . $argument;
@@ -204,7 +164,7 @@ if ( $padchar and $padchar =~ /./ ) {
 
   if ( $argument and
        $operation->{mincol} and
-$operation->{mincol} > 0 and
+       $operation->{mincol} > 0 and
        length( $argument ) < $operation->{mincol} ) {
     $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
                 $argument;
@@ -233,11 +193,11 @@ sub _resolve_arguments {
   for my $tuple ( @$tuples ) {
     my ( $name, $default ) = @$tuple;
     if ( defined $operation->{$name} and $operation->{$name} eq 'v' ) {
-      $operation->{$name} = $self->advance_argument;
+      $operation->{$name} = $self->increment_argument;
       $operation->{"$name-v"} = 1;
     }
     elsif ( defined $operation->{$name} and $operation->{$name} eq '#' ) {
-      $operation->{$name} = scalar @{ $self->arguments };
+      $operation->{$name} = $self->num_arguments;
     }
     if ( !defined( $operation->{$name} ) ) {
       $operation->{$name} = $default;
@@ -250,21 +210,29 @@ sub _resolve_arguments {
 
 # }}}
 
-# {{{ _convert_base( $argument, $base, $operation ) # base 2-36
+# {{{ _argument_to_base( $base, $operation ) # base 2-36
 
-sub _convert_base {
+sub _argument_to_base {
   my $self = shift;
-  my ( $argument, $base, $operation ) = @_;
+  my ( $base, $operation ) = @_;
+  my $argument = $self->increment_argument;
+
   my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
   my $digits = '';
 
-  while ( $argument > 0 ) {
-    my $digit = $argument % $base;
-    $digits = $radix[ $digit ] . $digits;
-    $argument -= $digit;
-    $argument /= $base;
+  if ( $base != 10 ) {
+    while ( $argument > 0 ) {
+      my $digit = $argument % $base;
+      $digits = $radix[ $digit ] . $digits;
+      $argument -= $digit;
+      $argument /= $base;
+    }
+  }
+  else {
+    $digits = $argument;
   }
   $digits = $self->_commify( $digits, $operation );
+  $digits = $self->_padding( $operation, $digits );
   return $digits;
 }
 
@@ -296,15 +264,11 @@ sub __format_a {
       [ 'mincol' => 0 ],
       [ 'colinc' => 1 ],
       [ 'minpad' => 0 ],
-      [ 'padchar' => ' ' ] ]
+      [ 'padchar' => ' ' ]
+    ]
   );
 
-  my $argument;
-  if ( $self->arguments and
-       ref( $self->arguments ) and
-       ref( $self->arguments ) eq 'ARRAY' ) {
-    $argument = $self->advance_argument;
-  }
+  my $argument = $self->increment_argument;
 
 # Strip escape characters
 
@@ -364,15 +328,15 @@ sub __format_asterisk {
 
   if ( $operation->{colon} ) {
     for ( 1 .. $operation->{n} ) {
-      $self->retard_argument;
+      $self->decrement_argument;
     }
   }
   elsif ( $operation->{at} ) {
-    $self->retard_argument;
+    $self->decrement_argument;
   }
   else {
     if ( defined $operation->{n} and $operation->{n} == 1 ) {
-      $self->advance_argument;
+      $self->increment_argument;
     }
   }
 
@@ -395,10 +359,7 @@ sub __format_b {
     ]
   );
 
-  my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 2, $operation );
-  $argument = $self->_padding( $operation, $argument );
-  return $argument;
+  return $self->_argument_to_base( 2, $operation );
 }
 
 # }}}
@@ -409,7 +370,7 @@ sub __format_c {
   my $self = shift;
   my ( $operation ) = @_;
 
-  my $argument = $self->advance_argument;
+  my $argument = $self->increment_argument;
   if ( $operation->{colon} ) {
     return $self->char_name( $argument );
   }
@@ -432,10 +393,7 @@ sub __format_d {
     ]
   );
 
-  my $argument = $self->advance_argument;
-  $argument = $self->_commify( $argument, $operation );
-  $argument = $self->_padding( $operation, $argument );
-  return $argument;
+  return $self->_argument_to_base( 10, $operation );
 }
 
 # }}}
@@ -455,7 +413,7 @@ sub __format_f {
     ]
   );
 
-  my $argument = $self->advance_argument;
+  my $argument = $self->increment_argument;
   $argument = sprintf "%f", $argument;
   if ( $argument =~ m{ [.] [0]+ $ }x ) {
     $argument =~ s{ [.] [0]+ $ }{.0}x;
@@ -488,10 +446,7 @@ sub __format_o {
     ]
   );
 
-  my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 8, $operation );
-  $argument = $self->_padding( $operation, $argument );
-  return $argument;
+  return $self->_argument_to_base( 8, $operation );
 }
 
 # }}}
@@ -526,7 +481,7 @@ sub __format_p {
     }
   }
   elsif ( $operation->{at} ) {
-    my $argument = $self->advance_argument;
+    my $argument = $self->increment_argument;
     if ( defined $argument and $argument == 0 ) {
       return 'ies';
     }
@@ -538,7 +493,7 @@ sub __format_p {
     }
   }
   else {
-    my $argument = $self->advance_argument;
+    my $argument = $self->increment_argument;
     if ( defined $argument and $argument == 0 ) {
       return 's';
     }
@@ -562,8 +517,8 @@ sub __format_question {
   my ( $operation ) = @_;
 
   if ( $operation->{at} ) {
-    my $format = $self->advance_argument;
-    my $arguments = $self->advance_argument;
+    my $format = $self->increment_argument;
+    my $arguments = $self->increment_argument;
     my $sub_self = $self->new(
       stream => $self->stream,
       format => $format,
@@ -572,8 +527,8 @@ sub __format_question {
     return $sub_self->apply;
   }
   else {
-    my $format = $self->advance_argument;
-    my $arguments = $self->advance_argument;
+    my $format = $self->increment_argument;
+    my $arguments = $self->increment_argument;
     my $sub_self = $self->new(
       stream => $self->stream,
       format => $format,
@@ -626,13 +581,13 @@ $operation->{colinc} = 1;
    "ninety-six", "ninety-seven", "ninety-eight", "ninety-nine", "one hundred"
   );
 
-  my $argument = $self->advance_argument;
+  my $argument;
   if ( $operation->{'radix-v'} ) {
+    $argument = $self->increment_argument;
     $argument = $english_number_names[$argument];
   }
   else {
-    $argument = $self->_convert_base( $argument, $operation->{radix}, $operation );
-$argument = $self->_padding( $operation, $argument );
+    $argument = $self->_argument_to_base( $operation->{radix}, $operation );
   }
 
   return $argument;
@@ -652,12 +607,7 @@ sub __format_s {
       [ 'minpad' => 0 ],
       [ 'padchar' => ' ' ] ] );
 
-  my $argument;
-  if ( $self->arguments and
-       ref( $self->arguments ) and
-       ref( $self->arguments ) eq 'ARRAY' ) {
-    $argument = $self->advance_argument;
-  }
+  my $argument = $self->increment_argument;
 
 # Strip escape characters
 
@@ -705,10 +655,7 @@ sub __format_x {
     ]
   );
 
-  my $argument = $self->advance_argument;
-  $argument = $self->_convert_base( $argument, 16, $operation );
-  $argument = $self->_padding( $operation, $argument );
-  return $argument;
+  return $self->_argument_to_base( 16, $operation );
 }
 
 # }}}
@@ -738,10 +685,10 @@ sub __format_percent {
   delete $operation->{arguments};   
 
   if ( $operation->{n} and $operation->{n} eq 'v' ) {
-    $operation->{n} = shift @{ $self->arguments };
+    $operation->{n} = $self->increment_argument;
   }
   elsif ( $operation->{n} and $operation->{n} eq '#' ) {
-    $operation->{n} = defined $self->arguments ? scalar @{ $self->arguments } : 0;
+    $operation->{n} = $self->num_arguments;
   }
   $operation->{n} = 1 unless defined $operation->{n};
   return "\n" x $operation->{n};
@@ -758,8 +705,8 @@ sub __format_open_brace {
 
   my $output = '';
 my $count = 10;
-  if ( $self->arguments and ref( $self->arguments ) eq 'ARRAY' and @{ $self->arguments } ) {
-    while ( @{ $self->arguments } ) {
+  if ( $self->num_arguments ) {
+    for my $_argument ( @{ $self->arguments } ) {
       last if defined $max_iterations and $max_iterations-- <= 0;
 if ( $count-- < 0 ) {
   return 'OPEN BRACE';
@@ -889,8 +836,8 @@ sub _format {
     elsif ( ref( $operation ) and ref( $operation ) eq 'ARRAY' ) {
       my ( $open, $_operation, $close ) = @{ $operation };
       my $_arguments;
-      if ( $self->arguments and ref( $self->arguments ) eq 'ARRAY' ) {
-        $_arguments = $self->arguments->[0];
+      if ( $self->num_arguments ) {
+        $_arguments = $self->first_argument;
       }
       if ( $open->{format} eq '~{' ) {
         $output .= $self->__format_open_brace(

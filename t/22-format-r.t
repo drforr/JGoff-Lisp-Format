@@ -406,14 +406,17 @@ def_format_test 'format.r.17' =>
 
 ### Combinations of mincol and comma chars
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 1;
 def_format_test 'format.r.22' =>
   "~2,12,,'*:r",
   [ 0b1011101 ],
   "   1*011*101";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
   [ _ternary_to_decimal( '1021101' ) ],

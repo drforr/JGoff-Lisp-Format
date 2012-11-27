@@ -2,7 +2,7 @@ Changes
 lib/JGoff/Lisp/Format.pm
 lib/JGoff/Lisp/Format/Core.pm
 lib/JGoff/Lisp/Format/Parser.pm
-lib/JGoff/Lisp/Format/Role/IncDec.pm
+lib/JGoff/Lisp/Format/Role/Argument.pm
 Makefile.PL
 MANIFEST			This list of files
 README
