@@ -1,6 +1,7 @@
 #!perl
 
-use Test::More tests => 70;
+use Test::More tests => 71;
+
 
 BEGIN {
   use lib 't/lib';
@@ -11,10 +12,6 @@ use strict;
 use warnings;
 
 my $f = JGoff::Lisp::Format->new;
-
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 69;
 
 def_format_test 'format.{.1' =>
   concatenate( "~{~", "\n", "~}" ),
@@ -80,6 +77,9 @@ def_format_test 'format.{.16' =>
   [ "~A", [ 4, 5, 6 ] ],
   "4";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 4;
 deftest 'format.{.17' => sub { # XXX Vet the arguments
   $f->format( undef, "~{~}", $f->formatter( "" ), undef );
 }, "";
@@ -95,6 +95,7 @@ deftest 'format.{.19' => sub { # XXX Vet the arguments
 deftest 'format.{.20' => sub { # XXX Vet the arguments
   $f->format( undef, "~3{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
 }, "123";
+}
 
 def_format_test 'format.{.21' =>
   "~V{~}",
@@ -106,11 +107,17 @@ def_format_test 'format.{.22' =>
   [ "~A", [ 1, 2, 3, 4, 5 ] ],
   "12";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 52;
 def_format_test 'format.{.23' =>
   "~{FOO~:}",
   [ undef ],
   "FOO";
 
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 52;
 def_format_test 'format.{.24' =>
   "~{~A~:}",
   [ [ 1 ] ],

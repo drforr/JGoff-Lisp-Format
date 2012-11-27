@@ -13,6 +13,7 @@ with 'JGoff::Lisp::Format::Role::Argument'; # XXX Parametrize this
 
 has stream => ( is => 'rw' );
 has format => ( is => 'rw' );
+has tree => ( is => 'rw' );
 has parser => (
   is => 'rw',
   isa => 'JGoff::Lisp::Format::Parser',
@@ -701,19 +702,50 @@ sub __format_percent {
 sub __format_open_brace {
   my $self = shift;
   my ( $open, $operation, $close ) = @_;
-  my $max_iterations;
+  my $iteration_count;
+  if ( $open->{arguments} ) {
+    if ( $open->{arguments}[0] eq '#' ) {
+      $iteration_count = @{ $self->arguments };
+    }
+    elsif ( $open->{arguments}[0] eq 'v' ) {
+      $iteration_count = $self->increment_argument;
+    }
+    else {
+      $iteration_count = $open->{arguments}[0];
+    }
+  }
+  if ( $close->{colon} ) {
+    $iteration_count++;
+  }
 
   my $output = '';
-my $count = 10;
-  if ( $self->num_arguments ) {
-    for my $_argument ( @{ $self->arguments } ) {
-      last if defined $max_iterations and $max_iterations-- <= 0;
-if ( $count-- < 0 ) {
-  return 'OPEN BRACE';
-  last;
-}
+  if ( $self->current_argument and
+       ref( $self->current_argument ) ) {
+    for my $argument ( @{ $self->current_argument } ) {
+      if ( defined $iteration_count ) {
+        last if $iteration_count-- <= 0;
+      }
+      my $sub_self = $self->new(
+        stream => $self->stream,
+        tree => $operation,
+        arguments => [ $argument ]
+      );
+      $output .= $sub_self->_format;
     }
-    $output .= $self->_format( $operation );
+  }
+  elsif ( $self->current_argument ) {
+    my $format = $self->current_argument;
+    for my $argument ( @{ $self->next_argument } ) {
+      if ( defined $iteration_count ) {
+        last if $iteration_count-- <= 0;
+      }
+      my $sub_self = $self->new(
+        stream => $self->stream,
+        format => $format,
+        arguments => [ $argument ]
+      );
+      $output .= $sub_self->apply;
+    }
   }
   return $output;
 }
@@ -753,7 +785,7 @@ sub __format_vertical_bar {
 
 sub _format {
   my $self = shift;
-  my ( $tree ) = @_;
+  my $tree = $self->tree;
   my $output = '';
   for my $id ( 0 .. $#{ $tree } ) {
     my $operation = $tree->[ $id ];
@@ -871,7 +903,8 @@ sub apply {
   my $self = shift;
 
   if ( my $tree = $self->parser->from_string( $self->format ) ) {
-    return $self->_format( $tree );
+    $self->tree( $tree );
+    return $self->_format;
   }
   
   return 'Not Caught';
