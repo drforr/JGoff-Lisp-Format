@@ -714,9 +714,6 @@ sub __format_open_brace {
       $iteration_count = $open->{arguments}[0];
     }
   }
-  if ( $close->{colon} ) {
-    $iteration_count++;
-  }
 
   my $output = '';
   if ( $self->current_argument and

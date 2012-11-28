@@ -109,15 +109,13 @@ def_format_test 'format.{.22' =>
 
 SKIP: {
   diag "Make these tests work";
-  skip 'Not ready yet', 52;
+  skip 'Not ready yet', 1;
 def_format_test 'format.{.23' =>
   "~{FOO~:}",
   [ undef ],
   "FOO";
+}
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 52;
 def_format_test 'format.{.24' =>
   "~{~A~:}",
   [ [ 1 ] ],
@@ -143,6 +141,9 @@ def_format_test 'format.{.28' =>
   [ 0, undef ],
   "";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 40;
 def_format_test 'format.{.29' =>
   "~1{FOO~:}",
   [ undef ],
@@ -157,6 +158,7 @@ def_format_test 'format.{.31' =>
   concatenate( "~2{~", "\n", "~:}" ),
   [ undef ],
   "";
+}
 
 def_format_test 'format.{.32' =>
   "~2{FOO~}",
@@ -170,6 +172,9 @@ def_format_test 'format.{.33' =>
 
 ### ~:{ ... ~}
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 4;
 def_format_test 'format.\:{.1' =>
   "~:{(~A ~A)~}",
   [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ] ],
@@ -371,6 +376,7 @@ def_format_test 'format.\:@.9' =>
   '~v:@{~A~}',
   [ undef, [ 1 ], [ 2 ], [ 3 ] ],
   "123";
+}
 
 #(deftest format.{.8
 #  (loop for i from 0 to 10
@@ -513,5 +519,3 @@ def_format_test 'format.\:@.9' =>
 #(deftest format.\:@{.error.5
 #  (signals-error (format nil "~:@{~A ~A~}" '(x . y)) type-error)
 #  t)
-
-}
