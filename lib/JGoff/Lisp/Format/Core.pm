@@ -240,137 +240,6 @@ sub _argument_to_base {
 
 # }}}
 
-# {{{ __format_a
-
-sub __format_a {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'colinc' => 1 ],
-      [ 'minpad' => 0 ],
-      [ 'padchar' => ' ' ]
-    ]
-  );
-
-  my $argument = $self->increment_argument;
-
-# Strip escape characters
-
-  if ( !defined $argument ) {
-    if ( $operation->{colon} ) {
-      return '[]';
-    }
-    $argument = $self->_padding( $operation, 'undef' );
-    return $self->_print_case( $argument );
-  }
-  elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
-   my $sub = $self->new(
-     stream => $self->stream,
-     format => $operation->{format},
-     arguments => $argument,
-
-     print_case => $self->print_case,
-   );
-   return '[' . $sub->apply . ']';
-  }
-  elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
-    return $argument->toString;
-  }
-  else {
-    $argument = $self->_padding( $operation, $argument );
-  }
-  
-  return $argument;
-}
-
-# }}}
-
-# {{{ __format_asterisk
-
-sub __format_asterisk {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'n' => 1 ],
-    ]
-  );
-  $operation->n( 1 ) unless defined $operation->n;
-
-  if ( $operation->{colon} ) {
-    for ( 1 .. $operation->{n} ) {
-      $self->decrement_argument;
-    }
-  }
-  elsif ( $operation->{at} ) {
-    $self->decrement_argument;
-  }
-  else {
-    if ( defined $operation->{n} and $operation->{n} == 1 ) {
-      $self->increment_argument;
-    }
-  }
-
-  return "";
-}
-
-# }}}
-
-# {{{ __format_b
-
-sub __format_b {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
-    ]
-  );
-
-  return $self->_argument_to_base( 2, $operation );
-}
-
-# }}}
-
-# {{{ __format_c
-
-sub __format_c {
-  my $self = shift;
-  my ( $operation ) = @_;
-
-  my $argument = $self->increment_argument;
-  if ( $operation->colon ) {
-    return $self->char_name( $argument );
-  }
-  return $argument;
-}
-
-# }}}
-
-# {{{ __format_d
-
-sub __format_d {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
-    ]
-  );
-
-  return $self->_argument_to_base( 10, $operation );
-}
-
-# }}}
-
 # {{{ __format_f
 
 sub __format_f {
@@ -401,115 +270,6 @@ sub __format_f {
   }
 
   return $argument;
-}
-
-# }}}
-
-# {{{ __format_o
-
-sub __format_o {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
-    ]
-  );
-
-  return $self->_argument_to_base( 8, $operation );
-}
-
-# }}}
-
-# {{{ __format_p
-
-sub __format_p {
-  my $self = shift;
-  my ( $operation ) = @_;
-
-  if ( $operation->{colon} ) {
-    my $argument = $self->previous_argument;
-    if ( $operation->{at} ) {
-      if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
-        return 'ies';
-      }
-      elsif ( $argument and $argument == 1 ) {
-        return 'y';
-      }
-      elsif ( $argument and $argument >= 2 ) {
-        return 'ies';
-      }
-    }
-    if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
-      return 's';
-    }
-    elsif ( $argument and $argument == 1 ) {
-      return '';
-    }
-    elsif ( $argument and $argument >= 2 ) {
-      return 's';
-    }
-  }
-  elsif ( $operation->{at} ) {
-    my $argument = $self->increment_argument;
-    if ( defined $argument and $argument == 0 ) {
-      return 'ies';
-    }
-    elsif ( $argument and $argument == 1 ) {
-      return 'y';
-    }
-    elsif ( $argument and $argument >= 2 ) {
-      return 'ies';
-    }
-  }
-  else {
-    my $argument = $self->increment_argument;
-    if ( defined $argument and $argument == 0 ) {
-      return 's';
-    }
-    elsif ( $argument and $argument == 1 ) {
-      return '';
-    }
-    elsif ( $argument and $argument >= 2 ) {
-      return 's';
-    }
-  }
-
-  return '';
-}
-
-# }}}
-
-# {{{ __format_question
-
-sub __format_question {
-  my $self = shift;
-  my ( $operation ) = @_;
-
-  if ( $operation->at ) {
-    my $format = $self->increment_argument;
-    my $arguments = $self->increment_argument;
-    my $sub_self = $self->new(
-      stream => $self->stream,
-      format => $format,
-      arguments => [ $arguments ]
-    );
-    return $sub_self->apply;
-  }
-  else {
-    my $format = $self->increment_argument;
-    my $arguments = $self->increment_argument;
-    my $sub_self = $self->new(
-      stream => $self->stream,
-      format => $format,
-      arguments => $arguments
-    );
-    return $sub_self->apply;
-  }
-  return '';
 }
 
 # }}}
@@ -568,90 +328,6 @@ $operation->{colinc} = 1;
 
 # }}}
 
-# {{{ __format_s
-
-sub __format_s {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'colinc' => 1 ],
-      [ 'minpad' => 0 ],
-      [ 'padchar' => ' ' ] ] );
-
-  my $argument = $self->increment_argument;
-
-# Strip escape characters
-
-  if ( !defined $argument ) {
-    if ( $operation->{colon} ) {
-      return '[]';
-    }
-    $argument = $self->_padding( $operation, 'undef' );
-    return $self->_print_case( $argument );
-  }
-  elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
-   my $sub = $self->new(
-     stream => $self->stream,
-     format => $operation->{format},
-     arguments => $argument,
-
-     print_case => $self->print_case,
-   );
-   return '[' . $sub->apply . ']';
-  }
-  elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
-    return $argument->toString;
-  }
-  else {
-    $argument = $self->_padding( $operation, $argument );
-    return $argument;
-  }
-  
-  return $argument;
-}
-
-# }}}
-
-# {{{ __format_x
-
-sub __format_x {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
-    ]
-  );
-
-  return $self->_argument_to_base( 16, $operation );
-}
-
-# }}}
-
-# {{{ __format_percent
-
-sub __format_percent {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $operation->n( 1 ) unless defined $operation->n;
-
-  if ( $operation->n and $operation->n eq 'v' ) {
-    $operation->n( $self->increment_argument );
-  }
-  elsif ( $operation->n and $operation->n eq '#' ) {
-    $operation->n( $self->num_arguments );
-  }
-  $operation->n( 1 ) unless defined $operation->n;
-  return "\n" x $operation->n;
-}
-
-# }}}
-
 # {{{ __format_open_brace
 
 sub __format_open_brace {
@@ -704,23 +380,6 @@ sub __format_open_brace {
 
 # }}}
 
-# {{{ __format_tilde
-
-sub __format_tilde {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'n' => 1 ],
-    ]
-  );
-  $operation->n( 1 ) unless defined $operation->n;
-
-  return "~" x $operation->{n};
-}
-
-# }}}
-
 # {{{ __format_vertical_bar
 
 sub __format_vertical_bar {
@@ -765,26 +424,20 @@ sub _format {
           ref( $tree->[ $id - 1 ] )->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
         $output .= $operation->format( $is_first, $before_percent );
       }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::C' ) ) {
-        $output .= $self->__format_c( $operation );
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::P' ) ) {
-        $output .= $self->__format_p( $operation );
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Question' ) ) {
-        $output .= $self->__format_question( $operation );
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Newline' ) ) {
-        $output .= $operation->format;
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Percent' ) ) {
-        $output .= $self->__format_percent( $operation );
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Tilde' ) ) {
-        $output .= $self->__format_tilde( $operation );
-      }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Asterisk' ) ) {
-        $output .= $self->__format_asterisk( $operation );
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::C' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::P' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Question' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Newline' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Percent' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Tilde' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Asterisk' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::A' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::B' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::D' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::O' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::S' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::X' ) ) {
+        $output .= $operation->format( $self );
       }
     }
     elsif( ref( $operation ) and ref( $operation ) eq 'HASH' ) {
@@ -800,30 +453,21 @@ sub _format {
           $tree->[ $id - 1 ]->{colon};
         $output .= $operation->format( $before_newline, $nl_colon );
       }
-      elsif ( $operation->{format} eq '~a' ) {
-        $output .= $self->__format_a( $operation );
-      }
-      elsif ( $operation->{format} eq '~b' ) {
-        $output .= $self->__format_b( $operation );
-      }
-      elsif ( $operation->{format} eq '~d' ) {
-        $output .= $self->__format_d( $operation );
-      }
       elsif ( $operation->{format} eq '~f' ) {
         $output .= $self->__format_f( $operation );
       }
-      elsif ( $operation->{format} eq '~o' ) {
-        $output .= $self->__format_o( $operation );
-      }
+#      elsif ( $operation->{format} eq '~o' ) {
+#        $output .= $self->__format_o( $operation );
+#      }
       elsif ( $operation->{format} eq '~r' ) {
         $output .= $self->__format_r( $operation );
       }
-      elsif ( $operation->{format} eq '~s' ) {
-        $output .= $self->__format_s( $operation );
-      }
-      elsif ( $operation->{format} eq '~x' ) {
-        $output .= $self->__format_x( $operation );
-      }
+#      elsif ( $operation->{format} eq '~s' ) {
+#        $output .= $self->__format_s( $operation );
+#      }
+#      elsif ( $operation->{format} eq '~x' ) {
+#        $output .= $self->__format_x( $operation );
+#      }
       elsif ( $operation->{format} eq '~|' ) {
         $output .= $self->__format_vertical_bar( $operation );
       }

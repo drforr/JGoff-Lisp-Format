@@ -5,14 +5,20 @@ use Readonly;
 use Carp qw( croak );
 
 use JGoff::Lisp::Format::Tokens::Text;
+use JGoff::Lisp::Format::Tokens::A;
 use JGoff::Lisp::Format::Tokens::Ampersand;
 use JGoff::Lisp::Format::Tokens::Asterisk;
+use JGoff::Lisp::Format::Tokens::B;
 use JGoff::Lisp::Format::Tokens::C;
+use JGoff::Lisp::Format::Tokens::D;
+use JGoff::Lisp::Format::Tokens::O;
 use JGoff::Lisp::Format::Tokens::P;
 use JGoff::Lisp::Format::Tokens::Question;
 use JGoff::Lisp::Format::Tokens::Newline;
 use JGoff::Lisp::Format::Tokens::Percent;
+use JGoff::Lisp::Format::Tokens::S;
 use JGoff::Lisp::Format::Tokens::Tilde;
+use JGoff::Lisp::Format::Tokens::X;
 
 extends 'Parser::MGC';
 
@@ -95,19 +101,6 @@ sub ___parse_token {
 
 # }}}
 
-# {{{ ___parse_text
-
-# Tear apart the token to get at the component args.
-# This will probably be replaced with REs when I figure out a nice way to do so.
-#
-sub ___parse_text {
-  my $self = shift;
-  my ( $match ) = @_;
-  return JGoff::Lisp::Format::Tokens::Text->new( text => $match );
-}
-
-# }}}
-
 # Basic Output - c % & | ~
 # Radix Control - r d b o x
 # Floating-point printers - f e g $
@@ -128,6 +121,54 @@ sub __token_a_b_d_o_s_x {
         [aAbBdDoOsSxX]
     }x );
   my $rv = $self->___parse_token( $match );
+  if ( $rv->{format} eq q{~a} ) {
+    return JGoff::Lisp::Format::Tokens::A->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  if ( $rv->{format} eq q{~b} ) {
+    return JGoff::Lisp::Format::Tokens::B->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  if ( $rv->{format} eq q{~d} ) {
+    return JGoff::Lisp::Format::Tokens::D->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  if ( $rv->{format} eq q{~o} ) {
+    return JGoff::Lisp::Format::Tokens::O->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  if ( $rv->{format} eq q{~s} ) {
+    return JGoff::Lisp::Format::Tokens::S->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  if ( $rv->{format} eq q{~x} ) {
+    return JGoff::Lisp::Format::Tokens::X->new(
+      arguments => defined $rv->{arguments} &&
+                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
   return $rv;
 }
 
@@ -193,10 +234,15 @@ sub __token_c_newline_open_paren_p_question_semi {
     );
   }
   elsif ( $rv->{format} eq q{~?} ) {
-    return JGoff::Lisp::Format::Tokens::Question->new( at => defined $rv->{at} ? 1 : undef );
+    return JGoff::Lisp::Format::Tokens::Question->new(
+      at => defined $rv->{at} ? 1 : undef
+    );
   }
   elsif ( $rv->{format} eq q{~\n} ) {
-    return JGoff::Lisp::Format::Tokens::Newline->new( at => defined $rv->{at} ? 1 : undef, colon => defined $rv->{colon} ? 1 : undef );
+    return JGoff::Lisp::Format::Tokens::Newline->new(
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
   }
   return $rv;
 }
@@ -229,18 +275,22 @@ sub __token_close_brace {
   return $self->___parse_token( $match );
 }
 
+# {{{ __token_text
+
 sub __token_text {
   my $self = shift;
-  my $match = $self->any_of(
-    sub { $self->expect( '!@#$%^&*this' ) },
-    sub { $self->expect( qr{
-      ,,' | ,' | [a-zA-Z0-9.()<>]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
-          | [,':&]
-    }x ) },
+  return JGoff::Lisp::Format::Tokens::Text->new( text =>
+    $self->any_of(
+      sub { $self->expect( '!@#$%^&*this' ) },
+      sub { $self->expect( qr{
+        ,,' | ,' | [a-zA-Z0-9.()<>]+ | [@][ab] | :a | [@]:A | \[ | \] | [ ]+
+            | [,':&]
+      }x ) },
+    )
   );
-  my $rv = $self->___parse_text( $match );
-  return $rv;
 }
+
+# }}}
 
 # {{{ _atom
 
