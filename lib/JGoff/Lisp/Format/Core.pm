@@ -1,6 +1,7 @@
 package JGoff::Lisp::Format::Core;
 
 use Moose;
+use Scalar::Util qw( blessed ); # XXX temporary
 
 use Readonly;
 
@@ -239,22 +240,6 @@ sub _argument_to_base {
 
 # }}}
 
-# {{{ __format_text
-
-sub __format_text {
-  my $self = shift;
-  my ( $operation, $before_newline, $nl_colon ) = @_;
-  my $text = $operation->{arguments}[0];
-  $text = '' unless defined $text;
-
-  if ( $before_newline and !$nl_colon ) {
-    $text =~ s{ ^ \s+ }{}x;
-  }
-  return $text;
-}
-
-# }}}
-
 # {{{ __format_a
 
 sub __format_a {
@@ -302,20 +287,6 @@ sub __format_a {
 
 # }}}
 
-# {{{ __format_ampersand
-
-sub __format_ampersand {
-  my $self = shift;
-  my ( $operation, $is_first, $before_percent ) = @_;
-  if ( !$is_first and !$before_percent ) {
-    return "\n";
-  }
-
-  return "";
-}
-
-# }}}
-
 # {{{ __format_asterisk
 
 sub __format_asterisk {
@@ -326,6 +297,7 @@ sub __format_asterisk {
       [ 'n' => 1 ],
     ]
   );
+  $operation->n( 1 ) unless defined $operation->n;
 
   if ( $operation->{colon} ) {
     for ( 1 .. $operation->{n} ) {
@@ -372,7 +344,7 @@ sub __format_c {
   my ( $operation ) = @_;
 
   my $argument = $self->increment_argument;
-  if ( $operation->{colon} ) {
+  if ( $operation->colon ) {
     return $self->char_name( $argument );
   }
   return $argument;
@@ -517,7 +489,7 @@ sub __format_question {
   my $self = shift;
   my ( $operation ) = @_;
 
-  if ( $operation->{at} ) {
+  if ( $operation->at ) {
     my $format = $self->increment_argument;
     my $arguments = $self->increment_argument;
     my $sub_self = $self->new(
@@ -661,38 +633,21 @@ sub __format_x {
 
 # }}}
 
-# {{{ __format_newline
-
-sub __format_newline {
-  my $self = shift;
-  my ( $operation ) = @_;
-  return "\n" if $operation->{at};
-  return "";
-}
-
-# }}}
-
 # {{{ __format_percent
 
 sub __format_percent {
   my $self = shift;
   my ( $operation ) = @_;
-  $operation->{n} = 1;
-  if ( $operation->{arguments} ) {
-    my $n = shift @{ $operation->{arguments} };
+  $operation->n( 1 ) unless defined $operation->n;
 
-    $operation->{n} = $n if defined $n;
+  if ( $operation->n and $operation->n eq 'v' ) {
+    $operation->n( $self->increment_argument );
   }
-  delete $operation->{arguments};   
-
-  if ( $operation->{n} and $operation->{n} eq 'v' ) {
-    $operation->{n} = $self->increment_argument;
+  elsif ( $operation->n and $operation->n eq '#' ) {
+    $operation->n( $self->num_arguments );
   }
-  elsif ( $operation->{n} and $operation->{n} eq '#' ) {
-    $operation->{n} = $self->num_arguments;
-  }
-  $operation->{n} = 1 unless defined $operation->{n};
-  return "\n" x $operation->{n};
+  $operation->n( 1 ) unless defined $operation->n;
+  return "\n" x $operation->n;
 }
 
 # }}}
@@ -754,10 +709,12 @@ sub __format_open_brace {
 sub __format_tilde {
   my $self = shift;
   my ( $operation ) = @_;
-  $operation->{n} = 1;
   $self->_resolve_arguments(
-    $operation, [ [ n => 0 ] ]
+    $operation, [
+      [ 'n' => 1 ],
+    ]
   );
+  $operation->n( 1 ) unless defined $operation->n;
 
   return "~" x $operation->{n};
 }
@@ -786,41 +743,68 @@ sub _format {
   my $output = '';
   for my $id ( 0 .. $#{ $tree } ) {
     my $operation = $tree->[ $id ];
-    if( ref( $operation ) and ref( $operation ) eq 'HASH' ) {
-      if ( $operation->{format} eq 'text' ) {
+    if ( blessed( $operation ) ) {
+      if ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Text' ) ) {
         my $before_newline = 0;
         $before_newline = 1 if
           $id > 0 and
-          ref( $tree->[ $id - 1 ] ) and
-          ref( $tree->[ $id - 1 ] ) eq 'HASH' and
-          $tree->[ $id - 1 ]->{format} eq '~\n';
+          blessed( $tree->[ $id - 1 ] ) and
+          $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Newline' );
         my $nl_colon = 0;
         $nl_colon = 1 if
           $before_newline and
           $tree->[ $id - 1 ]->{colon};
-        $output .= $self->__format_text( $operation, $before_newline, $nl_colon );
+        $output .= $operation->format( $before_newline, $nl_colon );
       }
-      elsif ( $operation->{format} eq '~a' ) {
-        $output .= $self->__format_a( $operation );
-      }
-      elsif ( $operation->{format} eq '~&' ) {
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Ampersand' ) ) {
         my $is_first = $id == 0;
         my $before_percent = 0;
         $before_percent = 1 if
           $id > 0 and
-          ref( $tree->[ $id - 1 ] ) and
-          ref( $tree->[ $id - 1 ] ) eq 'HASH' and
-          $tree->[ $id - 1 ]->{format} eq '~%';
-        $output .= $self->__format_ampersand( $operation, $is_first, $before_percent );
+          blessed( $tree->[ $id - 1 ] ) and
+          ref( $tree->[ $id - 1 ] )->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
+        $output .= $operation->format( $is_first, $before_percent );
       }
-      elsif ( $operation->{format} eq '~*' ) {
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::C' ) ) {
+        $output .= $self->__format_c( $operation );
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::P' ) ) {
+        $output .= $self->__format_p( $operation );
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Question' ) ) {
+        $output .= $self->__format_question( $operation );
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Newline' ) ) {
+        $output .= $operation->format;
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Percent' ) ) {
+        $output .= $self->__format_percent( $operation );
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Tilde' ) ) {
+        $output .= $self->__format_tilde( $operation );
+      }
+      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Asterisk' ) ) {
         $output .= $self->__format_asterisk( $operation );
+      }
+    }
+    elsif( ref( $operation ) and ref( $operation ) eq 'HASH' ) {
+      if ( $operation->{format} eq 'text' ) {
+        my $before_newline = 0;
+        $before_newline = 1 if
+          $id > 0 and
+          blessed( $tree->[ $id - 1 ] ) and
+          $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Newline' );
+        my $nl_colon = 0;
+        $nl_colon = 1 if
+          $before_newline and
+          $tree->[ $id - 1 ]->{colon};
+        $output .= $operation->format( $before_newline, $nl_colon );
+      }
+      elsif ( $operation->{format} eq '~a' ) {
+        $output .= $self->__format_a( $operation );
       }
       elsif ( $operation->{format} eq '~b' ) {
         $output .= $self->__format_b( $operation );
-      }
-      elsif ( $operation->{format} eq '~c' ) {
-        $output .= $self->__format_c( $operation );
       }
       elsif ( $operation->{format} eq '~d' ) {
         $output .= $self->__format_d( $operation );
@@ -828,29 +812,14 @@ sub _format {
       elsif ( $operation->{format} eq '~f' ) {
         $output .= $self->__format_f( $operation );
       }
-      elsif ( $operation->{format} eq '~\n' ) {
-        $output .= $self->__format_newline( $operation );
-      }
       elsif ( $operation->{format} eq '~o' ) {
         $output .= $self->__format_o( $operation );
-      }
-      elsif ( $operation->{format} eq '~p' ) {
-        $output .= $self->__format_p( $operation );
-      }
-      elsif ( $operation->{format} eq '~%' ) {
-        $output .= $self->__format_percent( $operation );
-      }
-      elsif ( $operation->{format} eq '~?' ) {
-        $output .= $self->__format_question( $operation );
       }
       elsif ( $operation->{format} eq '~r' ) {
         $output .= $self->__format_r( $operation );
       }
       elsif ( $operation->{format} eq '~s' ) {
         $output .= $self->__format_s( $operation );
-      }
-      elsif ( $operation->{format} eq '~~' ) {
-        $output .= $self->__format_tilde( $operation );
       }
       elsif ( $operation->{format} eq '~x' ) {
         $output .= $self->__format_x( $operation );

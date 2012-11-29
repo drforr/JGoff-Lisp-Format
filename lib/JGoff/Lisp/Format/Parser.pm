@@ -4,6 +4,16 @@ use Moose;
 use Readonly;
 use Carp qw( croak );
 
+use JGoff::Lisp::Format::Tokens::Text;
+use JGoff::Lisp::Format::Tokens::Ampersand;
+use JGoff::Lisp::Format::Tokens::Asterisk;
+use JGoff::Lisp::Format::Tokens::C;
+use JGoff::Lisp::Format::Tokens::P;
+use JGoff::Lisp::Format::Tokens::Question;
+use JGoff::Lisp::Format::Tokens::Newline;
+use JGoff::Lisp::Format::Tokens::Percent;
+use JGoff::Lisp::Format::Tokens::Tilde;
+
 extends 'Parser::MGC';
 
 =head1 NAME
@@ -93,10 +103,7 @@ sub ___parse_token {
 sub ___parse_text {
   my $self = shift;
   my ( $match ) = @_;
-  return {
-   format => q{text},
-   arguments => [ $match ]
-  }
+  return JGoff::Lisp::Format::Tokens::Text->new( text => $match );
 }
 
 # }}}
@@ -120,7 +127,8 @@ sub __token_a_b_d_o_s_x {
       ~ $PARAMETERS{0,3} $PARAMETER? $MODIFIERS?
         [aAbBdDoOsSxX]
     }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  return $rv;
 }
 
 sub __token_f_r {
@@ -133,19 +141,64 @@ sub __token_f_r {
 sub __token_ampersand_percent_pipe_tilde {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? [&%|~] }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  if ( $rv->{format} eq q{~&} ) {
+    return JGoff::Lisp::Format::Tokens::Ampersand->new;
+  }
+  elsif ( $rv->{format} eq q{~%} ) {
+    return JGoff::Lisp::Format::Tokens::Percent->new(
+      n => defined $rv->{arguments} &&
+           @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  elsif ( $rv->{format} eq q{~~} ) {
+    return JGoff::Lisp::Format::Tokens::Tilde->new(
+      n => defined $rv->{arguments} &&
+           @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    );
+  }
+  return $rv;
 }
 
 sub __token_asterisk_open_bracket {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\[] }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  if ( $rv->{format} eq q{~*} ) {
+    return JGoff::Lisp::Format::Tokens::Asterisk->new(
+      n => defined $rv->{arguments} &&
+           @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  return $rv;
 }
 
 sub __token_c_newline_open_paren_p_question_semi {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\(\npP?;] }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  if ( $rv->{format} eq q{~c} ) {
+    return JGoff::Lisp::Format::Tokens::C->new(
+      colon => defined $rv->{colon} ? 1 : undef
+    );
+  }
+  elsif ( $rv->{format} eq q{~p} ) {
+    return JGoff::Lisp::Format::Tokens::P->new(
+      colon => defined $rv->{colon} ? 1 : undef,
+      at => defined $rv->{at} ? 1 : undef
+    );
+  }
+  elsif ( $rv->{format} eq q{~?} ) {
+    return JGoff::Lisp::Format::Tokens::Question->new( at => defined $rv->{at} ? 1 : undef );
+  }
+  elsif ( $rv->{format} eq q{~\n} ) {
+    return JGoff::Lisp::Format::Tokens::Newline->new( at => defined $rv->{at} ? 1 : undef, colon => defined $rv->{colon} ? 1 : undef );
+  }
+  return $rv;
 }
 
 sub __token_circumflex {

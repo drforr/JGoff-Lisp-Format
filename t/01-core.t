@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 202;
+use Test::More tests => 203;
 use YAML;
 
 BEGIN {
@@ -11,6 +11,11 @@ use strict;
 use warnings;
 
 my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
+
+SKIP: {
+  diag "Rethink these tests";
+  skip 'Not ready yet', 202;
+  
 
 sub parse_deeply {
   my ( $str, $expected ) = @_;
@@ -574,3 +579,5 @@ ok_parse( q{~:@{~A~}} );
 ok_parse( q{~:@{~A ~A~}} );
 
 =cut
+
+}
