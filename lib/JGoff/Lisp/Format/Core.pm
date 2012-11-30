@@ -7,8 +7,6 @@ use Readonly;
 
 use JGoff::Lisp::Format::Parser;
 use Carp qw( croak );
-use POSIX qw( abs );
-use Storable qw( dclone );
 
 with 'JGoff::Lisp::Format::Role::Argument'; # XXX Parametrize this
 
@@ -18,9 +16,7 @@ has tree => ( is => 'rw' );
 has parser => (
   is => 'rw',
   isa => 'JGoff::Lisp::Format::Parser',
-  default => sub {
-    JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
-  }
+  default => sub { JGoff::Lisp::Format::Parser->new }
 );
 
 Readonly our $upcase => 'upcase';

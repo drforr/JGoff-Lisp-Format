@@ -23,7 +23,7 @@ sub _argument_to_base {
   else {
     $digits = $argument;
   }
-  $digits = $self->_commify( $digits, $core );
+  $digits = $self->_commify( $digits );
   $digits = $self->_padding( $digits );
   return $digits;
 }
@@ -96,21 +96,20 @@ sub _padding {
   }
 
   if ( $argument and
-       $self->{mincol} and
-       $self->{mincol} > 0 and
-       length( $argument ) < $self->{mincol} ) {
-    $argument = ' ' x ( $self->{mincol} - length( $argument ) ) . $argument;
+       $mincol and
+       length( $argument ) < $mincol ) {
+    $argument = ' ' x ( $mincol - length( $argument ) ) . $argument;
   }
   return $argument;
 }
 
 # }}}
 
-# {{{ _commify( $argument, $core )
+# {{{ _commify( $argument )
 
 sub _commify {
   my $self = shift;
-  my ( $argument, $core ) = @_;
+  my ( $argument ) = @_;
   my $interval = $self->{'comma-interval'};
   my $commachar = $self->{commachar};
   my $sign = 1;

@@ -27,7 +27,7 @@ sub format {
     $argument =~ s{ [.] [0]+ $ }{.0}x;
   }
 
-  $argument = $self->_commify( $argument, $core );
+  $argument = $self->_commify( $argument );
 
   if ( $argument and
        $self->{w} > 0 and
