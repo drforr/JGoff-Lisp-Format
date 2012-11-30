@@ -11,9 +11,11 @@ use JGoff::Lisp::Format::Tokens::Asterisk;
 use JGoff::Lisp::Format::Tokens::B;
 use JGoff::Lisp::Format::Tokens::C;
 use JGoff::Lisp::Format::Tokens::D;
+use JGoff::Lisp::Format::Tokens::F;
 use JGoff::Lisp::Format::Tokens::O;
 use JGoff::Lisp::Format::Tokens::P;
 use JGoff::Lisp::Format::Tokens::Question;
+use JGoff::Lisp::Format::Tokens::R;
 use JGoff::Lisp::Format::Tokens::Newline;
 use JGoff::Lisp::Format::Tokens::Percent;
 use JGoff::Lisp::Format::Tokens::S;
@@ -121,62 +123,69 @@ sub __token_a_b_d_o_s_x {
         [aAbBdDoOsSxX]
     }x );
   my $rv = $self->___parse_token( $match );
-  if ( $rv->{format} eq q{~a} ) {
-    return JGoff::Lisp::Format::Tokens::A->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  if ( $rv->{format} eq q{~b} ) {
-    return JGoff::Lisp::Format::Tokens::B->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  if ( $rv->{format} eq q{~d} ) {
-    return JGoff::Lisp::Format::Tokens::D->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  if ( $rv->{format} eq q{~o} ) {
-    return JGoff::Lisp::Format::Tokens::O->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  if ( $rv->{format} eq q{~s} ) {
-    return JGoff::Lisp::Format::Tokens::S->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  if ( $rv->{format} eq q{~x} ) {
-    return JGoff::Lisp::Format::Tokens::X->new(
-      arguments => defined $rv->{arguments} &&
-                   @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  return $rv;
+
+  return JGoff::Lisp::Format::Tokens::A->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~a};
+
+  return JGoff::Lisp::Format::Tokens::B->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~b};
+
+  return JGoff::Lisp::Format::Tokens::D->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~d};
+
+  return JGoff::Lisp::Format::Tokens::O->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~o};
+
+  return JGoff::Lisp::Format::Tokens::S->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~s};
+
+  return JGoff::Lisp::Format::Tokens::X->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  );
 }
 
 sub __token_f_r {
   my $self = shift;
   my $match =
     $self->expect( qr{ ~ $PARAMETERS{0,4} $PARAMETER? $MODIFIERS? [fFrR] }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+
+  return JGoff::Lisp::Format::Tokens::F->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~f};
+  
+  return JGoff::Lisp::Format::Tokens::R->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  );
 }
 
 sub __token_ampersand_percent_pipe_tilde {

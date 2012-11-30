@@ -2,6 +2,8 @@ package JGoff::Lisp::Format::Tokens::C;
 
 use Moose;
 
+extends 'JGoff::Lisp::Format::Token';
+
 has colon => ( is => 'ro' );
 
 sub format {
@@ -10,7 +12,7 @@ sub format {
 
   my $argument = $core->increment_argument;
   if ( $self->colon ) {
-    return $core->char_name( $argument );
+    return $self->char_name( $argument );
   }
   return $argument;
 }

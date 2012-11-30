@@ -2,6 +2,8 @@ package JGoff::Lisp::Format::Tokens::A;
 
 use Moose;
 
+extends 'JGoff::Lisp::Format::Token';
+
 has arguments => ( is => 'rw' );
 has colon => ( is => 'ro' );
 has at => ( is => 'ro' );
@@ -26,13 +28,12 @@ sub format {
     if ( $self->{colon} ) {
       return '[]';
     }
-    $argument = $core->_padding( $self, 'undef' );
+    $argument = $self->_padding( 'undef' );
     return $core->_print_case( $argument );
   }
   elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
    my $sub = $core->new(
      stream => $core->stream,
-#     format => $self->{format},
      format => '~a',
      arguments => $argument,
 
@@ -44,7 +45,7 @@ sub format {
     return $argument->toString;
   }
   else {
-    $argument = $core->_padding( $self, $argument );
+    $argument = $self->_padding( $argument );
   }
   
   return $argument;

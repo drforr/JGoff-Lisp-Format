@@ -67,17 +67,6 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
-# {{{ char_name
-
-sub char_name {
-  my $self = shift;
-  my ( $char ) = @_;
-  return 'Space' if $char eq ' ';
-  return $char;
-}
-
-# }}}
-
 # {{{ _print_case( $argument )
 
 sub _print_case {
@@ -434,7 +423,9 @@ sub _format {
               $operation->isa( 'JGoff::Lisp::Format::Tokens::A' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::B' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::D' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::F' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::O' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::R' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::S' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::X' ) ) {
         $output .= $operation->format( $self );
@@ -453,21 +444,6 @@ sub _format {
           $tree->[ $id - 1 ]->{colon};
         $output .= $operation->format( $before_newline, $nl_colon );
       }
-      elsif ( $operation->{format} eq '~f' ) {
-        $output .= $self->__format_f( $operation );
-      }
-#      elsif ( $operation->{format} eq '~o' ) {
-#        $output .= $self->__format_o( $operation );
-#      }
-      elsif ( $operation->{format} eq '~r' ) {
-        $output .= $self->__format_r( $operation );
-      }
-#      elsif ( $operation->{format} eq '~s' ) {
-#        $output .= $self->__format_s( $operation );
-#      }
-#      elsif ( $operation->{format} eq '~x' ) {
-#        $output .= $self->__format_x( $operation );
-#      }
       elsif ( $operation->{format} eq '~|' ) {
         $output .= $self->__format_vertical_bar( $operation );
       }
