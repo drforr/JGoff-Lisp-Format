@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 30;
+use Test::More tests => 32;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,8 @@ BEGIN {
 
 use strict;
 use warnings;
+
+my $f = JGoff::Lisp::Format->new;
 
 sub _ternary_to_decimal {
   my $ternary = shift;
@@ -427,20 +429,28 @@ def_format_test 'format.r.24' =>
   [ undef, 12345 ],
   "12345";
 
-#(deftest format.r.25
-#  (loop for i from 0 to 5
-#        for s = (format nil "~10,vr" i 12345)
-#        unless (string= s "12345")
-#        collect (list i s))
-#  nil)
+deftest 'format.r.25' => sub {
+  my $list = [];
+  for my $i ( 0 .. 5 ) {
+    my $s = $f->format( undef, "~10,vr", [ $i, 12345 ] );
+    unless ( $s eq '12345' ) {
+      collect( $list, $i, $s );
+    }
+  };
+  return $list;
+}, [];
 
-#(deftest formatter.r.25
-#  (let ((fn (formatter "~10,vr")))
-#    (loop for i from 0 to 5
-#          for s = (formatter-call-to-string fn i 12345)
-#          unless (string= s "12345")
-#          collect (list i s)))
-#  nil)
+deftest 'formatter.r.25' => sub {
+  my $fn = $f->formatter( "~10,vr" );
+  my $list = [];
+  for my $i ( 0 .. 5 ) {
+    my $s = formatter_call_to_string ( $fn, [ $i, 12345 ] );
+    unless ( $s eq '12345' ) {
+      collect( $list, $i, $s );
+    }
+  };
+  return $list;
+}, [];
 
 SKIP: {
   diag "Make these tests work";

@@ -10,11 +10,13 @@ sub format {
 
   if ( $self->at ) {
     my $format = $core->increment_argument;
+    my @remaining_arguments =
+      @{ $core->arguments }[ $core->argument_id .. $#{ $core->arguments } ];
     my $arguments = $core->increment_argument;
     my $sub_self = $core->new(
       stream => $core->stream,
       format => $format,
-      arguments => [ $arguments ]
+      arguments => [ @remaining_arguments ]
     );
     return $sub_self->apply;
   }

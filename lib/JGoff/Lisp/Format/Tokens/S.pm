@@ -27,7 +27,7 @@ sub format {
       return '[]';
     }
     $argument = $self->_padding( 'undef' );
-    return $core->_print_case( $argument );
+    return $self->_print_case( $core, $argument );
   }
   elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
    my $sub = $core->new(

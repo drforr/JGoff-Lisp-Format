@@ -53,14 +53,14 @@ def_format_test 'format.@?.3' =>
   [ "<~A>", 1, 2 ],
   "<1> 2";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 2;
 def_format_test 'format.@?.4' =>
   "a~@?z",
   [ "b~@?y", "c~@?x", "~A", 1 ],
   "abc1xyz";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 1;
 def_format_test 'format.@?.5' =>
   "~{~A~@?~A~}",
   [ [ 1, "~4*", 2, 3, 4, 5, 6 ] ],

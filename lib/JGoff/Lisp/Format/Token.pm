@@ -1,6 +1,37 @@
 package JGoff::Lisp::Format::Token;
 
 use Moose;
+use Readonly;
+use Carp qw( croak );
+
+Readonly our $upcase => 'upcase';
+Readonly our $downcase => 'downcase';
+Readonly our $capitalize => 'capitalize';
+
+# {{{ _print_case( $argument )
+
+sub _print_case {
+  my $self = shift;
+  my ( $core, $argument ) = @_;
+  if ( $core->print_case eq $JGoff::Lisp::Format::Token::upcase ) {
+    if ( ref( $argument ) and
+         ref( $argument ) eq 'JGoff::Lisp::Format::Utils::Character' ) { # XXX
+      return $argument;
+    }
+    return uc( $argument );
+  }
+  elsif ( $core->print_case eq $JGoff::Lisp::Format::Token::downcase ) {
+    return lc( $argument );
+  }
+  elsif ( $core->print_case eq $JGoff::Lisp::Format::Token::capitalize ) {
+    return ucfirst( lc( $argument ) );
+  }
+  else {
+    croak "Unknown or missing print_case '" . $core->print_case . "'";
+  }
+}
+
+# }}}
 
 # {{{ _argument_to_base( $base, $core )
 

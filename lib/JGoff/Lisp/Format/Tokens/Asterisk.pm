@@ -19,16 +19,16 @@ sub format {
   );
   $self->n( 1 ) unless defined $self->n;
 
-  if ( $self->{colon} ) {
-    for ( 1 .. $self->{n} ) {
+  if ( $self->colon ) {
+    for ( 1 .. $self->n ) {
       $core->decrement_argument;
     }
   }
-  elsif ( $self->{at} ) {
+  elsif ( $self->at ) {
     $core->decrement_argument;
   }
   else {
-    if ( defined $self->{n} and $self->{n} == 1 ) {
+    if ( defined $self->n and $self->n == 1 ) {
       $core->increment_argument;
     }
   }

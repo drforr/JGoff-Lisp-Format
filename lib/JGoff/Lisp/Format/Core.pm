@@ -6,6 +6,7 @@ use Scalar::Util qw( blessed ); # XXX temporary
 use Readonly;
 
 use JGoff::Lisp::Format::Parser;
+use JGoff::Lisp::Format::Token; # XXX rethink this
 use Carp qw( croak );
 
 with 'JGoff::Lisp::Format::Role::Argument'; # XXX Parametrize this
@@ -19,14 +20,10 @@ has parser => (
   default => sub { JGoff::Lisp::Format::Parser->new }
 );
 
-Readonly our $upcase => 'upcase';
-Readonly our $downcase => 'downcase';
-Readonly our $capitalize => 'capitalize';
-
 Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
-has print_case => ( is => 'ro', default => $upcase );
+has print_case => ( is => 'ro', default => $JGoff::Lisp::Format::Token::upcase );
 
 =head1 NAME
 
@@ -62,31 +59,6 @@ if you don't export anything, such as for a purely object-oriented module.
 =head2 format( $stream, $format, @args )
 
 =cut
-
-# {{{ _print_case( $argument )
-
-sub _print_case {
-  my $self = shift;
-  my ( $argument ) = @_;
-  if ( $self->print_case eq $upcase ) {
-    if ( ref( $argument ) and
-         ref( $argument ) eq 'JGoff::Lisp::Format::Utils::Character' ) { # XXX
-      return $argument;
-    }
-    return uc( $argument );
-  }
-  elsif ( $self->print_case eq $downcase ) {
-    return lc( $argument );
-  }
-  elsif ( $self->print_case eq $capitalize ) {
-    return ucfirst( lc( $argument ) );
-  }
-  else {
-    croak "Unknown or missing print_case '" . $self->print_case . "'";
-  }
-}
-
-# }}}
 
 # {{{ _format
 
