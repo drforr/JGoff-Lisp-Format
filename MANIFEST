@@ -4,14 +4,24 @@ lib/JGoff/Lisp/Format/Core.pm
 lib/JGoff/Lisp/Format/Parser.pm
 lib/JGoff/Lisp/Format/Role/Argument.pm
 lib/JGoff/Lisp/Format/Tokens/Ampersand.pm
+lib/JGoff/Lisp/Format/Tokens/A.pm
 lib/JGoff/Lisp/Format/Tokens/Asterisk.pm
+lib/JGoff/Lisp/Format/Tokens/B.pm
 lib/JGoff/Lisp/Format/Tokens/C.pm
+lib/JGoff/Lisp/Format/Tokens/D.pm
+lib/JGoff/Lisp/Format/Tokens/F.pm
 lib/JGoff/Lisp/Format/Tokens/Newline.pm
-lib/JGoff/Lisp/Format/Tokens/P.pm
+lib/JGoff/Lisp/Format/Tokens/Open_Brace.pm
+lib/JGoff/Lisp/Format/Tokens/O.pm
 lib/JGoff/Lisp/Format/Tokens/Percent.pm
+lib/JGoff/Lisp/Format/Tokens/P.pm
 lib/JGoff/Lisp/Format/Tokens/Question.pm
+lib/JGoff/Lisp/Format/Tokens/R.pm
+lib/JGoff/Lisp/Format/Tokens/S.pm
 lib/JGoff/Lisp/Format/Tokens/Text.pm
 lib/JGoff/Lisp/Format/Tokens/Tilde.pm
+lib/JGoff/Lisp/Format/Tokens/Vertical_Bar.pm
+lib/JGoff/Lisp/Format/Tokens/X.pm
 Makefile.PL
 MANIFEST			This list of files
 README

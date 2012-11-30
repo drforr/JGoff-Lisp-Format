@@ -11,8 +11,8 @@ has at => ( is => 'ro' );
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  $core->_resolve_arguments(
-    $self, [
+  $self->_resolve_arguments(
+    $core, [
       [ 'mincol' => 0 ],
       [ 'colinc' => 1 ],
       [ 'minpad' => 0 ],

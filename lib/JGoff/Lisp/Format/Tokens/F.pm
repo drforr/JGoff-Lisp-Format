@@ -2,6 +2,8 @@ package JGoff::Lisp::Format::Tokens::F;
 
 use Moose;
 
+extends 'JGoff::Lisp::Format::Token';
+
 has arguments => ( is => 'rw' );
 has colon => ( is => 'ro' );
 has at => ( is => 'ro' );
@@ -9,8 +11,8 @@ has at => ( is => 'ro' );
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  $core->_resolve_arguments(
-    $self, [
+  $self->_resolve_arguments(
+    $core, [
       [ w => 0 ],
       [ d => 0 ],
       [ k => 0 ],
@@ -25,7 +27,7 @@ sub format {
     $argument =~ s{ [.] [0]+ $ }{.0}x;
   }
 
-  $argument = $core->_commify( $argument, $self );
+  $argument = $self->_commify( $argument, $core );
 
   if ( $argument and
        $self->{w} > 0 and

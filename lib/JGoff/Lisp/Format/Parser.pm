@@ -13,6 +13,7 @@ use JGoff::Lisp::Format::Tokens::C;
 use JGoff::Lisp::Format::Tokens::D;
 use JGoff::Lisp::Format::Tokens::F;
 use JGoff::Lisp::Format::Tokens::O;
+use JGoff::Lisp::Format::Tokens::Open_Brace;
 use JGoff::Lisp::Format::Tokens::P;
 use JGoff::Lisp::Format::Tokens::Question;
 use JGoff::Lisp::Format::Tokens::R;
@@ -20,6 +21,7 @@ use JGoff::Lisp::Format::Tokens::Newline;
 use JGoff::Lisp::Format::Tokens::Percent;
 use JGoff::Lisp::Format::Tokens::S;
 use JGoff::Lisp::Format::Tokens::Tilde;
+use JGoff::Lisp::Format::Tokens::Vertical_Bar;
 use JGoff::Lisp::Format::Tokens::X;
 
 extends 'Parser::MGC';
@@ -188,28 +190,32 @@ sub __token_f_r {
   );
 }
 
-sub __token_ampersand_percent_pipe_tilde {
+sub __token_ampersand_percent_vertical_bar_tilde {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? [&%|~] }x );
   my $rv = $self->___parse_token( $match );
-  if ( $rv->{format} eq q{~&} ) {
-    return JGoff::Lisp::Format::Tokens::Ampersand->new;
-  }
-  elsif ( $rv->{format} eq q{~%} ) {
-    return JGoff::Lisp::Format::Tokens::Percent->new(
-      n => defined $rv->{arguments} &&
-           @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
-      colon => defined $rv->{colon} ? 1 : undef,
-      at => defined $rv->{at} ? 1 : undef
-    );
-  }
-  elsif ( $rv->{format} eq q{~~} ) {
-    return JGoff::Lisp::Format::Tokens::Tilde->new(
-      n => defined $rv->{arguments} &&
-           @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
-    );
-  }
-  return $rv;
+
+  return JGoff::Lisp::Format::Tokens::Ampersand->new
+    if $rv->{format} eq q{~&};
+
+  return JGoff::Lisp::Format::Tokens::Percent->new(
+    n => defined $rv->{arguments} &&
+         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  ) if $rv->{format} eq q{~%};
+
+  return JGoff::Lisp::Format::Tokens::Tilde->new(
+    n => defined $rv->{arguments} &&
+         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+  ) if $rv->{format} eq q{~~};
+
+  return JGoff::Lisp::Format::Tokens::Vertical_Bar->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  );
 }
 
 sub __token_asterisk_open_bracket {
@@ -275,7 +281,13 @@ sub __token_close_bracket_close_paren {
 sub __token_open_brace {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \{ }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Open_Brace->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  );
 }
 
 sub __token_close_brace {
@@ -315,7 +327,7 @@ sub _atom {
     sub { $self->__token_text },
     sub { $self->__token_asterisk_open_bracket },
     sub { $self->__token_a_b_d_o_s_x },
-    sub { $self->__token_ampersand_percent_pipe_tilde },
+    sub { $self->__token_ampersand_percent_vertical_bar_tilde },
     sub { $self->__token_c_newline_open_paren_p_question_semi },
     sub { $self->__token_close_bracket_close_paren },
     sub { $self->__token_circumflex },

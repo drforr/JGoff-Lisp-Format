@@ -92,297 +92,6 @@ sub _print_case {
 
 # }}}
 
-# {{{ _commify( $argument, $operation )
-
-sub _commify {
-  my $self = shift;
-  my ( $argument, $operation ) = @_;
-  my $interval = $operation->{'comma-interval'};
-  my $commachar = $operation->{commachar};
-  my $sign = 1;
-
-  if ( $argument and $argument !~ /[^-+0-9.]/ and $argument < 0 ) {
-    $sign = -1;
-    $argument = abs( $argument );
-  }
-  if ( $operation->{colon} ) {
-    my @chunk;
-    while ( $argument and
-            length( $argument ) > $interval ) {
-      unshift @chunk, substr( $argument, -$interval, $interval, '' );
-    }
-    unshift @chunk, $argument if $argument and $argument ne '';
-    $argument = join $commachar, @chunk;
-  }
-  if ( $sign < 0 ) {
-    return '-' . $argument;
-  }
-  elsif ( $sign > 0 and $operation->{at} ) {
-    return '+' . $argument;
-  }
-  return $argument;
-}
-
-# }}}
-
-# {{{ _padding ( $operation, $argument )
-
-sub _padding {
-  my ( $self, $operation, $argument ) = @_;
-  my ( $padchar, $minpad, $mincol, $colinc ) =
-    @{ $operation }{qw( padchar minpad mincol colinc )};
-
-  my $padding = '';
-  if ( $minpad and $minpad > 0 ) {
-    $padding .= $padchar x $minpad;
-  }
-  if ( $padchar and $padchar =~ /./ ) {
-    if ( $mincol and $mincol > length( $argument ) ) {
-      if ( $colinc and $colinc > 0 ) {
-        while ( length( $argument ) + length( $padding ) < $mincol ) {
-          $padding .= $padchar x $colinc;
-        }
-      }
-    }
-  }
-
-  if ( $operation->{at} ) {
-    $argument = $padding . $argument;
-  }
-  else {
-    $argument = $argument . $padding;
-  }
-
-  if ( $argument and
-       $operation->{mincol} and
-       $operation->{mincol} > 0 and
-       length( $argument ) < $operation->{mincol} ) {
-    $argument = ' ' x ( $operation->{mincol} - length( $argument ) ) .
-                $argument;
-  }
-  return $argument;
-}
-
-# }}}
-
-# {{{ _resolve_arguments( $operation, $tuples )
-
-sub _resolve_arguments {
-  my $self = shift;
-  my ( $operation, $tuples ) = @_;
-
-  if ( $operation->{arguments} ) {
-    for my $tuple ( @$tuples ) {
-      my ( $name, $default ) = @$tuple;
-      my $value = shift @{ $operation->{arguments} };
-      if ( defined $value ) {
-        $operation->{$name} = $value;
-      }
-    }
-    delete $operation->{arguments};   
-  }
-  for my $tuple ( @$tuples ) {
-    my ( $name, $default ) = @$tuple;
-    if ( defined $operation->{$name} and $operation->{$name} eq 'v' ) {
-      $operation->{$name} = $self->increment_argument;
-      $operation->{"$name-v"} = 1;
-    }
-    elsif ( defined $operation->{$name} and $operation->{$name} eq '#' ) {
-      $operation->{$name} = $self->num_arguments;
-    }
-    if ( !defined( $operation->{$name} ) ) {
-      $operation->{$name} = $default;
-    }
-    if ( $name =~ /char/ ) {
-      $operation->{$name} =~ s{^'(.)}{$1};
-    }
-  }
-}
-
-# }}}
-
-# {{{ _argument_to_base( $base, $operation ) # base 2-36
-
-sub _argument_to_base {
-  my $self = shift;
-  my ( $base, $operation ) = @_;
-  my $argument = $self->increment_argument;
-
-  my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
-  my $digits = '';
-
-  if ( $base != 10 ) {
-    while ( $argument > 0 ) {
-      my $digit = $argument % $base;
-      $digits = $radix[ $digit ] . $digits;
-      $argument -= $digit;
-      $argument /= $base;
-    }
-  }
-  else {
-    $digits = $argument;
-  }
-  $digits = $self->_commify( $digits, $operation );
-  $digits = $self->_padding( $operation, $digits );
-  return $digits;
-}
-
-# }}}
-
-# {{{ __format_f
-
-sub __format_f {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ w => 0 ],
-      [ d => 0 ],
-      [ k => 0 ],
-      [ overflowchar => ',' ],
-      [ padchar => ',' ],
-    ]
-  );
-
-  my $argument = $self->increment_argument;
-  $argument = sprintf "%f", $argument;
-  if ( $argument =~ m{ [.] [0]+ $ }x ) {
-    $argument =~ s{ [.] [0]+ $ }{.0}x;
-  }
-
-  $argument = $self->_commify( $argument, $operation );
-
-  if ( $argument and
-       $operation->{w} > 0 and
-       length( $argument ) < $operation->{w} ) {
-    $argument = ' ' x ( $operation->{w} - length( $argument ) ) . $argument;
-  }
-
-  return $argument;
-}
-
-# }}}
-
-# {{{ __format_r
-
-sub __format_r {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [
-      [ 'radix' => 10 ],
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-#      [ 'colinc' => 1 ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
-    ]
-  );
-$operation->{colinc} = 1;
-  my @english_number_names = (
-   "zero",
-   "one", "two", "three", "four", "five",
-   "six", "seven", "eight", "nine", "ten",
-   "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-   "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
-   "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five",
-   "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty",
-   "thirty-one", "thirty-two", "thirty-three", "thirty-four", "thirty-five",
-   "thirty-six", "thirty-seven", "thirty-eight", "thirty-nine", "forty",
-   "forty-one", "forty-two", "forty-three", "forty-four", "forty-five",
-   "forty-six", "forty-seven", "forty-eight", "forty-nine", "fifty",
-   "fifty-one", "fifty-two", "fifty-three", "fifty-four", "fifty-five",
-   "fifty-six", "fifty-seven", "fifty-eight", "fifty-nine", "sixty",
-   "sixty-one", "sixty-two", "sixty-three", "sixty-four", "sixty-five",
-   "sixty-six", "sixty-seven", "sixty-eight", "sixty-nine", "seventy",
-   "seventy-one", "seventy-two", "seventy-three", "seventy-four", "seventy-five",
-   "seventy-six", "seventy-seven", "seventy-eight", "seventy-nine", "eighty",
-   "eighty-one", "eighty-two", "eighty-three", "eighty-four", "eighty-five",
-   "eighty-six", "eighty-seven", "eighty-eight", "eighty-nine", "ninety",
-   "ninety-one", "ninety-two", "ninety-three", "ninety-four", "ninety-five",
-   "ninety-six", "ninety-seven", "ninety-eight", "ninety-nine", "one hundred"
-  );
-
-  my $argument;
-  if ( $operation->{'radix-v'} ) {
-    $argument = $self->increment_argument;
-    $argument = $english_number_names[$argument];
-  }
-  else {
-    $argument = $self->_argument_to_base( $operation->{radix}, $operation );
-  }
-
-  return $argument;
-}
-
-# }}}
-
-# {{{ __format_open_brace
-
-sub __format_open_brace {
-  my $self = shift;
-  my ( $open, $operation, $close ) = @_;
-  my $iteration_count;
-  if ( $open->{arguments} ) {
-    if ( $open->{arguments}[0] eq '#' ) {
-      $iteration_count = @{ $self->arguments };
-    }
-    elsif ( $open->{arguments}[0] eq 'v' ) {
-      $iteration_count = $self->increment_argument;
-    }
-    else {
-      $iteration_count = $open->{arguments}[0];
-    }
-  }
-
-  my $output = '';
-  if ( $self->current_argument and
-       ref( $self->current_argument ) ) {
-    for my $argument ( @{ $self->current_argument } ) {
-      if ( defined $iteration_count ) {
-        last if $iteration_count-- <= 0;
-      }
-      my $sub_self = $self->new(
-        stream => $self->stream,
-        tree => $operation,
-        arguments => [ $argument ]
-      );
-      $output .= $sub_self->_format;
-    }
-  }
-  elsif ( $self->current_argument ) {
-    my $format = $self->current_argument;
-    for my $argument ( @{ $self->next_argument } ) {
-      if ( defined $iteration_count ) {
-        last if $iteration_count-- <= 0;
-      }
-      my $sub_self = $self->new(
-        stream => $self->stream,
-        format => $format,
-        arguments => [ $argument ]
-      );
-      $output .= $sub_self->apply;
-    }
-  }
-  return $output;
-}
-
-# }}}
-
-# {{{ __format_vertical_bar
-
-sub __format_vertical_bar {
-  my $self = shift;
-  my ( $operation ) = @_;
-  $self->_resolve_arguments(
-    $operation, [ [ n => 1 ] ]
-  );
-
-  return "\cL" x $operation->{n};
-}
-
-# }}}
-
 # {{{ _format
 
 sub _format {
@@ -396,7 +105,6 @@ sub _format {
         my $before_newline = 0;
         $before_newline = 1 if
           $id > 0 and
-          blessed( $tree->[ $id - 1 ] ) and
           $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Newline' );
         my $nl_colon = 0;
         $nl_colon = 1 if
@@ -409,7 +117,6 @@ sub _format {
         my $before_percent = 0;
         $before_percent = 1 if
           $id > 0 and
-          blessed( $tree->[ $id - 1 ] ) and
           ref( $tree->[ $id - 1 ] )->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
         $output .= $operation->format( $is_first, $before_percent );
       }
@@ -427,28 +134,9 @@ sub _format {
               $operation->isa( 'JGoff::Lisp::Format::Tokens::O' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::R' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::S' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Vertical_Bar' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::X' ) ) {
         $output .= $operation->format( $self );
-      }
-    }
-    elsif( ref( $operation ) and ref( $operation ) eq 'HASH' ) {
-      if ( $operation->{format} eq 'text' ) {
-        my $before_newline = 0;
-        $before_newline = 1 if
-          $id > 0 and
-          blessed( $tree->[ $id - 1 ] ) and
-          $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Newline' );
-        my $nl_colon = 0;
-        $nl_colon = 1 if
-          $before_newline and
-          $tree->[ $id - 1 ]->{colon};
-        $output .= $operation->format( $before_newline, $nl_colon );
-      }
-      elsif ( $operation->{format} eq '~|' ) {
-        $output .= $self->__format_vertical_bar( $operation );
-      }
-      else {
-        $output = 'UNIMPLEMENTED FORMAT'; last;
       }
     }
     elsif ( ref( $operation ) and ref( $operation ) eq 'ARRAY' ) {
@@ -457,20 +145,11 @@ sub _format {
       if ( $self->num_arguments ) {
         $_arguments = $self->first_argument;
       }
-      if ( $open->{format} eq '~{' ) {
-        $output .= $self->__format_open_brace(
-          $open, $_operation, $close, $_arguments
-        );
+      if ( $open->isa( 'JGoff::Lisp::Format::Tokens::Open_Brace' ) ) {
+        $output .= $open->format( $self, $_operation, $close, $_arguments );
       }
-      elsif ( $open->{format} eq '~(' ) {
-        $output .= $self->__format_open_paren(
-          $open, $_operation, $close, $_arguments
-        );
-      }
-      elsif ( $open->{format} eq '~[' ) {
-        $output .= $self->__format_open_bracket(
-          $open, $_operation, $close, $_arguments
-        );
+      else {
+        croak "Unknown sub-operation type";
       }
     }
     else {

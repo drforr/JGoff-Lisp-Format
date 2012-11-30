@@ -2,6 +2,9 @@ package JGoff::Lisp::Format::Tokens::Tilde;
 
 use Moose;
 
+extends 'JGoff::Lisp::Format::Token';
+
+has arguments => ( is => 'rw' );
 has n => ( is => 'rw' );
 has at => ( is => 'ro' );
 has colon => ( is => 'ro' );
@@ -9,8 +12,8 @@ has colon => ( is => 'ro' );
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  $core->_resolve_arguments(
-    $self, [
+  $self->_resolve_arguments(
+    $core, [
       [ 'n' => 1 ],
     ]
   );

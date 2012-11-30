@@ -2,6 +2,8 @@ package JGoff::Lisp::Format::Tokens::R;
 
 use Moose;
 
+extends 'JGoff::Lisp::Format::Token';
+
 has arguments => ( is => 'rw' );
 has colon => ( is => 'ro' );
 has at => ( is => 'ro' );
@@ -9,8 +11,8 @@ has at => ( is => 'ro' );
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  $core->_resolve_arguments(
-    $self, [
+  $self->_resolve_arguments(
+    $core, [
       [ 'radix' => 10 ],
       [ 'mincol' => 0 ],
       [ 'padchar' => ' ' ],
@@ -50,7 +52,7 @@ $self->{colinc} = 1;
     $argument = $english_number_names[$argument];
   }
   else {
-    $argument = $core->_argument_to_base( $self->{radix}, $self );
+    $argument = $self->_argument_to_base( $self->{radix}, $core );
   }
 
   return $argument;
