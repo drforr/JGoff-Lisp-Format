@@ -69,6 +69,11 @@ sub _format {
   for my $id ( 0 .. $#{ $tree } ) {
     my $operation = $tree->[ $id ];
     if ( blessed( $operation ) ) {
+      if ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Circumflex' ) ) {
+        if ( $self->argument_id >= $self->num_arguments ) {
+          last;
+        }
+      }
       if ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Text' ) ) {
         my $before_newline = 0;
         $before_newline = 1 if
@@ -97,6 +102,7 @@ sub _format {
               $operation->isa( 'JGoff::Lisp::Format::Tokens::Asterisk' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::A' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::B' ) or
+              $operation->isa( 'JGoff::Lisp::Format::Tokens::Circumflex' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::D' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::F' ) or
               $operation->isa( 'JGoff::Lisp::Format::Tokens::O' ) or
@@ -123,7 +129,6 @@ sub _format {
     else {
       croak "Unknown operation type";
     }
-
   }
   return $output;
 }

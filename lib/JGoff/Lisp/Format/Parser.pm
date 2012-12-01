@@ -10,6 +10,7 @@ use JGoff::Lisp::Format::Tokens::Ampersand;
 use JGoff::Lisp::Format::Tokens::Asterisk;
 use JGoff::Lisp::Format::Tokens::B;
 use JGoff::Lisp::Format::Tokens::C;
+use JGoff::Lisp::Format::Tokens::Circumflex;
 use JGoff::Lisp::Format::Tokens::D;
 use JGoff::Lisp::Format::Tokens::F;
 use JGoff::Lisp::Format::Tokens::Newline;
@@ -267,7 +268,13 @@ sub __token_circumflex {
   my $self = shift;
   my $match =
     $self->expect( qr{ ~ $PARAMETERS{0,2} $PARAMETER? $MODIFIERS? \^ }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Circumflex->new(
+    arguments => defined $rv->{arguments} &&
+                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
+    colon => defined $rv->{colon} ? 1 : undef,
+    at => defined $rv->{at} ? 1 : undef
+  );
 }
 
 sub __token_close_bracket_close_paren {
