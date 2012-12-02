@@ -11,6 +11,7 @@ use JGoff::Lisp::Format::Tokens::Asterisk;
 use JGoff::Lisp::Format::Tokens::B;
 use JGoff::Lisp::Format::Tokens::C;
 use JGoff::Lisp::Format::Tokens::Circumflex;
+use JGoff::Lisp::Format::Tokens::Close_Brace;
 use JGoff::Lisp::Format::Tokens::D;
 use JGoff::Lisp::Format::Tokens::F;
 use JGoff::Lisp::Format::Tokens::Newline;
@@ -296,7 +297,11 @@ sub __token_open_brace {
 sub __token_close_brace {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \} }x );
-  return $self->___parse_token( $match );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Close_Brace->new(
+    colon => $rv->{colon},
+    at => $rv->{at}
+  );
 }
 
 # {{{ __token_text

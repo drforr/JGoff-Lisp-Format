@@ -14,12 +14,18 @@ has arguments => ( is => 'rw' );
 
 sub current_argument {
   my $self = shift;
-  return undef unless $self->arguments and @{ $self->arguments };
+  return undef unless $self->arguments and
+                      ref( $self->arguments ) and
+                      ref( $self->arguments ) eq 'ARRAY' and
+                      @{ $self->arguments };
   return $self->arguments->[ $self->argument_index ];
 }
 sub num_arguments {
   my $self = shift;
-  return 0 unless $self->arguments and @{ $self->arguments };
+  return 0 unless $self->arguments and
+                  ref( $self->arguments ) and
+                  ref( $self->arguments ) eq 'ARRAY' and
+                  @{ $self->arguments };
   return scalar @{ $self->arguments };
 }
 sub forward_argument {

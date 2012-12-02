@@ -9,17 +9,19 @@ has at => ( is => 'ro' );
 sub format {
   my $self = shift;
   my ( $core, $operation, $close ) = @_;
-  my $iteration_count;
-  if ( $self->arguments ) {
-    if ( $self->arguments->[0] eq '#' ) {
-      $iteration_count = @{ $core->arguments };
+  my $iteration_count = undef;
+
+  if ( $self->arguments and defined( $self->arguments->[0] ) ) {
+    my $first_argument = $self->arguments->[0];
+    if ( $first_argument eq '#' ) {
+      $iteration_count = $core->num_arguments;
     }
-    elsif ( $self->arguments->[0] eq 'v' ) {
+    elsif ( $first_argument eq 'v' ) {
       $iteration_count = $core->current_argument;
       $core->forward_argument;
     }
     else {
-      $iteration_count = $self->arguments->[0];
+      $iteration_count = $first_argument;
     }
   }
 
@@ -51,6 +53,18 @@ sub format {
         arguments => [ $argument ]
       );
       $output .= $sub_self->apply;
+    }
+  }
+  else {
+    if ( $close->colon and
+         ( ( defined( $iteration_count ) and $iteration_count != 0 ) or
+           ( !defined( $iteration_count ) ) ) ) {
+      my $sub_self = $core->new(
+        stream => $core->stream,
+        tree => $operation,
+        arguments => undef
+      );
+      $output .= $sub_self->_format;
     }
   }
   return $output;

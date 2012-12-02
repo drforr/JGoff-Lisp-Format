@@ -1,7 +1,6 @@
 #!perl
 
-use Test::More tests => 71;
-
+use Test::More tests => 36;
 
 BEGIN {
   use lib 't/lib';
@@ -58,6 +57,30 @@ def_format_test 'format.{.7' =>
   [ undef ],
   "";
 
+deftest 'format.{.8' => sub {
+  my $list = [];
+  for my $i ( 0 .. 10 ) {
+    my $s = $f->format( undef, "~v{~A~}", [ $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] ] );
+    unless ( $s eq subseq( "1234567890", 0, $i ) ) {
+      collect( $list, $i, $s );
+    }
+  }
+  $list;
+}, [];
+
+deftest 'formatter.{.8' => sub {
+  my $fn = $f->formatter( "~V{~A~}" );
+  my $list = [];
+  for my $i ( 0 .. 10 ) {
+    my $s = formatter_call_to_string( $fn,
+      [ $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] ] );
+    unless ( $s eq subseq( "1234567890", 0, $i ) ) {
+      collect( $list, $i, $s );
+    }
+  }
+  $list;
+}, [];
+
 def_format_test 'format.{.9' =>
   "~#{~A~}",
   [ [ 1, 2, 3, 4, 5, 6, 7 ], undef, undef, undef ],
@@ -77,9 +100,6 @@ def_format_test 'format.{.16' =>
   [ "~A", [ 4, 5, 6 ] ],
   "4";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 4;
 deftest 'format.{.17' => sub { # XXX Vet the arguments
   $f->format( undef, "~{~}", $f->formatter( "" ), undef );
 }, "";
@@ -88,6 +108,9 @@ deftest 'format.{.18' => sub { # XXX Vet the arguments
   $f->format( undef, "~1{~}", $f->formatter( "" ), [ [ 1, 2, 3, 4 ] ] );
 }, "";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 2;
 deftest 'format.{.19' => sub { # XXX Vet the arguments
   $f->format( undef, "~1{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
 }, "1234";
@@ -107,14 +130,10 @@ def_format_test 'format.{.22' =>
   [ "~A", [ 1, 2, 3, 4, 5 ] ],
   "12";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
 def_format_test 'format.{.23' =>
   "~{FOO~:}",
   [ undef ],
   "FOO";
-}
 
 def_format_test 'format.{.24' =>
   "~{~A~:}",
@@ -141,9 +160,6 @@ def_format_test 'format.{.28' =>
   [ 0, undef ],
   "";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 40;
 def_format_test 'format.{.29' =>
   "~1{FOO~:}",
   [ undef ],
@@ -158,7 +174,6 @@ def_format_test 'format.{.31' =>
   concatenate( "~2{~", "\n", "~:}" ),
   [ undef ],
   "";
-}
 
 def_format_test 'format.{.32' =>
   "~2{FOO~}",
@@ -176,9 +191,9 @@ SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 4;
 def_format_test 'format.\:{.1' =>
-  "~:{(~A ~A)~}",
+  "~:{[~A ~A]~}",
   [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ] ],
-  "(1 2)(4 5)(6 7)";
+  "[1 2][4 5][6 7]";
 
 def_format_test 'format.\:{.2' =>
   concatenate( "~:{~", "\n", "~}" ),
@@ -229,6 +244,57 @@ def_format_test 'format.\:{.10' =>
   [ [ [ 1, 'X' ], [ 2, 'Y' ], [ 3, 'Z' ] ] ],
   "12";
 
+deftest 'format.\:{.11' => sub {
+  my $list = [];
+  for my $i ( 0 .. 10 ) {
+    collect( $list,
+      $f->format(
+        undef,
+        "~v:{~A~}",
+        [ $i, [ [ 1 ], [ 2 ], [ 3, 'X' ], [ 4, 'Y', 'Z' ], [ 5 ], [ 6 ] ] ]
+      )
+    );
+  }
+  return $list;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '12345',
+  '123456',
+  '123456',
+  '123456',
+  '123456',
+  '123456',
+];
+
+deftest 'format.\:{.11' => sub {
+  my $list = [];
+  my $fn = $f->formatter( "~v:{~A~}" );
+  for my $i ( 0 .. 10 ) {
+    collect( $list,
+      formatter_call_to_list( $fn, $i,
+        [ $i, [ [ 1 ], [ 2 ], [ 3, 'X' ], [ 4, 'Y', 'Z' ], [ 5 ], [ 6 ] ] ]
+      )
+    );
+  }
+  return $list;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '12345',
+  '123456',
+  '123456',
+  '123456',
+  '123456',
+  '123456',
+];
+
 def_format_test 'format.\:{.12' =>
   "~V:{X~}",
   [ undef, [ [ 1 ], [ 2 ], [ 3 ], undef, [ 5 ] ] ],
@@ -244,6 +310,19 @@ def_format_test 'format.\:{.14' =>
   "~:{~A~:}",
   [ [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ] ],
   "1234";
+
+#(deftest format.\:{.15
+#  (loop for i from 0 to 10 collect
+#        (format nil "~v:{~A~:}" i '((1 X) (2 Y) (3) (4 A B))))
+#  ("" "1" "12" "123" "1234" "1234"
+#   "1234" "1234" "1234" "1234" "1234"))
+
+#(deftest formatter.\:{.15
+#  (let ((fn (formatter "~v:{~A~:}")))
+#    (loop for i from 0 to 10 collect
+#          (formatter-call-to-string fn i '((1 X) (2 Y) (3) (4 A B)))))
+#  ("" "1" "12" "123" "1234" "1234"
+#   "1234" "1234" "1234" "1234" "1234"))
 
 def_format_test 'format.\:{.16' =>
   "~:{ABC~:}",
@@ -313,6 +392,25 @@ def_format_test 'format.@{.10' =>
   undef,
   "X";
 
+#(deftest format.@{.10
+#  (loop for i from 0 to 10
+#        for x = nil then (cons i x)
+#        collect (apply #'format nil "~v@{~A~}" i (reverse x)))
+#  ("" "1" "12" "123" "1234" "12345"
+#   "123456" "1234567" "12345678" "123456789" "12345678910"))
+
+#(deftest formatter.@{.10
+#  (let ((fn (formatter "~v@{~A~}")))
+#    (loop for i from 0 to 10
+#          for x = nil then (cons i x)
+#          for rest = (list 'a 'b 'c)
+#          collect
+#          (with-output-to-string
+#            (s)
+#            (assert (equal (apply fn s i (append (reverse x) rest)) rest)))))
+#  ("" "1" "12" "123" "1234" "12345"
+#   "123456" "1234567" "12345678" "123456789" "12345678910"))
+
 #def_format_test format.@{.12
 #  "~@{~}" ((formatter "X~AY") 1) "X1Y")
 def_format_test 'format.@{.12' => # XXX double-check
@@ -377,66 +475,6 @@ def_format_test 'format.\:@.9' =>
   [ undef, [ 1 ], [ 2 ], [ 3 ] ],
   "123";
 }
-
-#(deftest format.{.8
-#  (loop for i from 0 to 10
-#        for s = (format nil "~v{~A~}" i '(1 2 3 4 5 6 7 8 9 0))
-#        unless (string= s (subseq "1234567890" 0 i))
-#        collect (list i s))
-#  nil)
-
-#(deftest formatter.{.8
-#  (let ((fn (formatter "~V{~A~}")))
-#    (loop for i from 0 to 10
-#          for s = (formatter-call-to-string fn i '(1 2 3 4 5 6 7 8 9 0))
-#          unless (string= s (subseq "1234567890" 0 i))
-#          collect (list i s)))
-#  nil)
-
-#(deftest format.\:{.11
-#  (loop for i from 0 to 10 collect
-#        (format nil "~v:{~A~}" i '((1) (2) (3 X) (4 Y Z) (5) (6))))
-#  ("" "1" "12" "123" "1234" "12345"
-#   "123456" "123456" "123456" "123456" "123456"))
-
-#(deftest formatter.\:{.11
-#  (let ((fn (formatter "~v:{~A~}")))
-#    (loop for i from 0 to 10 collect
-#          (formatter-call-to-string fn i '((1) (2) (3 X) (4 Y Z) (5) (6)))))
-#  ("" "1" "12" "123" "1234" "12345"
-#   "123456" "123456" "123456" "123456" "123456"))
-
-#(deftest format.\:{.15
-#  (loop for i from 0 to 10 collect
-#        (format nil "~v:{~A~:}" i '((1 X) (2 Y) (3) (4 A B))))
-#  ("" "1" "12" "123" "1234" "1234"
-#   "1234" "1234" "1234" "1234" "1234"))
-
-#(deftest formatter.\:{.15
-#  (let ((fn (formatter "~v:{~A~:}")))
-#    (loop for i from 0 to 10 collect
-#          (formatter-call-to-string fn i '((1 X) (2 Y) (3) (4 A B)))))
-#  ("" "1" "12" "123" "1234" "1234"
-#   "1234" "1234" "1234" "1234" "1234"))
-
-#(deftest format.@{.10
-#  (loop for i from 0 to 10
-#        for x = nil then (cons i x)
-#        collect (apply #'format nil "~v@{~A~}" i (reverse x)))
-#  ("" "1" "12" "123" "1234" "12345"
-#   "123456" "1234567" "12345678" "123456789" "12345678910"))
-
-#(deftest formatter.@{.10
-#  (let ((fn (formatter "~v@{~A~}")))
-#    (loop for i from 0 to 10
-#          for x = nil then (cons i x)
-#          for rest = (list 'a 'b 'c)
-#          collect
-#          (with-output-to-string
-#            (s)
-#            (assert (equal (apply fn s i (append (reverse x) rest)) rest)))))
-#  ("" "1" "12" "123" "1234" "12345"
-#   "123456" "1234567" "12345678" "123456789" "12345678910"))
 
 #(deftest format.\:@.10
 #  (loop for i from 0 to 10

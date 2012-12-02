@@ -2,12 +2,13 @@ Changes
 lib/JGoff/Lisp/Format.pm
 lib/JGoff/Lisp/Format/Core.pm
 lib/JGoff/Lisp/Format/Parser.pm
-lib/JGoff/Lisp/Format/Role/Argument.pm
 lib/JGoff/Lisp/Format/Tokens/Ampersand.pm
 lib/JGoff/Lisp/Format/Tokens/A.pm
 lib/JGoff/Lisp/Format/Tokens/Asterisk.pm
 lib/JGoff/Lisp/Format/Tokens/B.pm
 lib/JGoff/Lisp/Format/Tokens/C.pm
+lib/JGoff/Lisp/Format/Tokens/Circumflex.pm
+lib/JGoff/Lisp/Format/Tokens/Close_Brace.pm
 lib/JGoff/Lisp/Format/Tokens/D.pm
 lib/JGoff/Lisp/Format/Tokens/F.pm
 lib/JGoff/Lisp/Format/Tokens/Newline.pm

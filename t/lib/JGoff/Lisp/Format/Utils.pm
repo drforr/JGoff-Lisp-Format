@@ -9,6 +9,7 @@ use YAML;
 use base 'Exporter';
 our @EXPORT = qw(
   string
+  subseq
   char_name
   def_format_test
   deftest
@@ -35,6 +36,11 @@ sub string {
   my ( $c ) = shift;
   return $c unless ref( $c ) =~ /Character/;
   return $c->toString;
+}
+
+sub subseq {
+  my ( $str, $start, $end ) = @_;
+  substr( $str, $start, $end - $start );
 }
 
 sub with_standard_io_syntax(&) {
