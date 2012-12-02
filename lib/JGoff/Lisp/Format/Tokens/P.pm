@@ -9,11 +9,11 @@ sub format {
   my $self = shift;
   my ( $core ) = @_;
 
-  if ( $self->{colon} ) {
+  if ( $self->colon ) {
     $core->backward_argument;
     my $argument = $core->current_argument;
     $core->forward_argument;
-    if ( $self->{at} ) {
+    if ( $self->at ) {
       if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
         return 'ies';
       }
@@ -34,7 +34,7 @@ sub format {
       return 's';
     }
   }
-  elsif ( $self->{at} ) {
+  elsif ( $self->at ) {
     my $argument = $core->current_argument;
     $core->forward_argument;
     if ( defined $argument and $argument == 0 ) {

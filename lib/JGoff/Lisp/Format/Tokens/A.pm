@@ -26,7 +26,7 @@ sub format {
 # Strip escape characters
 
   if ( !defined $argument ) {
-    if ( $self->{colon} ) {
+    if ( $self->colon ) {
       return '[]';
     }
     $argument = $self->_padding( 'undef' );

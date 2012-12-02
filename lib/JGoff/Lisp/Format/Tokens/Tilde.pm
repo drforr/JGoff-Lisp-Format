@@ -19,7 +19,7 @@ sub format {
   );
   $self->n( 1 ) unless defined $self->n;
 
-  return "~" x $self->{n};
+  return "~" x $self->n;
 }
 
 1;

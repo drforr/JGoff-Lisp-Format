@@ -10,16 +10,16 @@ sub format {
   my $self = shift;
   my ( $core, $operation, $close ) = @_;
   my $iteration_count;
-  if ( $self->{arguments} ) {
-    if ( $self->{arguments}[0] eq '#' ) {
+  if ( $self->arguments ) {
+    if ( $self->arguments->[0] eq '#' ) {
       $iteration_count = @{ $core->arguments };
     }
-    elsif ( $self->{arguments}[0] eq 'v' ) {
+    elsif ( $self->arguments->[0] eq 'v' ) {
       $iteration_count = $core->current_argument;
       $core->forward_argument;
     }
     else {
-      $iteration_count = $self->{arguments}[0];
+      $iteration_count = $self->arguments->[0];
     }
   }
 
