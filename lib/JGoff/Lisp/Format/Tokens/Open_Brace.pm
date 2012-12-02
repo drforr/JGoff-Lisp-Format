@@ -15,7 +15,8 @@ sub format {
       $iteration_count = @{ $core->arguments };
     }
     elsif ( $self->{arguments}[0] eq 'v' ) {
-      $iteration_count = $core->increment_argument;
+      $iteration_count = $core->current_argument;
+      $core->forward_argument;
     }
     else {
       $iteration_count = $self->{arguments}[0];
@@ -39,7 +40,8 @@ sub format {
   }
   elsif ( $core->current_argument ) {
     my $format = $core->current_argument;
-    for my $argument ( @{ $core->next_argument } ) {
+    $core->forward_argument;
+    for my $argument ( @{ $core->current_argument } ) {
       if ( defined $iteration_count ) {
         last if $iteration_count-- <= 0;
       }

@@ -21,7 +21,8 @@ sub format {
     ]
   );
 
-  my $argument = $core->increment_argument;
+  my $argument = $core->current_argument;
+  $core->forward_argument;
   $argument = sprintf "%f", $argument;
   if ( $argument =~ m{ [.] [0]+ $ }x ) {
     $argument =~ s{ [.] [0]+ $ }{.0}x;

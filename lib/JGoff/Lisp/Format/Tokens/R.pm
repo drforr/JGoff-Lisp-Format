@@ -48,7 +48,8 @@ $self->{colinc} = 1;
 
   my $argument;
   if ( $self->{'radix-v'} ) {
-    $argument = $core->increment_argument;
+    $argument = $core->current_argument;
+    $core->forward_argument;
     $argument = $english_number_names[$argument];
   }
   else {

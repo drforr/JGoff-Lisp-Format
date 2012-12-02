@@ -21,15 +21,15 @@ sub format {
 
   if ( $self->colon ) {
     for ( 1 .. $self->n ) {
-      $core->decrement_argument;
+      $core->backward_argument;
     }
   }
   elsif ( $self->at ) {
-    $core->decrement_argument;
+    $core->backward_argument;
   }
   else {
     if ( defined $self->n and $self->n == 1 ) {
-      $core->increment_argument;
+      $core->forward_argument;
     }
   }
 

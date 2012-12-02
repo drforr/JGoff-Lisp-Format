@@ -9,7 +9,33 @@ use JGoff::Lisp::Format::Parser;
 use JGoff::Lisp::Format::Token; # XXX rethink this
 use Carp qw( croak );
 
-with 'JGoff::Lisp::Format::Role::Argument'; # XXX Parametrize this
+has argument_index => ( is => 'rw', isa => 'Int', default => 0 );
+has arguments => ( is => 'rw' );
+
+sub current_argument {
+  my $self = shift;
+  return undef unless $self->arguments and @{ $self->arguments };
+  return $self->arguments->[ $self->argument_index ];
+}
+sub num_arguments {
+  my $self = shift;
+  return 0 unless $self->arguments and @{ $self->arguments };
+  return scalar @{ $self->arguments };
+}
+sub forward_argument {
+  my $self = shift;
+  return unless $self->arguments and @{ $self->arguments };
+  if ( $self->argument_index < $#{ $self->arguments } ) {
+    $self->argument_index( $self->argument_index + 1 );
+  }
+}
+sub backward_argument {
+  my $self = shift;
+  return unless $self->arguments and @{ $self->arguments };
+  if ( $self->argument_index > 0 ) {
+    $self->argument_index( $self->argument_index - 1 );
+  }
+}
 
 has stream => ( is => 'rw' );
 has format => ( is => 'rw' );
@@ -70,7 +96,7 @@ sub _format {
     my $operation = $tree->[ $id ];
     if ( blessed( $operation ) ) {
       if ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Circumflex' ) ) {
-        if ( $self->argument_id >= $self->num_arguments ) {
+        if ( $self->argument_index >= $self->num_arguments ) {
           last;
         }
       }
@@ -117,7 +143,7 @@ sub _format {
       my ( $open, $_operation, $close ) = @{ $operation };
       my $_arguments;
       if ( $self->num_arguments ) {
-        $_arguments = $self->first_argument;
+        $_arguments = $self->current_argument;
       }
       if ( $open->isa( 'JGoff::Lisp::Format::Tokens::Open_Brace' ) ) {
         $output .= $open->format( $self, $_operation, $close, $_arguments );

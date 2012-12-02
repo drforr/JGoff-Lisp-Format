@@ -38,7 +38,8 @@ sub _print_case {
 sub _argument_to_base {
   my $self = shift;
   my ( $base, $core ) = @_;
-  my $argument = $core->increment_argument;
+  my $argument = $core->current_argument;
+  $core->forward_argument;
 
   my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
   my $digits = '';
@@ -80,7 +81,8 @@ sub _resolve_arguments {
   for my $tuple ( @$tuples ) {
     my ( $name, $default ) = @$tuple;
     if ( defined $self->{$name} and $self->{$name} eq 'v' ) {
-      $self->{$name} = $core->increment_argument;
+      $self->{$name} = $core->current_argument;
+      $core->forward_argument;
       $self->{"$name-v"} = 1;
     }
     elsif ( defined $self->{$name} and $self->{$name} eq '#' ) {

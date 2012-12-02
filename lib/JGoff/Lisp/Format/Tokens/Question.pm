@@ -9,10 +9,12 @@ sub format {
   my ( $core ) = @_;
 
   if ( $self->at ) {
-    my $format = $core->increment_argument;
+    my $format = $core->current_argument;
+    $core->forward_argument;
     my @remaining_arguments =
-      @{ $core->arguments }[ $core->argument_id .. $#{ $core->arguments } ];
-    my $arguments = $core->increment_argument;
+      @{ $core->arguments }[ $core->argument_index .. $#{ $core->arguments } ];
+    my $arguments = $core->current_argument;
+    $core->forward_argument;
     my $sub_self = $core->new(
       stream => $core->stream,
       format => $format,
@@ -21,8 +23,10 @@ sub format {
     return $sub_self->apply;
   }
   else {
-    my $format = $core->increment_argument;
-    my $arguments = $core->increment_argument;
+    my $format = $core->current_argument;
+    $core->forward_argument;
+    my $arguments = $core->current_argument;
+    $core->forward_argument;
     my $sub_self = $core->new(
       stream => $core->stream,
       format => $format,

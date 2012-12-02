@@ -20,7 +20,8 @@ sub format {
     ]
   );
 
-  my $argument = $core->increment_argument;
+  my $argument = $core->current_argument;
+  $core->forward_argument;
 
 # Strip escape characters
 

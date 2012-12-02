@@ -10,7 +10,9 @@ sub format {
   my ( $core ) = @_;
 
   if ( $self->{colon} ) {
-    my $argument = $core->previous_argument;
+    $core->backward_argument;
+    my $argument = $core->current_argument;
+    $core->forward_argument;
     if ( $self->{at} ) {
       if ( defined $argument and ( $argument eq 'No' or $argument == 0 ) ) {
         return 'ies';
@@ -33,7 +35,8 @@ sub format {
     }
   }
   elsif ( $self->{at} ) {
-    my $argument = $core->increment_argument;
+    my $argument = $core->current_argument;
+    $core->forward_argument;
     if ( defined $argument and $argument == 0 ) {
       return 'ies';
     }
@@ -45,7 +48,8 @@ sub format {
     }
   }
   else {
-    my $argument = $core->increment_argument;
+    my $argument = $core->current_argument;
+    $core->forward_argument;
     if ( defined $argument and $argument == 0 ) {
       return 's';
     }

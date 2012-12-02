@@ -12,7 +12,8 @@ sub format {
   $self->n( 1 ) unless defined $self->n;
 
   if ( $self->n and $self->n eq 'v' ) {
-    $self->n( $core->increment_argument );
+    $self->n( $core->current_argument );
+    $core->forward_argument;
   }
   elsif ( $self->n and $self->n eq '#' ) {
     $self->n( $core->num_arguments );

@@ -10,7 +10,8 @@ sub format {
   my $self = shift;
   my ( $core ) = @_;
 
-  my $argument = $core->increment_argument;
+  my $argument = $core->current_argument;
+  $core->forward_argument;
   if ( $self->colon ) {
     return $self->char_name( $argument );
   }
