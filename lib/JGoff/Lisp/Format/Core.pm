@@ -69,7 +69,6 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
 Quick summary of what the module does.
@@ -96,6 +95,22 @@ if you don't export anything, such as for a purely object-oriented module.
 
 sub _format {
   my $self = shift;
+  my %token_names = map { 'JGoff::Lisp::Format::Tokens::' . $_ => 1 } qw(
+    A Asterisk
+    B
+    C Circumflex
+    D
+    F
+    Newline
+    O
+    P Percent
+    Question
+    R
+    S
+    Tilde
+    Vertical_Bar
+    X
+  );
   my $tree = $self->tree;
   my $output = '';
   for my $id ( 0 .. $#{ $tree } ) {
@@ -114,7 +129,7 @@ sub _format {
         my $nl_colon = 0;
         $nl_colon = 1 if
           $before_newline and
-          $tree->[ $id - 1 ]->{colon};
+          $tree->[ $id - 1 ]->colon;
         $output .= $operation->format( $before_newline, $nl_colon );
       }
       elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::Ampersand' ) ) {
@@ -122,37 +137,17 @@ sub _format {
         my $before_percent = 0;
         $before_percent = 1 if
           $id > 0 and
-          ref( $tree->[ $id - 1 ] )->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
+          $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
         $output .= $operation->format( $is_first, $before_percent );
       }
-      elsif ( $operation->isa( 'JGoff::Lisp::Format::Tokens::C' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::P' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Question' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Newline' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Percent' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Tilde' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Asterisk' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::A' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::B' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Circumflex' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::D' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::F' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::O' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::R' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::S' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::Vertical_Bar' ) or
-              $operation->isa( 'JGoff::Lisp::Format::Tokens::X' ) ) {
+      elsif ( exists $token_names{ ref( $operation ) } ) {
         $output .= $operation->format( $self );
       }
     }
     elsif ( ref( $operation ) and ref( $operation ) eq 'ARRAY' ) {
       my ( $open, $_operation, $close ) = @{ $operation };
-      my $_arguments;
-      if ( $self->num_arguments ) {
-        $_arguments = $self->current_argument;
-      }
       if ( $open->isa( 'JGoff::Lisp::Format::Tokens::Open_Brace' ) ) {
-        $output .= $open->format( $self, $_operation, $close, $_arguments );
+        $output .= $open->format( $self, $_operation, $close );
       }
       else {
         croak "Unknown sub-operation type";
