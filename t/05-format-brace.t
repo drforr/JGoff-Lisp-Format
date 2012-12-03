@@ -108,17 +108,13 @@ deftest 'format.{.18' => sub { # XXX Vet the arguments
   $f->format( undef, "~1{~}", $f->formatter( "" ), [ [ 1, 2, 3, 4 ] ] );
 }, "";
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 2;
-deftest 'format.{.19' => sub { # XXX Vet the arguments
-  $f->format( undef, "~1{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
+deftest 'format.{.19' => sub {
+  $f->format( undef, "~{~}", [ $f->formatter( "~A" ), [ 1, 2, 3, 4 ] ] );
 }, "1234";
 
-deftest 'format.{.20' => sub { # XXX Vet the arguments
-  $f->format( undef, "~3{~}", $f->formatter( "~A" ), [ [ 1, 2, 3, 4 ] ] );
+deftest 'format.{.20' => sub {
+  $f->format( undef, "~3{~}", [ $f->formatter( "~A" ), [ 1, 2, 3, 4 ] ] );
 }, "123";
-}
 
 def_format_test 'format.{.21' =>
   "~V{~}",
@@ -311,18 +307,56 @@ def_format_test 'format.\:{.14' =>
   [ [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ] ],
   "1234";
 
-#(deftest format.\:{.15
-#  (loop for i from 0 to 10 collect
-#        (format nil "~v:{~A~:}" i '((1 X) (2 Y) (3) (4 A B))))
-#  ("" "1" "12" "123" "1234" "1234"
-#   "1234" "1234" "1234" "1234" "1234"))
+deftest 'format.\:{.15' => sub {
+  my $list = [];
+  for my $i ( 0 .. 10 ) {
+    collect( $list,
+      $f->format(
+        undef,
+        "~v:{~A~:}",
+        [ $i, [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ] ]
+      )
+    );
+  }
+  return $list;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+];
 
-#(deftest formatter.\:{.15
-#  (let ((fn (formatter "~v:{~A~:}")))
-#    (loop for i from 0 to 10 collect
-#          (formatter-call-to-string fn i '((1 X) (2 Y) (3) (4 A B)))))
-#  ("" "1" "12" "123" "1234" "1234"
-#   "1234" "1234" "1234" "1234" "1234"))
+deftest 'formatter.\:{.15' => sub {
+  my $list = [];
+  my $fn = $f->formatter( "~v:{~A~:}" );
+  for my $i ( 0 .. 10 ) {
+    collect( $list,
+      formatter_call_to_string(
+        $fn, $i, [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ]
+      )
+    );
+  }
+  return $list;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+  '1234',
+];
 
 def_format_test 'format.\:{.16' =>
   "~:{ABC~:}",

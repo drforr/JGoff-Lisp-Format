@@ -27,6 +27,18 @@ sub format {
 
   my $output = '';
   if ( $core->current_argument and
+       ref( $core->current_argument ) and
+       ref( $core->current_argument ) eq 'CODE' ) {
+    my $fn = $core->current_argument;
+    $core->forward_argument;
+    for my $argument ( @{ $core->remaining_arguments } ) {
+      if ( defined $iteration_count ) {
+        last if $iteration_count-- <= 0;
+      }
+      $output .= $fn->( $core->stream, [ $argument ] );
+    }
+  }
+  if ( $core->current_argument and
        ref( $core->current_argument ) ) {
     for my $argument ( @{ $core->current_argument } ) {
       if ( defined $iteration_count ) {

@@ -8,56 +8,51 @@ Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
 Readonly our $capitalize => 'capitalize';
 
-# {{{ _print_case( $argument )
+# {{{ _print_case( $print_case, $argument )
 
 sub _print_case {
   my $self = shift;
-  my ( $core, $argument ) = @_;
-  if ( $core->print_case eq $JGoff::Lisp::Format::Token::upcase ) {
+  my ( $print_case, $argument ) = @_;
+  if ( $print_case eq $JGoff::Lisp::Format::Token::upcase ) {
     if ( ref( $argument ) and
          ref( $argument ) eq 'JGoff::Lisp::Format::Utils::Character' ) { # XXX
       return $argument;
     }
     return uc( $argument );
   }
-  elsif ( $core->print_case eq $JGoff::Lisp::Format::Token::downcase ) {
+  elsif ( $print_case eq $JGoff::Lisp::Format::Token::downcase ) {
     return lc( $argument );
   }
-  elsif ( $core->print_case eq $JGoff::Lisp::Format::Token::capitalize ) {
+  elsif ( $print_case eq $JGoff::Lisp::Format::Token::capitalize ) {
     return ucfirst( lc( $argument ) );
   }
   else {
-    croak "Unknown or missing print_case '" . $core->print_case . "'";
+    croak "Unknown or missing print_case '" . $print_case . "'";
   }
 }
 
 # }}}
 
-# {{{ _argument_to_base( $base, $core )
+# {{{ _argument_to_base( $base, $argument )
 
 sub _argument_to_base {
   my $self = shift;
-  my ( $base, $core ) = @_;
-  my $argument = $core->current_argument;
-  $core->forward_argument;
-
-  my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
-  my $digits = '';
+  my ( $base, $argument ) = @_;
 
   if ( $base != 10 ) {
+    my @radix = ( '0' .. '9', 'a' .. 'z' ); # Yes, handles up to base 36
+    my $digits = '';
     while ( $argument > 0 ) {
       my $digit = $argument % $base;
       $digits = $radix[ $digit ] . $digits;
       $argument -= $digit;
       $argument /= $base;
     }
+    $argument = $digits;
   }
-  else {
-    $digits = $argument;
-  }
-  $digits = $self->_commify( $digits );
-  $digits = $self->_padding( $digits );
-  return $digits;
+  $argument = $self->_commify( $argument );
+  $argument = $self->_padding( $argument );
+  return $argument;
 }
 
 # }}}
@@ -111,13 +106,10 @@ sub _padding {
   if ( $minpad and $minpad > 0 ) {
     $padding .= $padchar x $minpad;
   }
-  if ( $padchar and $padchar =~ /./ ) {
-    if ( $mincol and $mincol > length( $argument ) ) {
-      if ( $colinc and $colinc > 0 ) {
-        while ( length( $argument ) + length( $padding ) < $mincol ) {
-          $padding .= $padchar x $colinc;
-        }
-      }
+  if ( $mincol > length( $argument ) and
+       $colinc ) {
+    while ( length( $argument ) + length( $padding ) < $mincol ) {
+      $padding .= $padchar x $colinc;
     }
   }
 
@@ -171,7 +163,7 @@ sub _commify {
 
 # }}}
 
-# {{{ char_name 
+# {{{ char_name( $char )
 
 sub char_name {
   my $self = shift;

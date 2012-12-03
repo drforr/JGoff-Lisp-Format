@@ -28,6 +28,15 @@ sub num_arguments {
                   @{ $self->arguments };
   return scalar @{ $self->arguments };
 }
+sub remaining_arguments {
+  my $self = shift;
+  return undef unless $self->arguments and
+                      ref( $self->arguments ) and
+                      ref( $self->arguments ) eq 'ARRAY' and
+                      @{ $self->arguments };
+  return $self->arguments->[ $self->argument_index .. $#{ $self->arguments } ];
+  return scalar @{ $self->arguments };
+}
 sub forward_argument {
   my $self = shift;
   return unless $self->arguments and @{ $self->arguments };

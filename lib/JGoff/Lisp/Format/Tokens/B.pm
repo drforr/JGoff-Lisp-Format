@@ -20,7 +20,9 @@ sub format {
     ]
   );
 
-  return $self->_argument_to_base( 2, $core );
+  my $argument = $core->current_argument;
+  $core->forward_argument;
+  return $self->_argument_to_base( 2, $argument );
 }
 
 1;

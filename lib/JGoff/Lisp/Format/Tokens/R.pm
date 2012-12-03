@@ -53,7 +53,9 @@ $self->{colinc} = 1;
     $argument = $english_number_names[$argument];
   }
   else {
-    $argument = $self->_argument_to_base( $self->{radix}, $core );
+    $argument = $core->current_argument;
+    $core->forward_argument;
+    $argument = $self->_argument_to_base( $self->{radix}, $argument );
   }
 
   return $argument;

@@ -81,14 +81,14 @@ sub formatter {
 
   return sub {
     my ( $stream, $arguments ) = @_;
-    my $format = JGoff::Lisp::Format::Core->new(
+    my $_format = JGoff::Lisp::Format::Core->new(
       stream => $stream,
       format => $format,
       arguments => $arguments,
 
       print_case => $print_case,
     );
-    return $format->apply;
+    return $_format->apply;
   };
 }
 

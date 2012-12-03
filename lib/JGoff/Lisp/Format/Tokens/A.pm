@@ -30,7 +30,7 @@ sub format {
       return '[]';
     }
     $argument = $self->_padding( 'undef' );
-    return $self->_print_case( $core, $argument );
+    return $self->_print_case( $core->print_case, $argument );
   }
   elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
    my $sub = $core->new(
