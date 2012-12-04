@@ -2,6 +2,7 @@ Changes
 lib/JGoff/Lisp/Format.pm
 lib/JGoff/Lisp/Format/Core.pm
 lib/JGoff/Lisp/Format/Parser.pm
+lib/JGoff/Lisp/Format/Token.pm
 lib/JGoff/Lisp/Format/Tokens/Ampersand.pm
 lib/JGoff/Lisp/Format/Tokens/A.pm
 lib/JGoff/Lisp/Format/Tokens/Asterisk.pm
