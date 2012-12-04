@@ -8,9 +8,34 @@ has arguments => ( is => 'rw' );
 has colon => ( is => 'ro' );
 has at => ( is => 'ro' );
 
+sub _old_roman_numeral {
+  my $self = shift;
+  my ( $argument ) = @_;
+  my ( $n_m, $n_d, $n_c, $n_l, $n_x, $n_v ) = ( 0, 0, 0, 0, 0, 0 );
+
+  while ( $argument >= 1000 ) { $n_m++; $argument -= 1000 }
+  while ( $argument >= 500 ) { $n_d++; $argument -= 500 }
+  while ( $argument >= 100 ) { $n_c++; $argument -= 100 }
+  while ( $argument >= 50 ) { $n_l++; $argument -= 50 }
+  while ( $argument >= 10 ) { $n_x++; $argument -= 10 }
+  while ( $argument >= 5 ) { $n_v++; $argument -= 5 }
+  return ( $n_m ? 'M' x $n_m : '' ).
+         ( $n_d ? 'D' x $n_d : '' ).
+         ( $n_c ? 'C' x $n_c : '' ).
+         ( $n_l ? 'L' x $n_l : '' ).
+         ( $n_x ? 'X' x $n_x : '' ).
+         ( $n_v ? 'V' x $n_v : '' ).
+         ( $argument ? 'I' x $argument : '' );
+}
+
 sub format {
   my $self = shift;
   my ( $core ) = @_;
+  my $has_arguments = $self->arguments and
+                      @{ $self->arguments } ? 1 : undef;
+  my $not_number = $self->arguments and
+                   @{ $self->arguments } and
+                   $self->arguments->[0] =~ /[#v]/;
   $self->_resolve_arguments(
     $core, [
       [ 'radix' => 10 ],
@@ -46,15 +71,15 @@ $self->{colinc} = 1;
    "ninety-six", "ninety-seven", "ninety-eight", "ninety-nine", "one hundred"
   );
 
-  my $argument;
-  if ( $self->{'radix-v'} ) {
-    $argument = $core->current_argument;
-    $core->forward_argument;
-    $argument = $english_number_names[$argument];
+  my $argument = $core->current_argument;
+  $core->forward_argument;
+  if ( $self->{'radix-v'} and !defined( $self->{radix} ) ) {
+    $argument = $english_number_names[ $argument ];
+  }
+  elsif ( $self->at and $self->colon and not $has_arguments ) {
+    $argument = $self->_old_roman_numeral( $argument );
   }
   else {
-    $argument = $core->current_argument;
-    $core->forward_argument;
     $argument = $self->_argument_to_base( $self->{radix}, $argument );
   }
 
