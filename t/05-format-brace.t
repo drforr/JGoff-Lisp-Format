@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 BEGIN {
   use lib 't/lib';
@@ -459,14 +459,21 @@ def_format_test 'format.@{.13' => # XXX double-check
   [ 1, $f->formatter( "X" ), "foo" ],
   "X",
   1;
+}
 
 ### ~:@{
 
+#SKIP: {
+#  diag "Make these tests work";
+#  skip 'Not ready yet', 0;
 def_format_test 'format.\:@{.1' =>
   concatenate( '~:@{~', "\n", "~}" ),
   undef,
   "";
 
+SKIP: {
+  diag "Make these tests work";
+  skip 'Not ready yet', 0;
 def_format_test 'format.\:@{.2' =>
   '~:@{~A~}',
   [ [ 1, 2 ], [ 3 ], [ 4, 5, 6 ] ],

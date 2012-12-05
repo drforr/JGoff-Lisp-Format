@@ -11,6 +11,7 @@ Readonly our $downcase => 'downcase';
 Readonly our $capitalize => 'capitalize';
 
 our $print_case = $upcase; # default value from the CLISP spec
+our $print_radix = undef; # XXX ?
 
 Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
@@ -62,6 +63,7 @@ sub format {
     arguments => $arguments,
 
     print_case => $print_case,
+    print_radix => $print_radix,
   );
 
   return $f->apply;
@@ -87,6 +89,7 @@ sub formatter {
       arguments => $arguments,
 
       print_case => $print_case,
+      print_radix => $print_radix,
     );
     return $_format->apply;
   };
