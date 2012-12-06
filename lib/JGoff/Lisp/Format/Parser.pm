@@ -119,7 +119,9 @@ sub ___parse_token {
 # Miscellaneous pseudo-operations ; ^ \n
 
 # Upper-level token types.
-#
+
+# {{{ __token_a_b_d_o_s_x
+
 sub __token_a_b_d_o_s_x {
   my $self = shift;
   my $match =
@@ -129,48 +131,17 @@ sub __token_a_b_d_o_s_x {
     }x );
   my $rv = $self->___parse_token( $match );
 
-  return JGoff::Lisp::Format::Tokens::A->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~a};
-
-  return JGoff::Lisp::Format::Tokens::B->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~b};
-
-  return JGoff::Lisp::Format::Tokens::D->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~d};
-
-  return JGoff::Lisp::Format::Tokens::O->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~o};
-
-  return JGoff::Lisp::Format::Tokens::S->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~s};
-
-  return JGoff::Lisp::Format::Tokens::X->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::A->new( %$rv ) if $rv->{format} eq q{~a};
+  return JGoff::Lisp::Format::Tokens::B->new( %$rv ) if $rv->{format} eq q{~b};
+  return JGoff::Lisp::Format::Tokens::D->new( %$rv ) if $rv->{format} eq q{~d};
+  return JGoff::Lisp::Format::Tokens::O->new( %$rv ) if $rv->{format} eq q{~o};
+  return JGoff::Lisp::Format::Tokens::S->new( %$rv ) if $rv->{format} eq q{~s};
+  return JGoff::Lisp::Format::Tokens::X->new( %$rv );
 }
+
+# }}}
+
+# {{{ __token_f_r
 
 sub __token_f_r {
   my $self = shift;
@@ -178,20 +149,13 @@ sub __token_f_r {
     $self->expect( qr{ ~ $PARAMETERS{0,4} $PARAMETER? $MODIFIERS? [fFrR] }x );
   my $rv = $self->___parse_token( $match );
 
-  return JGoff::Lisp::Format::Tokens::F->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~f};
-  
-  return JGoff::Lisp::Format::Tokens::R->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::F->new( %$rv ) if $rv->{format} eq q{~f};
+  return JGoff::Lisp::Format::Tokens::R->new( %$rv );
 }
+
+# }}}
+
+# {{{ __token_ampersand_percent_vertical_bar_tilde
 
 sub __token_ampersand_percent_vertical_bar_tilde {
   my $self = shift;
@@ -213,13 +177,12 @@ sub __token_ampersand_percent_vertical_bar_tilde {
          @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
   ) if $rv->{format} eq q{~~};
 
-  return JGoff::Lisp::Format::Tokens::Vertical_Bar->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::Vertical_Bar->new( %$rv );
 }
+
+# }}}
+
+# {{{ __token_asterisk_open_bracket
 
 sub __token_asterisk_open_bracket {
   my $self = shift;
@@ -235,43 +198,39 @@ sub __token_asterisk_open_bracket {
   return $rv;
 }
 
+# }}}
+
+# {{{ __token_c_newline_open_paren_p_question_semi
+
 sub __token_c_newline_open_paren_p_question_semi {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\(\npP?;] }x );
   my $rv = $self->___parse_token( $match );
-  return JGoff::Lisp::Format::Tokens::C->new(
-    colon => $rv->{colon}
-  ) if $rv->{format} eq q{~c};
-
-  return JGoff::Lisp::Format::Tokens::P->new(
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~p};
-
-  return JGoff::Lisp::Format::Tokens::Question->new(
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~?};
-
-  return JGoff::Lisp::Format::Tokens::Newline->new(
-    colon => $rv->{colon},
-    at => $rv->{at}
-  ) if $rv->{format} eq q{~\n};
+  return JGoff::Lisp::Format::Tokens::C->new( %$rv ) if $rv->{format} eq q{~c};
+  return JGoff::Lisp::Format::Tokens::P->new( %$rv ) if $rv->{format} eq q{~p};
+  return JGoff::Lisp::Format::Tokens::Question->new( %$rv ) if
+    $rv->{format} eq q{~?};
+  return JGoff::Lisp::Format::Tokens::Newline->new( %$rv ) if
+    $rv->{format} eq q{~\n};
 
   return $rv;
 }
+
+# }}}
+
+# {{{ __token_circumflex
 
 sub __token_circumflex {
   my $self = shift;
   my $match =
     $self->expect( qr{ ~ $PARAMETERS{0,2} $PARAMETER? $MODIFIERS? \^ }x );
   my $rv = $self->___parse_token( $match );
-  return JGoff::Lisp::Format::Tokens::Circumflex->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::Circumflex->new( %$rv );
 }
+
+# }}}
+
+# {{{ __token_close_bracket_close_paren
 
 sub __token_close_bracket_close_paren {
   my $self = shift;
@@ -282,27 +241,29 @@ sub __token_close_bracket_close_paren {
   return $rv;
 }
 
+# }}}
+
+# {{{ __token_open_brace
+
 sub __token_open_brace {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \{ }x );
   my $rv = $self->___parse_token( $match );
-  return JGoff::Lisp::Format::Tokens::Open_Brace->new(
-    arguments => defined $rv->{arguments} &&
-                 @{ $rv->{arguments} } ? $rv->{arguments} : undef,
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::Open_Brace->new( %$rv );
 }
+
+# }}}
+
+# {{{ __token_close_brace
 
 sub __token_close_brace {
   my $self = shift;
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \} }x );
   my $rv = $self->___parse_token( $match );
-  return JGoff::Lisp::Format::Tokens::Close_Brace->new(
-    colon => $rv->{colon},
-    at => $rv->{at}
-  );
+  return JGoff::Lisp::Format::Tokens::Close_Brace->new( %$rv );
 }
+
+# }}}
 
 # {{{ __token_text
 
