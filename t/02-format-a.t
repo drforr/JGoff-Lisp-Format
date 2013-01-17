@@ -74,8 +74,8 @@ deftest 'format.a.7' => sub {
   my $list = [];
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s1 = string( $c );
-    my $s2 = $f->format( undef, "~a", [ $s1 ] );
-    my $s3 = formatter_call_to_string( $fn, [ $s1 ] );
+    my $s2 = $f->format( undef, "~a", $s1 );
+    my $s3 = formatter_call_to_string( $fn, $s1 );
     unless ( $s1 eq $s2 and $s2 eq $s3 ) {
       collect( $list, $c, $s1, $s2, $s3 );
     }
@@ -313,8 +313,8 @@ deftest 'format.a.29' => sub {
   my $fn = $f->formatter( "~v,,2A" );
   my $list = [];
   for my $i ( -4 .. 10 ) {
-    my $s = $f->format( undef, "~v,,2A", [ $i, "ABC" ] );
-    my $s2 = formatter_call_to_string( $fn, [ $i, "ABC" ] );
+    my $s = $f->format( undef, "~v,,2A", $i, "ABC" );
+    my $s2 = formatter_call_to_string( $fn, $i, "ABC" );
     is( $s, $s2, 'format.a.29' ); # XXX capture the name.
     push @$list, $s; # XXX Different (collect)
   };
@@ -420,8 +420,8 @@ deftest 'format.a.44' => sub {
   my $fn = $f->formatter( "~3,,vA" );
   my $list = [];
   for my $i ( 0 .. 6 ) {
-    my $s = $f->format( undef, "~3,,vA", [ $i, 'ABC' ] );
-    my $s2 = formatter_call_to_string( $fn, [ $i, 'ABC' ] );
+    my $s = $f->format( undef, "~3,,vA", $i, 'ABC' );
+    my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
     push @$list, $s;
   }
@@ -440,8 +440,8 @@ deftest 'format.a.44a' => sub {
   my $fn = $f->formatter( '~3,,v@A' );
   my $list = [];
   for my $i ( 0 .. 6 ) {
-    my $s = $f->format( undef, '~3,,v@A', [ $i, 'ABC' ] );
-    my $s2 = formatter_call_to_string( $fn, [ $i, 'ABC' ] );
+    my $s = $f->format( undef, '~3,,v@A', $i, 'ABC' );
+    my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
     push @$list, $s;
   }

@@ -35,7 +35,7 @@ sub format {
       if ( defined $iteration_count ) {
         last if $iteration_count-- <= 0;
       }
-      $output .= $fn->( $core->stream, [ $argument ] );
+      $output .= $fn->( $core->stream, $argument );
     }
   }
   if ( $core->current_argument and

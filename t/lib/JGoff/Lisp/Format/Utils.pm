@@ -59,8 +59,8 @@ sub collect {
 
 # XXX This needs lots of work, there's lots going on in the original function.
 sub formatter_call_to_string {
-  my ( $fn, $args ) = @_;
-  return $fn->( undef, $args );
+  my ( $fn, @args ) = @_;
+  return $fn->( undef, @args );
 }
 
 sub def_format_test {
@@ -69,15 +69,15 @@ sub def_format_test {
   my $f = JGoff::Lisp::Format->new;
   my $stream = undef;
   if ( ref( $result ) and ref( $result ) eq 'CODE' ) {
-    is_deeply( $f->format( $stream, $format, $args ), $result->(), $name ) or
+    is_deeply( $f->format( $stream, $format, @$args ), $result->(), $name ) or
       diag( "  at test file $filename line $line ($format)" );
   }
   elsif ( ref( $result ) ) {
-    is_deeply( $f->format( $stream, $format, $args ), $result, $name ) or
+    is_deeply( $f->format( $stream, $format, @$args ), $result, $name ) or
       diag( "  at test file $filename line $line ($format)" );
   }
   else {
-    is( $f->format( $stream, $format, $args ), $result, $name ) or
+    is( $f->format( $stream, $format, @$args ), $result, $name ) or
       diag( "  at test file $filename line $line ($format)" );
   }
 #  if ( $num_left ) {

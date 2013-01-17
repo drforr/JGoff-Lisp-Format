@@ -651,7 +651,7 @@ def_format_test 'format.r.3' =>
 deftest 'format.r.6' => sub {
   my $list = [];
   for my $base ( 2 .. 36 ) {
-    my $s = $f->format( undef, '~vr', [ $base, $base + 1 ] );
+    my $s = $f->format( undef, '~vr', $base, $base + 1 );
     unless ( $s eq '11' ) {
       collect( $list, $base, $s );
     }
@@ -663,7 +663,7 @@ deftest 'formatter.r.6' => sub {
   my $list = [];
   my $fn = $f->formatter( "~vr" );
   for my $base ( 2 .. 36 ) {
-    my $s = formatter_call_to_string( $fn, [ $base, $base + 1 ] );
+    my $s = formatter_call_to_string( $fn, $base, $base + 1 );
     unless ( $s eq '11' ) {
       collect( $list, $base, $s );
     }
@@ -744,7 +744,7 @@ def_format_test 'format.r.9' =>
 deftest 'format.r.10' => sub {
   with_standard_io_syntax {
     $JGoff::Lisp::Format::print_radix = 1;
-    $f->format( undef, "~10r", [ 123 ] );
+    $f->format( undef, "~10r", 123 );
   }
 }, '123';
 
@@ -892,7 +892,7 @@ my @english_ordinal_names = (
 deftest 'format.r.20' => sub {
   my $list = [];
   for my $i ( 1 .. 4999 ) {
-    my $s1 = $f->format( undef, '~:@r', [ $i ] );
+    my $s1 = $f->format( undef, '~:@r', $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
       collect( $list, $i, $s1, $s2 );
@@ -905,7 +905,7 @@ deftest 'formatter.r.20' => sub {
   my $list = [];
   my $fn = $f->formatter( '~@:R' );
   for my $i ( 1 .. 4999 ) {
-    my $s1 = formatter_call_to_string( $fn, [ $i ] );
+    my $s1 = formatter_call_to_string( $fn, $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
       collect( $list, $i, $s1, $s2 );

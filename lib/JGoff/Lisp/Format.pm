@@ -55,12 +55,12 @@ if you don't export anything, such as for a purely object-oriented module.
 
 sub format {
   my $self = shift;
-  my ( $stream, $format, $arguments ) = @_;
+  my ( $stream, $format, @arguments ) = @_;
 
   my $f = JGoff::Lisp::Format::Core->new(
     stream => $stream,
     format => $format,
-    arguments => $arguments,
+    arguments => \@arguments,
 
     print_case => $print_case,
     print_radix => $print_radix,
@@ -82,11 +82,11 @@ sub formatter {
   my ( $format ) = @_;
 
   return sub {
-    my ( $stream, $arguments ) = @_;
+    my ( $stream, @arguments ) = @_;
     my $_format = JGoff::Lisp::Format::Core->new(
       stream => $stream,
       format => $format,
-      arguments => $arguments,
+      arguments => \@arguments,
 
       print_case => $print_case,
       print_radix => $print_radix,
