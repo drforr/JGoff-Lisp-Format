@@ -917,8 +917,8 @@ deftest 'formatter.r.20' => sub {
 deftest 'format.r.21' => sub {
   my $list = [];
   for my $i ( 1 .. 4999 ) {
-    my $s1 = $f->format( undef, '~:@r', [ $i ] );
-    my $s2 = $f->format( undef, '~@:R', [ $i ] );
+    my $s1 = $f->format( undef, '~:@r', $i );
+    my $s2 = $f->format( undef, '~@:R', $i );
     unless ( $s1 eq $s2 ) {
       collect( $list, $i, $s1, $s2 );
     }
@@ -952,7 +952,7 @@ def_format_test 'format.r.24' =>
 deftest 'format.r.25' => sub {
   my $list = [];
   for my $i ( 0 .. 5 ) {
-    my $s = $f->format( undef, "~10,vr", [ $i, 12345 ] );
+    my $s = $f->format( undef, "~10,vr", $i, 12345 );
     unless ( $s eq '12345' ) {
       collect( $list, $i, $s );
     }
@@ -964,7 +964,7 @@ deftest 'formatter.r.25' => sub {
   my $fn = $f->formatter( "~10,vr" );
   my $list = [];
   for my $i ( 0 .. 5 ) {
-    my $s = formatter_call_to_string ( $fn, [ $i, 12345 ] );
+    my $s = formatter_call_to_string ( $fn, $i, 12345 );
     unless ( $s eq '12345' ) {
       collect( $list, $i, $s );
     }

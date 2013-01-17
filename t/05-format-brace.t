@@ -100,20 +100,20 @@ def_format_test 'format.{.16' =>
   [ "~A", [ 4, 5, 6 ] ],
   "4";
 
-deftest 'format.{.17' => sub { # XXX Vet the arguments
+deftest 'format.{.17' => sub {
   $f->format( undef, "~{~}", $f->formatter( "" ), undef );
 }, "";
 
 deftest 'format.{.18' => sub { # XXX Vet the arguments
-  $f->format( undef, "~1{~}", $f->formatter( "" ), [ [ 1, 2, 3, 4 ] ] );
+  $f->format( undef, "~1{~}", $f->formatter( "" ), [ 1, 2, 3, 4 ] );
 }, "";
 
 deftest 'format.{.19' => sub {
-  $f->format( undef, "~{~}", [ $f->formatter( "~A" ), [ 1, 2, 3, 4 ] ] );
+  $f->format( undef, "~{~}", $f->formatter( "~A" ), [ 1, 2, 3, 4 ] );
 }, "1234";
 
 deftest 'format.{.20' => sub {
-  $f->format( undef, "~3{~}", [ $f->formatter( "~A" ), [ 1, 2, 3, 4 ] ] );
+  $f->format( undef, "~3{~}", $f->formatter( "~A" ), [ 1, 2, 3, 4 ] );
 }, "123";
 
 def_format_test 'format.{.21' =>
@@ -463,9 +463,6 @@ def_format_test 'format.@{.13' => # XXX double-check
 
 ### ~:@{
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 0;
 def_format_test 'format.\:@{.1' =>
   concatenate( '~:@{~', "\n", "~}" ),
   undef,
