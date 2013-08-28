@@ -10,6 +10,8 @@ lib/JGoff/Lisp/Format/Tokens/B.pm
 lib/JGoff/Lisp/Format/Tokens/C.pm
 lib/JGoff/Lisp/Format/Tokens/Circumflex.pm
 lib/JGoff/Lisp/Format/Tokens/Close_Brace.pm
+lib/JGoff/Lisp/Format/Tokens/Close_Bracket.pm
+lib/JGoff/Lisp/Format/Tokens/Open_Bracket.pm
 lib/JGoff/Lisp/Format/Tokens/D.pm
 lib/JGoff/Lisp/Format/Tokens/F.pm
 lib/JGoff/Lisp/Format/Tokens/Newline.pm

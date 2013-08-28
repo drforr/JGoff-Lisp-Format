@@ -8,6 +8,22 @@ Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
 Readonly our $capitalize => 'capitalize';
 
+=head1 NAME
+
+JGoff::Lisp::Format::Token - Internal token superclass
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 METHODS
+
+=cut
+
 # {{{ _print_case( $print_case, $argument )
 
 sub _print_case {
@@ -162,6 +178,10 @@ sub _commify {
 }
 
 # }}}
+
+=head2 char_name( $char )
+
+=cut
 
 # {{{ char_name( $char )
 

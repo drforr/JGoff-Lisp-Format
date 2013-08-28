@@ -12,6 +12,28 @@ use Carp qw( croak );
 has argument_index => ( is => 'rw', isa => 'Int', default => 0 );
 has arguments => ( is => 'rw' );
 
+=head1 NAME
+
+JGoff::Lisp::Format::Core - Core parser class
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 SYNOPSIS
+
+Core module, only use JGoff::Lisp::Format
+
+=head1 METHODS
+
+=head2 current_argument()
+
+=cut
+
 sub current_argument {
   my $self = shift;
   return undef unless $self->arguments and
@@ -20,6 +42,11 @@ sub current_argument {
                       @{ $self->arguments };
   return $self->arguments->[ $self->argument_index ];
 }
+
+=head2 num_arguments()
+
+=cut
+
 sub num_arguments {
   my $self = shift;
   return 0 unless $self->arguments and
@@ -28,6 +55,11 @@ sub num_arguments {
                   @{ $self->arguments };
   return scalar @{ $self->arguments };
 }
+
+=head2 remaining_arguments()
+
+=cut
+
 sub remaining_arguments {
   my $self = shift;
   return undef unless $self->arguments and
@@ -37,6 +69,11 @@ sub remaining_arguments {
   return $self->arguments->[ $self->argument_index .. $#{ $self->arguments } ];
   return scalar @{ $self->arguments };
 }
+
+=head2 forward_argument()
+
+=cut
+
 sub forward_argument {
   my $self = shift;
   return unless $self->arguments and @{ $self->arguments };
@@ -44,6 +81,11 @@ sub forward_argument {
     $self->argument_index( $self->argument_index + 1 );
   }
 }
+
+=head2 backward_argument()
+
+=cut
+
 sub backward_argument {
   my $self = shift;
   return unless $self->arguments and @{ $self->arguments };
@@ -65,40 +107,6 @@ Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong
 
 has print_case => ( is => 'ro', default => $JGoff::Lisp::Format::Token::upcase );
-
-=head1 NAME
-
-JGoff::Lisp::Format - The great new JGoff::Lisp::Format!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
-=head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use JGoff::Lisp::Format;
-
-    my $foo = JGoff::Lisp::Format->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 format( $stream, $format, @args )
-
-=cut
 
 # {{{ _format
 
@@ -170,6 +178,10 @@ sub _format {
 }
 
 # }}}
+
+=head2 apply()
+
+=cut
 
 # {{{ apply
 

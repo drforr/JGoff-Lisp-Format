@@ -8,6 +8,22 @@ has arguments => ( is => 'rw' );
 has colon => ( is => 'ro' );
 has at => ( is => 'ro' );
 
+=head1 NAME
+
+JGoff::Lisp::Format::Tokens::R - Internal token for parser
+
+=head1 VERSION
+
+Version 0.01
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 METHODS
+
+=cut
+
 sub _old_roman_numeral {
   my $self = shift;
   my ( $argument ) = @_;
@@ -27,6 +43,10 @@ sub _old_roman_numeral {
          ( $n_v ? 'V' x $n_v : '' ).
          ( $argument ? 'I' x $argument : '' );
 }
+
+=head2 format( $core )
+
+=cut
 
 sub format {
   my $self = shift;

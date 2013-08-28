@@ -53,8 +53,6 @@ Internal format-string parser for Lisp::Format::Parser.
 
 =head1 METHODS
 
-=head2 parse( $text )
-
 =cut
 
 # Regular expressions for later use.
@@ -312,10 +310,21 @@ sub _atoms {
   $self->sequence_of( sub { $self->_atom } );
 }
 
+=head2 parse()
+
+=cut
+
 sub parse {
   my $self = shift;
   $self->_atoms;
 }
+
+=head2 pattern_ws
+
+Required for the parser superclass
+
+=cut
+
 sub pattern_ws { qr{} }
 
 =head1 AUTHOR
