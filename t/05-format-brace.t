@@ -10,8 +10,6 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 def_format_test 'format.{.1' =>
   concatenate( "~{~", "\n", "~}" ),
   [ [ undef ] ],
@@ -58,6 +56,7 @@ def_format_test 'format.{.7' =>
   "";
 
 deftest 'format.{.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 0 .. 10 ) {
     my $s = $f->format( undef, "~v{~A~}", $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
@@ -69,6 +68,7 @@ deftest 'format.{.8' => sub {
 }, [];
 
 deftest 'formatter.{.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V{~A~}" );
   my $list = [];
   for my $i ( 0 .. 10 ) {
@@ -101,18 +101,22 @@ def_format_test 'format.{.16' =>
   "4";
 
 deftest 'format.{.17' => sub {
+  my $f = JGoff::Lisp::Format->new;
   $f->format( undef, "~{~}", $f->formatter( "" ), undef );
 }, "";
 
 deftest 'format.{.18' => sub { # XXX Vet the arguments
+  my $f = JGoff::Lisp::Format->new;
   $f->format( undef, "~1{~}", $f->formatter( "" ), [ 1, 2, 3, 4 ] );
 }, "";
 
 deftest 'format.{.19' => sub {
+  my $f = JGoff::Lisp::Format->new;
   $f->format( undef, "~{~}", $f->formatter( "~A" ), [ 1, 2, 3, 4 ] );
 }, "1234";
 
 deftest 'format.{.20' => sub {
+  my $f = JGoff::Lisp::Format->new;
   $f->format( undef, "~3{~}", $f->formatter( "~A" ), [ 1, 2, 3, 4 ] );
 }, "123";
 
@@ -180,6 +184,8 @@ def_format_test 'format.{.33' =>
   "~v{~a~}",
   [ undef, [ 1, 2, 3, 4, 5, 6, 7 ] ],
   "1234567";
+#(def-format-test format.{.33
+#  "~v{~a~}" (nil '(1 2 3 4 5 6 7)) "1234567")
 
 ### ~:{ ... ~}
 
@@ -188,8 +194,11 @@ SKIP: {
   skip 'Not ready yet', 4;
 def_format_test 'format.\:{.1' =>
   "~:{[~A ~A]~}",
-  [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ] ],
+  [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ] ], # It *is* 3 layers deep.
   "[1 2][4 5][6 7]";
+
+#(def-format-test format.\:{.1
+#  "~:{(~A ~A)~}" ('((1 2 3)(4 5)(6 7 8))) "(1 2)(4 5)(6 7)")
 
 def_format_test 'format.\:{.2' =>
   concatenate( "~:{~", "\n", "~}" ),
@@ -212,6 +221,7 @@ def_format_test 'format.\:{.5' =>
   "XXX";
 
 deftest 'format.\:{.6' => sub { # XXX Vet the arguments
+  my $f = JGoff::Lisp::Format->new;
   $f->format(
     undef,
     "~:{~}",
@@ -241,6 +251,7 @@ def_format_test 'format.\:{.10' =>
   "12";
 
 deftest 'format.\:{.11' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 0 .. 10 ) {
     collect( $list,
@@ -267,6 +278,7 @@ deftest 'format.\:{.11' => sub {
 ];
 
 deftest 'format.\:{.11' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   my $fn = $f->formatter( "~v:{~A~}" );
   for my $i ( 0 .. 10 ) {
@@ -308,6 +320,7 @@ def_format_test 'format.\:{.14' =>
   "1234";
 
 deftest 'format.\:{.15' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 0 .. 10 ) {
     collect( $list,
@@ -334,6 +347,7 @@ deftest 'format.\:{.15' => sub {
 ];
 
 deftest 'formatter.\:{.15' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   my $fn = $f->formatter( "~v:{~A~:}" );
   for my $i ( 0 .. 10 ) {
@@ -449,14 +463,16 @@ def_format_test 'format.@{.10' =>
 #  "~@{~}" ((formatter "X~AY") 1) "X1Y")
 def_format_test 'format.@{.12' => # XXX double-check
   '~@{~}',
-  [ $f->formatter( "X~AY" ), 1 ],
+  #[ $f->formatter( "X~AY" ), 1 ],
+  [ JGoff::Lisp::Format->new->formatter( "X~AY" ), 1 ],
   "X1Y";
 
 #def_format_test format.@{.13
 #  "~v@{~}" (1 (formatter "X") 'foo) "X" 1)
 def_format_test 'format.@{.13' => # XXX double-check
   '~v@{~}',
-  [ 1, $f->formatter( "X" ), "foo" ],
+  #[ 1, $f->formatter( "X" ), "foo" ],
+  [ 1, JGoff::Lisp::Format->new->formatter( "X" ), "foo" ],
   "X",
   1;
 }
@@ -489,7 +505,8 @@ def_format_test 'format.\:@{.4' =>
 
 def_format_test 'format.\:@{.5' => # XXX vet arguments
   '~:@{~}',
-  [ [ $f->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
+  #[ [ $f->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
+  [ [ JGoff::Lisp::Format->new->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
   "(1 2)(3 7)(4 5)";
 
 def_format_test 'format.\:@.6' =>

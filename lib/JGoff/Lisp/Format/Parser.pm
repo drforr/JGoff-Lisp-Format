@@ -41,7 +41,6 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
 Internal format-string parser for Lisp::Format::Parser.
@@ -337,15 +336,11 @@ Please report any bugs or feature requests to C<bug-jgoff-lisp-format at rt.cpan
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=JGoff-Lisp-Format>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc JGoff::Lisp::Format
-
 
 You can also look for information at:
 
@@ -369,9 +364,7 @@ L<http://search.cpan.org/dist/JGoff-Lisp-Format/>
 
 =back
 
-
 =head1 ACKNOWLEDGEMENTS
-
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -382,7 +375,6 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
 
 =cut
 

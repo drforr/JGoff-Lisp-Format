@@ -30,6 +30,19 @@ def_format_test 'format.&.4' =>
   undef,
   concatenate( "X", "\n" );
 
+#deftest 'format.&.5' => sub {
+#  my $f = JGoff::Lisp::Format->new;
+#  my $list = [];
+#  for my $i ( 1 .. 100 ) {
+#    my $s1 = "\n" . $i - 1;
+#    my $format_string = $f->format( undef, "~~~D5", $i );
+#    my $s2 = $f->format( undef, $format_string );
+#    unless ( $s1 eq $s2 ) {
+#      push @$list, $i;
+#    }
+#  }
+#}, [];
+
 #(deftest format.&.5
 #  (loop for i from 1 to 100
 #        for s1 = (make-string (1- i) :initial-element #\Newline)

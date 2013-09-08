@@ -11,8 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 def_format_test 'format.page.1' =>
   "~0|",
   undef,
@@ -54,4 +52,4 @@ def_format_test 'format.page.4' =>
 def_format_test 'format.page.5' =>
   "~v|",
   [ undef ],
-  $f->format( undef, "~|" );
+  JGoff::Lisp::Format->new->format( undef, "~|" );

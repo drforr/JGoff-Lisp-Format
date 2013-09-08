@@ -11,8 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 ### Test of the ~C directive
 
 #(deftest format.c.1

@@ -10,8 +10,6 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 #(deftest format.b.1
 #  (let ((fn (formatter "~b")))
 #    (with-standard-io-syntax
@@ -206,6 +204,7 @@ my $f = JGoff::Lisp::Format->new;
 ### Comma tests
 
 deftest 'format.b.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:B" );
   my $list = [];
   for my $i ( -7 .. 7 ) {

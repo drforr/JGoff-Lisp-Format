@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 84;
+use Test::More tests => 85;
 use List::Util qw( min );
 
 BEGIN {
@@ -12,14 +12,13 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 def_format_test 'format.a.1' =>
   "~a",
   [ undef ],
   "UNDEF";
 
 deftest 'format.a.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
   with_standard_io_syntax {
     # XXX strictly speaking, *print-case* should be somewhere in core perl.
     # XXX but since it doesn't exist, make one up.
@@ -30,6 +29,7 @@ deftest 'format.a.2' => sub {
 }, "undef";
 
 deftest 'formatter.a.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
   with_standard_io_syntax {
     local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::downcase;
     formatter_call_to_string(
@@ -40,6 +40,7 @@ deftest 'formatter.a.2' => sub {
 }, "undef";
 
 deftest 'format.a.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
   with_standard_io_syntax {
     local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
     $f->format( undef, "~a", undef );
@@ -47,6 +48,7 @@ deftest 'format.a.3' => sub {
 }, "Undef";
 
 deftest 'formatter.a.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
   with_standard_io_syntax {
     local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::capitalize;
     formatter_call_to_string(
@@ -70,6 +72,7 @@ def_format_test 'format.a.5' =>
 #  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
 
 deftest 'format.a.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~a" );
   my $list = [];
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
@@ -84,6 +87,10 @@ deftest 'format.a.7' => sub {
 }, [];
 
 #(deftest format.a.8
+#  (let ((fn (formatter "~A")))
+#    (loop with count = 0
+#          for i from 0 below (min #x10000 char-code-limit)
+#          for c = (code-char i)
 #          for s1 = (and c (string c))
 #          for s2 = (and c (format nil "~A" s1))
 #          for s3 = (and c (formatter-call-to-string fn s1))
@@ -310,6 +317,7 @@ def_format_test 'format.a.28' =>
   "UNDEF          ";
 
 deftest 'format.a.29' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v,,2A" );
   my $list = [];
   for my $i ( -4 .. 10 ) {
@@ -417,6 +425,7 @@ def_format_test 'format.a.45' =>
   "abcd";
 
 deftest 'format.a.44' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3,,vA" );
   my $list = [];
   for my $i ( 0 .. 6 ) {
@@ -437,6 +446,7 @@ deftest 'format.a.44' => sub {
 ];
 
 deftest 'format.a.44a' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~3,,v@A' );
   my $list = [];
   for my $i ( 0 .. 6 ) {
@@ -528,3 +538,8 @@ def_format_test 'format.a.58' =>
   "~-100000000000000000000a",
   [ "xyz" ],
   "xyz";
+
+def_format_test 'format.a.jgoff.1' =>
+  "~A ~A",
+  [ "xyz", "abc" ],
+  "xyz abc";

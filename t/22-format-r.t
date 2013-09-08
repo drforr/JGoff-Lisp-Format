@@ -11,8 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-my $f = JGoff::Lisp::Format->new;
-
 # {{{ @roman_numerals
 
 my @roman_numerals = qw(
@@ -649,6 +647,7 @@ def_format_test 'format.r.3' =>
 #  nil)
 
 deftest 'format.r.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $base ( 2 .. 36 ) {
     my $s = $f->format( undef, '~vr', $base, $base + 1 );
@@ -660,6 +659,7 @@ deftest 'format.r.6' => sub {
 }, [];
 
 deftest 'formatter.r.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   my $fn = $f->formatter( "~vr" );
   for my $base ( 2 .. 36 ) {
@@ -742,6 +742,7 @@ def_format_test 'format.r.9' =>
   2;
 
 deftest 'format.r.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
   with_standard_io_syntax {
     $JGoff::Lisp::Format::print_radix = 1;
     $f->format( undef, "~10r", 123 );
@@ -890,6 +891,7 @@ my @english_ordinal_names = (
 ### Old roman numerals
 
 deftest 'format.r.20' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 1 .. 4999 ) {
     my $s1 = $f->format( undef, '~:@r', $i );
@@ -902,6 +904,7 @@ deftest 'format.r.20' => sub {
 }, [];
 
 deftest 'formatter.r.20' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   my $fn = $f->formatter( '~@:R' );
   for my $i ( 1 .. 4999 ) {
@@ -915,6 +918,7 @@ deftest 'formatter.r.20' => sub {
 }, [];
 
 deftest 'format.r.21' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 1 .. 4999 ) {
     my $s1 = $f->format( undef, '~:@r', $i );
@@ -950,6 +954,7 @@ def_format_test 'format.r.24' =>
   "12345";
 
 deftest 'format.r.25' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $list = [];
   for my $i ( 0 .. 5 ) {
     my $s = $f->format( undef, "~10,vr", $i, 12345 );
@@ -961,6 +966,7 @@ deftest 'format.r.25' => sub {
 }, [];
 
 deftest 'formatter.r.25' => sub {
+  my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~10,vr" );
   my $list = [];
   for my $i ( 0 .. 5 ) {
