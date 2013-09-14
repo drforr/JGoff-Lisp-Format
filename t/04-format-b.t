@@ -203,6 +203,16 @@ use warnings;
 
 ### Comma tests
 
+# (deftest format.b.8
+#   (let ((fn (formatter "~:B")))
+#     (loop for i from -7 to 7
+#           for s1 = (format nil "~b" i)
+#           for s2 = (format nil "~:b" i)
+#           for s3 = (formatter-call-to-string fn i)
+#           unless (and (string= s1 s2) (string= s2 s3))
+#           collect (list i s1 s2 s3)))
+#   nil)
+
 deftest 'format.b.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:B" );
@@ -362,20 +372,32 @@ deftest 'format.b.8' => sub {
 
 ### NIL arguments
 
+# (def-format-test format.b.14
+#   "~vb" (nil #b110100) "110100")
+
 def_format_test 'format.b.14' =>
   "~vb",
   [ undef, 0b110100 ],
   "110100";
+
+# (def-format-test format.b.15
+#   "~6,vB" (nil #b100) "   100")
 
 def_format_test 'format.b.15' =>
   "~6,vB",
   [ undef, 0b100 ],
   "   100";
 
+# (def-format-test format.b.16
+#   "~,,v:b" (nil #b10011) "10,011")
+
 def_format_test 'format.b.16' =>
   "~,,v:b",
   [ undef, 0b10011 ],
   "10,011";
+
+# (def-format-test format.b.17
+#   "~,,'*,v:B" (nil #b10110) "10*110")
 
 def_format_test 'format.b.17' =>
   "~,,'*,v:B",
@@ -508,25 +530,40 @@ def_format_test 'format.b.17' =>
 #  "+1100100010"
 #  "+1100100010")
 
+# (def-format-test format.b.25
+#   "~+10b" (#b1101) "      1101")
+
 def_format_test 'format.b.25' =>
   "~+10b",
    [ 0b1101 ],
   "      1101";
+
+# (def-format-test format.b.26
+#   "~+10@B" (#b1101) "     +1101")
 
 def_format_test 'format.b.26' =>
   '~+10@B',
   [ 0b1101 ],
   "     +1101";
 
+# (def-format-test format.b.27
+#   "~-1b" (#b1101) "1101")
+
 def_format_test 'format.b.27' =>
   "~-1b",
   [ 0b1101 ],
   "1101";
 
+# (def-format-test format.b.28
+#   "~-1000000000000000000B" (#b1101) "1101")
+
 def_format_test 'format.b.28' =>
   "~-1000000000000000000B",
   [ 0b1101 ],
   "1101";
+
+# (def-format-test format.b.29
+#   "~vb" ((1- most-negative-fixnum) #b1101) "1101")
 
 def_format_test 'format.b.29' =>
   "~vb",

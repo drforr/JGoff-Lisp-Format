@@ -10,25 +10,46 @@ BEGIN {
 use strict;
 use warnings;
 
+# (def-format-test format.&.1
+#   "~0&" nil "")
+
 def_format_test 'format.&.1' =>
   "~0&",
   undef,
   "";
+
+# (def-format-test format.&.2
+#   "~&" nil "")
 
 def_format_test 'format.&.2' =>
   "~&",
   undef,
   "";
 
+# (def-format-test format.&.3
+#   "X~&" nil #.(concatenate 'string "X" (string #\Newline)))
+
 def_format_test 'format.&.3' =>
   "X~&",
   undef,
   concatenate( "X", "\n" );
 
+# (def-format-test format.&.4
+#   "X~%~&" nil #.(concatenate 'string "X" (string #\Newline)))
+
 def_format_test 'format.&.4' =>
   "X~%~&",
   undef,
   concatenate( "X", "\n" );
+
+# (deftest format.&.5
+#   (loop for i from 1 to 100
+#         for s1 = (make-string (1- i) :initial-element #\Newline)
+#         for format-string = (format nil "~~~D&" i)
+#         for s2 = (format nil format-string)
+#         unless (string= s1 s2)
+#         collect i)
+#   nil)
 
 #deftest 'format.&.5' => sub {
 #  my $f = JGoff::Lisp::Format->new;
@@ -85,10 +106,16 @@ def_format_test 'format.&.4' =>
 #        collect i)
 #  nil)
 
+# (def-format-test format.&.7
+#   "~v&" (nil) "")
+
 def_format_test 'format.&.7' =>
   "~v&",
   [ undef ],
   "";
+
+# (def-format-test format.&.8
+#   "X~v&" (nil) #.(concatenate 'string "X" (string #\Newline)))
 
 def_format_test 'format.&.8' =>
   "X~v&",
@@ -133,15 +160,26 @@ def_format_test 'format.&.8' =>
 #          collect i))
 #  nil)
 
+# (def-format-test format.&.11
+#   "X~V%" (0) "X")
+
 def_format_test 'format.&.11' =>
   "X~V%",
   [ 0 ],
   "X";
 
+# (def-format-test format.&.12
+#   "X~#%" nil "X")
+
 def_format_test 'format.&.12' =>
   "X~#%",
   undef,
   "X";
+
+# (def-format-test format.&.13
+#   "X~#%" ('a 'b 'c) #.(let ((nl (string #\Newline)))
+#                         (concatenate 'string "X" nl nl nl))
+#   3)
 
 def_format_test 'format.&.13' =>
   "X~#%", [ "a", "b", "c" ], sub {
