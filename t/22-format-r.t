@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 39;
+use Test::More tests => 57;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -535,6 +535,11 @@ is( _ternary_to_decimal( '102' ), 11, 'ternary => decimal 11' );
 
 ### Test of various radixes
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.r.1
 #  (loop
 #   for i from 2 to 36
@@ -565,6 +570,7 @@ is( _ternary_to_decimal( '102' ), 11, 'ternary => decimal 11' );
 #         unless (string= s1 s2)
 #         collect (list i x s1 s2)))
 #  nil)
+}
 
 # (def-format-test format.r.2
 #   "~2r" (14) "1110")
@@ -581,6 +587,11 @@ def_format_test 'format.r.3' =>
   "~3r",
   [ 29 ],
   "1002";
+
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.r.4
 #  (loop for base from 2 to 36
@@ -651,6 +662,7 @@ def_format_test 'format.r.3' =>
 #                                s))
 #              collect (list base mincol s)))
 #  nil)
+}
 
 # (deftest format.r.6
 #   (loop for base from 2 to 36
@@ -720,6 +732,11 @@ my @english_number_names = (
 
 # }}}
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.r.7
 #  (loop for i from 0 to 100
 #        for s1 = (format nil "~r" i)
@@ -746,6 +763,7 @@ my @english_number_names = (
 #        unless (or (string= s1 s3) (string= s1 s4))
 #        collect (list i s1 s3 s4))
 #  nil)
+}
 
 SKIP: {
   diag "Make these tests work";
@@ -782,6 +800,11 @@ deftest 'format.r.10' => sub {
   }
 }, '123';
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest formatter.r.10
 #  (let ((fn (formatter "~10r")))
 #    (with-standard-io-syntax
@@ -791,6 +814,7 @@ deftest 'format.r.10' => sub {
 #        (formatter-call-to-string fn 123)))))
 #  "123"
 #  "123")
+}
 
 # (def-format-test format.r.11
 #   "~8@R" (65) "+101")
@@ -815,6 +839,11 @@ def_format_test 'format.r.13' =>
   '~3@:r',
   [ _ternary_to_decimal( '2120012102' ) ],
   "+2,120,012,102";
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.r.14
 #  (loop
@@ -847,6 +876,7 @@ def_format_test 'format.r.13' =>
 #              (= x y))
 #   collect (list i interval comma x s1 y))
 #  nil)
+}
 
 # (def-format-test format.r.16
 #   "~2,,,,1000000000000000000r" (17) "10001")
@@ -892,6 +922,11 @@ my @english_ordinal_names = (
 
 # }}}
 
+SKIP: {
+  my $count = 5;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.r.18
 #  (loop for i from 0 to 100
 #        for s1 = (format nil "~:r" i)
@@ -935,6 +970,7 @@ my @english_ordinal_names = (
 #          unless (string= s1 s2)
 #          collect (list i s1 s2)))
 #  nil)
+}
 
 ### Old roman numerals
 
@@ -1193,6 +1229,11 @@ def_format_test 'format.r.38' =>
 
 ### Randomized test
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.r.39
 #  (let ((fn (formatter "~v,v,v,v,vr")))
 #    (loop
@@ -1220,3 +1261,4 @@ def_format_test 'format.r.38' =>
 #                 (string= s1 s3))
 #     collect (list radix mincol padchar commachar commaint fmt x s1 s2 s3)))
 #  nil)
+}

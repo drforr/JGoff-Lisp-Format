@@ -12,8 +12,10 @@ use strict;
 use warnings;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 290;
+  my $count = 290;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
+
 ### Tests of ~^ inside ~{ ... ~}
 
 # (def-format-test format.^.{.1

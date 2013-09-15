@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More tests => 18;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,8 +12,9 @@ use strict;
 use warnings;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
+  my $count = 16;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 ### pprint-indent.9
 #(def-pprint-test format.i.1
@@ -98,5 +99,4 @@ SKIP: {
 #  (format nil "XXX~<MMM~vI~:@_MMMMM~:>" '(2))
 #  "XXXMMM
 #     MMMMM")
-
 }

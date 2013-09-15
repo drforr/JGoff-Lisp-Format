@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 30;
+use Test::More tests => 39;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,8 +12,9 @@ use strict;
 use warnings;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 28;
+  my $count = 6;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.cond.1
 #   "~[~]" (0) "")
@@ -62,6 +63,12 @@ def_format_test 'format.cond.6' =>
   "~[a~]",
    [ $JGoff::Lisp::Format::most_positive_fixnum + 1 ],
    "";
+}
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.cond.7
 #  (loop for i from -1 to 10
@@ -73,6 +80,12 @@ def_format_test 'format.cond.6' =>
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
+}
+
+SKIP: {
+  my $count = 5;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.cond.8
 #   "~0[a~;b~;c~;d~]" (3) "a" 1)
@@ -118,6 +131,12 @@ def_format_test 'format.cond.12' =>
    [ 3 ],
    "",
    1;
+}
+
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.cond.13
 #  (loop for i from -1 to 10
@@ -140,6 +159,12 @@ def_format_test 'format.cond.12' =>
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn nil i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
+}
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.cond.15
 #   "~#[A~;B~]" nil "A")
@@ -157,8 +182,14 @@ def_format_test 'format.cond.16' =>
    [ undef ],
    "B",
    1;
+}
 
 ### ~[ .~:;  ~]
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.cond\:.1
 #  (loop for i from -100 to 100
@@ -174,6 +205,12 @@ def_format_test 'format.cond.16' =>
 #          unless (or (zerop i) (string= s "a"))
 #          collect (list i s)))
 #  nil)
+}
+
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.cond\:.2
 #   "~[a~:;b~]" (0) "a")
@@ -198,6 +235,12 @@ def_format_test 'format.cond\:.4' =>
   "~[a~:;b~]",
    [ $JGoff::Lisp::Format::most_positive_fixnum + 1 ],
    "b";
+}
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.cond\:.5
 #  (loop for i from -1 to 10
@@ -231,6 +274,12 @@ def_format_test 'format.cond\:.4' =>
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn nil i)))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
+}
+
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.cond\:.8
 #   "~#[A~:;B~]" nil "A")
@@ -258,6 +307,12 @@ def_format_test 'format.\:cond.1' =>
   "~:[a~;b~]",
    [ undef ],
    "a";
+}
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.\:cond.2
 #  (loop for x in *mini-universe*
@@ -273,8 +328,14 @@ def_format_test 'format.\:cond.1' =>
 #          when (and x (not (string= s "b")))
 #          collect (list x s)))
 #  nil)
+}
 
 ### ~@[ ... ~]
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.@cond.1
 #   "~@[X~]Y~A" (1) "XY1")

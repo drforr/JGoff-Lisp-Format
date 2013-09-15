@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 9;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 7;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest formatter.c.1
 #  (let ((fn (formatter "~C")))
@@ -146,3 +151,4 @@ use warnings;
 #          unless (and (eql (search s1 s2) 0) (equal n '((1 2))))
 #          collect (list c s1 s2 n)))
 #  nil)
+}

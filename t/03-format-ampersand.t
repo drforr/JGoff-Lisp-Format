@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 10;
+use Test::More tests => 20;
 
 BEGIN {
   use lib 't/lib';
@@ -41,6 +41,11 @@ def_format_test 'format.&.4' =>
   "X~%~&",
   undef,
   concatenate( "X", "\n" );
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 # (deftest format.&.5
 #   (loop for i from 1 to 100
@@ -105,6 +110,7 @@ def_format_test 'format.&.4' =>
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+}
 
 # (def-format-test format.&.7
 #   "~v&" (nil) "")
@@ -122,6 +128,11 @@ def_format_test 'format.&.8' =>
   [ undef ],
   concatenate( "X", "\n" );
 
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.&.9
 #  (loop for i from 1 to 100
 #        for s1 = (make-string (1- i) :initial-element #\Newline)
@@ -129,7 +140,7 @@ def_format_test 'format.&.8' =>
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
-#
+
 #(deftest formatter.&.9
 #  (let ((fn (formatter "~V&")))
 #    (loop for i from 1 to 100
@@ -138,7 +149,7 @@ def_format_test 'format.&.8' =>
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
-#
+
 #(deftest format.&.10
 #  (loop for i from 1 to (min (- call-arguments-limit 3) 100)
 #        for s1 = (make-string (1- i) :initial-element #\Newline)
@@ -147,7 +158,7 @@ def_format_test 'format.&.8' =>
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
-#
+
 #(deftest formatter.&.10
 #  (let ((fn (formatter "~#&")))
 #    (loop for i from 1 to (min (- call-arguments-limit 3) 100)
@@ -159,6 +170,7 @@ def_format_test 'format.&.8' =>
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
+}
 
 # (def-format-test format.&.11
 #   "X~V%" (0) "X")

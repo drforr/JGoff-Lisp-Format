@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More tests => 13;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,6 +12,11 @@ use strict;
 use warnings;
 
 ### Test of the ~C directive
+
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.c.1
 #  (loop for c across +standard-chars+
@@ -54,6 +59,7 @@ use warnings;
 #        do (incf count) and collect (list i c s)
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
+}
 
 # (def-format-test format.c.3
 #   "~:C" (#\Space) #.(char-name #\Space))
@@ -62,6 +68,11 @@ def_format_test 'format.c.3' =>
   "~:C",
   [ " " ],
   char_name( ' ' );
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.c.4
 #  (loop for c across +standard-chars+
@@ -121,3 +132,4 @@ def_format_test 'format.c.3' =>
 #        do (incf count) and collect (list c s1 s2)
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
+}

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 85;
+use Test::More tests => 94;
 use List::Util qw( min );
 
 BEGIN {
@@ -101,11 +101,17 @@ def_format_test 'format.a.5' =>
   [ [ undef ] ],
   "[UNDEF]";
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 # (def-format-test format.a.6
 #   "~:A" (#(nil)) "#(NIL)")
 
 #def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
 #  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
+}
 
 # (deftest format.a.7
 #   (let ((fn (formatter "~a")))
@@ -131,6 +137,11 @@ deftest 'format.a.7' => sub {
   };
   return $list;
 }, [];
+
+SKIP: {
+  my $count = 7;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.a.8
 #  (let ((fn (formatter "~A")))
@@ -274,6 +285,7 @@ deftest 'format.a.7' => sub {
 #  "      ()"
 #  "       ()"
 #  "        ()")
+}
 
 ### With padchar
 

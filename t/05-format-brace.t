@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 37;
+use Test::More tests => 61;
 
 BEGIN {
   use lib 't/lib';
@@ -642,6 +642,11 @@ def_format_test 'format.@{.9' =>
   [ 1, 2, 3 ],
   "123";
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 # (deftest format.@{.10
 #   (loop for i from 0 to 10
 #         for x = nil then (cons i x)
@@ -663,6 +668,7 @@ def_format_test 'format.@{.9' =>
 
 # (def-format-test format.@{.11
 #   "~@{X~:}" nil "X")
+}
 
 #def_format_test format.@{.12
 #  "~@{~}" ((formatter "X~AY") 1) "X1Y")
@@ -690,47 +696,48 @@ def_format_test 'format.@{.13' => # XXX double-check
 #   (concatenate 'string "~:@{~" (string #\Newline) "~}")
 #   nil "")
 
-def_format_test 'format.\:@{.1' =>
+def_format_test 'format.\:@{.1' => # }
   concatenate( '~:@{~', "\n", "~}" ),
   undef,
   "";
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 0;
+  my $count = 8;
+  my $str = "$count tests not working yet";
+  diag $str; skip $str, $count;
 
-# (def-format-test format.\:@{.2
+# (def-format-test format.\:@{.2 ;;; }
 #   "~:@{~A~}" ('(1 2) '(3) '(4 5 6)) "134")
 
-def_format_test 'format.\:@{.2' =>
+def_format_test 'format.\:@{.2' => # }
   '~:@{~A~}',
   [ [ 1, 2 ], [ 3 ], [ 4, 5, 6 ] ],
   "134";
 
 # XXX Almost forgot, another '(1 2) '(3 4) list.
-# (def-format-test format.\:@{.3
+# (def-format-test format.\:@{.3 ;;; }
 #   "~:@{(~A ~A)~}" ('(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
 
-def_format_test 'format.\:@{.3' =>
+def_format_test 'format.\:@{.3' => # }
   '~:@{(~A ~A)~}',
   [ [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
   "(1 2)(3 7)(4 5)";
 
-# (def-format-test format.\:@{.4
+# (def-format-test format.\:@{.4 ;;; }
 #   "~:@{~}" ("(~A ~A)" '(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
 
-def_format_test 'format.\:@{.4' =>
+def_format_test 'format.\:@{.4' => # }
   '~:@{~}',
   [ "(~A ~A)", [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
   "(1 2)(3 7)(4 5)";
 
-# (def-format-test format.\:@{.5
+# (def-format-test format.\:@{.5 ;;; }
 #   "~:@{~}" ((formatter "(~A ~A)") '(1 2 4) '(3 7) '(4 5 6)) "(1 2)(3 7)(4 5)")
 
-def_format_test 'format.\:@{.5' => # XXX vet arguments
+def_format_test 'format.\:@{.5' => # }
   '~:@{~}',
-  #[ [ $f->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
-  [ [ JGoff::Lisp::Format->new->formatter( "(~A ~A)" ) ], [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
+  [ [ JGoff::Lisp::Format->new->formatter( "(~A ~A)" ) ],
+    [ 1, 2, 4 ], [ 3, 7 ], [ 4, 5, 6 ] ],
   "(1 2)(3 7)(4 5)";
 
 # (def-format-test format.\:@.6
@@ -767,6 +774,11 @@ def_format_test 'format.\:@.9' =>
   "123";
 }
 
+SKIP: {
+  my $count = 16;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.\:@.10
 #  (loop for i from 0 to 10
 #        for x = nil then (cons (list i) x)
@@ -789,62 +801,63 @@ def_format_test 'format.\:@.9' =>
 
 ### Error tests
 
-#(deftest format.{.error.1
+#(deftest format.{.error.1 ;;; }
 #  (signals-type-error x 'A (format nil "~{~A~}" x))
 #  t)
 
-#(deftest format.{.error.2
+#(deftest format.{.error.2 ;;; }
 #  (signals-type-error x 1 (format nil "~{~A~}" x))
 #  t)
 
-#(deftest format.{.error.3
+#(deftest format.{.error.3 ;;; }
 #  (signals-type-error x "foo" (format nil "~{~A~}" x))
 #  t)
 
-#(deftest format.{.error.4
+#(deftest format.{.error.4 ;;; }
 #  (signals-type-error x #*01101 (format nil "~{~A~}" x))
 #  t)
 
-#(deftest format.{.error.5
+#(deftest format.{.error.5 ;;; }
 #  (signals-error (format nil "~{~A~}" '(x y . z)) type-error)
 #  t)
 
-#(deftest format.\:{.error.1
+#(deftest format.\:{.error.1 ;;; }
 #  (signals-error (format nil "~:{~A~}" '(x)) type-error)
 #  t)
 
-#(deftest format.\:{.error.2
+#(deftest format.\:{.error.2 ;;; }
 #  (signals-type-error x 'x (format nil "~:{~A~}" x))
 #  t)
 
-#(deftest format.\:{.error.3
+#(deftest format.\:{.error.3 ;;; }
 #  (signals-error (format nil "~:{~A~}" '((x) . y)) type-error)
 #  t)
 
-#(deftest format.\:{.error.4
+#(deftest format.\:{.error.4 ;;; }
 #  (signals-error (format nil "~:{~A~}" '("X")) type-error)
 #  t)
 
-#(deftest format.\:{.error.5
+#(deftest format.\:{.error.5 ;;; }
 #  (signals-error (format nil "~:{~A~}" '(#(X Y Z))) type-error)
 #  t)
 
-#(deftest format.\:@{.error.1
+#(deftest format.\:@{.error.1 ;;; }
 #  (signals-type-error x 'x (format nil "~:@{~A~}" x))
 #  t)
 
-#(deftest format.\:@{.error.2
+#(deftest format.\:@{.error.2 ;;; }
 #  (signals-type-error x 0 (format nil "~:@{~A~}" x))
 #  t)
 
-#(deftest format.\:@{.error.3
+#(deftest format.\:@{.error.3 ;;; }
 #  (signals-type-error x #*01101 (format nil "~:@{~A~}" x))
 #  t)
 
-#(deftest format.\:@{.error.4
+#(deftest format.\:@{.error.4 ;;; }
 #  (signals-type-error x "abc" (format nil "~:@{~A~}" x))
 #  t)
 
-#(deftest format.\:@{.error.5
+#(deftest format.\:@{.error.5 ;;; }
 #  (signals-error (format nil "~:@{~A ~A~}" '(x . y)) type-error)
 #  t)
+}

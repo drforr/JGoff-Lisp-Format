@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 11;
+use Test::More tests => 36;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 17;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.o.1
 #  (let ((fn (formatter "~o")))
@@ -358,6 +363,7 @@ use warnings;
 #                                  (eql (elt s1 (incf j)) (elt s2 i))))))
 #           collect (list x i commachar s1 s2 s3))))
 #  nil)
+}
 
 ### NIL arguments
 
@@ -394,6 +400,11 @@ def_format_test 'format.o.17' =>
   "12*345";
 
 ### When the argument is not an integer, print as if using ~A and base 10
+
+SKIP: {
+  my $count = 7;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.o.18
 #  (let ((fn (formatter "~o")))
@@ -518,6 +529,7 @@ def_format_test 'format.o.17' =>
 #  "+1,234567012"
 #  "+1234567012"
 #  "+1234567012")
+}
 
 # (def-format-test format.o.25
 #   "~+10o" (#o1234) "      1234")
@@ -561,6 +573,11 @@ def_format_test 'format.o.29' =>
 
 ### Randomized test
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.o.30
 #  (let ((fn (formatter "~v,v,v,vo")))
 #    (loop
@@ -585,3 +602,4 @@ def_format_test 'format.o.29' =>
 #     unless (and (string= s1 s2) (string= s2 s3))
 #     collect (list mincol padchar commachar commaint fmt x s1 s2 s3)))
 #  nil)
+}

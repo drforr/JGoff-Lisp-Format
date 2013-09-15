@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 16;
+use Test::More tests => 22;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -35,6 +35,11 @@ def_format_test 'format.p.3' =>
   [ 0 ],
   "s";
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #def_format_test 'format.p.4' => # Perl has no useful float/integer distinction?
 #  "~P",
 #  [ 1.0 ],
@@ -54,6 +59,7 @@ def_format_test 'format.p.3' =>
 #          unless (or (eql x 1) (string= s "s"))
 #          collect (list x s)))
 #  nil)
+}
 
 ### :p
 
@@ -149,6 +155,11 @@ def_format_test 'format.p.16' =>
   [ 0 ],
   "ies";
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #def_format_test 'format.p.17' => # Again, perl doesn't distinguish well here.
 #  '~@P',
 #  [ 1.0 ],
@@ -168,3 +179,4 @@ def_format_test 'format.p.16' =>
 #          unless (or (eql x 1) (string= s "ies"))
 #          collect (list x s)))
 #  nil)
+}

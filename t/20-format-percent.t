@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,9 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 3;
 # (def-format-test format.%.1
 #   "~%" nil #.(string #\Newline))
 
@@ -21,6 +18,11 @@ def_format_test 'format.%.1' =>
   "~%",
   undef,
   "\n";
+
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.%.2
 #  (loop for i from 0 to 100
@@ -32,6 +34,7 @@ def_format_test 'format.%.1' =>
 #        unless (and (string= s1 s2) (string= s1 s3))
 #        collect i)
 #  nil)
+}
 
 # (def-format-test format.%.3
 #   "~v%" (nil) #.(string #\Newline))
@@ -48,6 +51,11 @@ def_format_test 'format.%.4' =>
   "~V%",
   [ 1 ],
   "\n";
+
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.%.5
 #  (loop for i from 0 to 100
@@ -87,4 +95,4 @@ def_format_test 'format.%.4' =>
 #          collect i))
 #  nil)
 
-#}
+}

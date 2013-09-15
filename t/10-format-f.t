@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More tests => 46;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,6 +12,11 @@ use strict;
 use warnings;
 
 ### Equivalent to PRIN1 for 0 or (abs x) in range [10^-3,10^7).
+
+SKIP: {
+  my $count = 42;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.f.1
 #  (let ((*print-readably* nil)
@@ -522,6 +527,7 @@ use warnings;
 #     unless (string= s1 s2)
 #     collect (list x w d k overflowchar padchar f1 s1 s2)))
 #  nil)
+}
 
 ### This failed in sbcl 0.8.12.25
 
@@ -533,6 +539,11 @@ def_format_test 'format.f.43' =>
   [ 0.0 ],
   "0.0";
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.f.44
 #  (loop for i from 0 below (min #x10000 char-code-limit)
 #        for x = 2312.9817
@@ -543,3 +554,4 @@ def_format_test 'format.f.43' =>
 #        unless (equal s1 s2)
 #        collect (list i c f1 s1 s2))
 #  nil)
+}

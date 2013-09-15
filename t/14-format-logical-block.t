@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More tests => 65;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,8 +12,9 @@ use strict;
 use warnings;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
+  my $count = 27;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 ### Error cases
 
@@ -129,8 +130,14 @@ SKIP: {
 #(deftest format.logical-block.error.27
 #  (signals-error-always (format nil "~<~:>~<~:;~>" nil nil nil) error)
 #  t t)
+}
 
 ### Non-error tests
+
+SKIP: {
+  my $count = 29;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.logical-block.1
 #  (format nil "~<~A~:>" '(nil))
@@ -278,9 +285,14 @@ SKIP: {
 #**2
 #**3)"
 #  :margin 3)
-
+}
 
 ### Circularity detection
+
+SKIP: {
+  my $count = 5;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.logical-block.circle.1
 #  (format nil "~:<~@{~A~^ ~}~:>" (let ((x (list 0))) (list x x)))
@@ -307,8 +319,14 @@ SKIP: {
 #(def-pprint-test format.logical-block.circle.5
 #  (format nil "~:<~@{~A~^ ~}~:>" (let ((x (list 0))) (cons x x)))
 #  "((0) 0)")
+}
 
 ### ~^ terminates a logical block
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.logical-block.escape.1
 #  (format nil "~<~A~^xxxx~:>" '(1))
@@ -317,5 +335,4 @@ SKIP: {
 #(def-pprint-test format.logical-block.escape.2
 #  (format nil "~<~<~A~^xxx~:>yyy~:>" '((1)))
 #  "1yyy")
-
 }

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 37;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 10;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-ppblock-test format._.1
 #  (progn
@@ -107,8 +112,14 @@ use warnings;
 #     (formatter-call-to-string
 #      (formatter "A ~_A ~_A ~_A ~_A ~_"))))
 #  "A A A A A ")
+}
 
 ### miser
+
+SKIP: {
+  my $count = 11;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-ppblock-test format.@_.1
 #  (format t "A ~@_A ~@_A ~@_A ~@_A ~@_A ~@_A ~@_A ~@_A ~@_A ~@_")
@@ -210,8 +221,14 @@ use warnings;
 #     (formatter-call-to-string
 #      (formatter "A ~@_A ~@_A ~@_A ~@_A ~@_"))))
 #  "A A A A A ")
+}
 
 ### fill
+
+SKIP: {
+  my $count = 8;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-ppblock-test format.\:_.1
 #  (format t "A ~:_A ~:_A ~:_A ~:_A ~:_A ~:_A ~:_A ~:_A ~:_A ~:_")
@@ -292,8 +309,14 @@ use warnings;
 #     (formatter-call-to-string
 #      (formatter "A ~:_A ~:_A ~:_A ~:_A ~:_"))))
 #  "A A A A A ")
+}
 
 ### mandatory
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-ppblock-test format.\:@_.1
 #  (format t "A ~:@_A ~:@_A ~:@_A ~:@_")
@@ -344,3 +367,4 @@ use warnings;
 #         (*print-miser-width* nil))
 #     (formatter-call-to-string (formatter "A ~:@_A ~:@_A ~:@_A ~:@_A ~:@_"))))
 #  "A A A A A ")
+}

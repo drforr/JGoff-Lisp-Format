@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 11;
+use Test::More tests => 35;
 
 BEGIN {
   use lib 't/lib';
@@ -9,6 +9,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 10;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.b.1
 #  (let ((fn (formatter "~b")))
@@ -200,6 +205,7 @@ use warnings;
 #                                   :test-not #'eql))))
 #           collect (list i mincol s1 s2 s3 pos))))
 #  nil)
+}
 
 ### Comma tests
 
@@ -227,6 +233,11 @@ deftest 'format.b.8' => sub {
   }
   return $list;
 }, [];
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.b.9
 #  (let ((fn (formatter "~:b")))
@@ -369,6 +380,7 @@ deftest 'format.b.8' => sub {
 #                                    (eql (elt s1 (incf j)) (elt s2 i))))))
 #           collect (list x i commachar s1 s2 s3))))
 #  nil)
+}
 
 ### NIL arguments
 
@@ -405,6 +417,11 @@ def_format_test 'format.b.17' =>
   "10*110";
 
 ### When the argument is not an integer, print as if using ~A and base 10
+
+SKIP: {
+  my $count = 7;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.b.18
 #  (let ((fn (formatter "~b")))
@@ -529,6 +546,7 @@ def_format_test 'format.b.17' =>
 #  "+1,100100010"
 #  "+1100100010"
 #  "+1100100010")
+}
 
 # (def-format-test format.b.25
 #   "~+10b" (#b1101) "      1101")
@@ -572,6 +590,11 @@ def_format_test 'format.b.29' =>
 
 ### Randomized test
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.b.30
 #  (let ((fn (formatter "~V,V,V,VB")))
 #    (loop
@@ -596,3 +619,4 @@ def_format_test 'format.b.29' =>
 #     unless (and (string= s1 s2) (string= s2 s3))
 #     collect (list mincol padchar commachar commaint fmt x s1 s2)))
 #  nil)
+}

@@ -55,8 +55,9 @@ def_format_test 'format.*.5' =>
   "13";
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 4;
+  my $count = 4;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.*.6
 #   "~A~1{~A~*~A~}~A" (0 '(1 2 3) 4) "0134")
 
@@ -158,8 +159,9 @@ def_format_test 'format.\:*.7' =>
   1;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 6;
+  my $count = 28;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.\:*.8
 #   "~A~1{~A~:*~A~}~A" (0 '(1 2 3) 4) "0114")
 
@@ -207,13 +209,9 @@ def_format_test 'format.\:*.13' =>
   "~A~{~A~A~A~A~v:*~^~A~}~A",
   [ 0, [ 1, 2, 3, 4, undef ],  5 ],
   "01234NIL5";
-}
 
 ### ~@*
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 22;
 # (def-format-test format.@*.1
 #   "~A~A~@*~A~A" (1 2 3 4) "1212" 2)
 
@@ -306,5 +304,4 @@ def_format_test 'format.@*.11' =>
   '~A~{~A~A~1@*~A~}~A',
   [ 0, [ 1, 2 ], 9 ],
   "01229";
-
 }

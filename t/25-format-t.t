@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 44;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 10;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.t.1
 #  (format nil "~0,0T")
@@ -96,8 +101,14 @@ use warnings;
 #(def-pprint-test format.t.10
 #  (format nil "XXXXX~2,0T")
 #  "XXXXX")
+}
 
 ### @t
+
+SKIP: {
+  my $count = 5;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.@t.1
 #  (format nil "~1,1@t")
@@ -145,10 +156,16 @@ use warnings;
 #        unless (string= s1 s2)
 #        collect (list colnum colinc pretty s1 s2))
 #  nil)
+}
 
 ### Pretty printing (colon modifier)
 
 ### Not a pretty printing stream
+
+SKIP: {
+  my $count = 15;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.\:t.1
 #  (format nil "XX~10:tYY")
@@ -264,8 +281,14 @@ use warnings;
 #        unless (string= s2 result)
 #        collect (list n1 n2 inc s2 result))
 #  nil)
+}
 
 ### see 22.3.5.2
+
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.\:t.error.1
 #  (signals-error-always (format nil "~<XXX~1,1:TYYY~>") error)
@@ -278,8 +301,14 @@ use warnings;
 #(deftest format.\:t.error.3
 #  (signals-error-always (format nil "AAAA~1,1:TBBB~<XXX~:;YYY~>ZZZ") error)
 #  t t)
+}
 
 ### ~:@t
+
+SKIP: {
+  my $count = 9;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(def-pprint-test format.\:@t.1
 #  (format nil "~<XXX~;~1,1:@t~;YYY~:>" '(a))
@@ -338,3 +367,4 @@ use warnings;
 #    (format s "XX~10,20@:tYY")))
 #  "XXYY"
 #  :pretty nil)
+}

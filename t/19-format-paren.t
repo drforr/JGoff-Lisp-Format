@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 25;
+use Test::More tests => 29;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,8 +12,10 @@ use strict;
 use warnings;
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 23;
+  my $count = 1;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
+
 # (def-format-test format.paren.1
 #   "~(XXyy~AuuVV~)" ("ABc dEF ghI") "xxyyabc def ghiuuvv")
 
@@ -21,6 +23,12 @@ def_format_test 'format.paren.1' =>
   "~(XXyy~AuuVV~)",
   ("ABc dEF ghI"),
   "xxyyabc def ghiuuvv";
+}
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 ### Conversion of simple characters to downcase
 #(deftest format.paren.2
@@ -59,6 +67,12 @@ def_format_test 'format.paren.1' =>
 #                        nil)))
 #          collect it))
 #  nil)
+}
+
+SKIP: {
+  my $count = 5;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.paren.3
 #   "~@(this is a TEST.~)" nil "This is a test.")
@@ -99,6 +113,12 @@ def_format_test 'format.paren.7' =>
   '~:@(this is AlSo A teSt~)',
   undef,
   "THIS IS ALSO A TEST";
+}
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.paren.8
 #  (loop for i from 0 below (min char-code-limit (ash 1 16))
@@ -136,8 +156,14 @@ def_format_test 'format.paren.7' =>
 #                        nil)))
 #          collect it))
 #  nil)
+}
 
 ### Nested conversion
+
+SKIP: {
+  my $count = 17;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 # (def-format-test format.paren.9
 #   "~(aBc ~:(def~) GHi~)" nil "abc def ghi")
@@ -274,5 +300,4 @@ def_format_test 'format.paren.25' =>
   '~@:(aBc ~@:(def~) GHi~)',
   undef,
   "ABC DEF GHI";
-
 }

@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 35;
+use Test::More tests => 55;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -10,6 +10,11 @@ BEGIN {
 
 use strict;
 use warnings;
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.s.1
 #  (let ((*print-readably* nil)
@@ -22,6 +27,7 @@ use warnings;
 #        (*print-case* :upcase))
 #    (formatter-call-to-string (formatter "~s") nil))
 #  "NIL")
+}
 
 # (def-format-test format.s.2
 #   "~:s" (nil) "()")
@@ -30,6 +36,11 @@ def_format_test 'format.s.2' =>
   "~:s",
   [ undef ],
   "[]";
+
+SKIP: {
+  my $count = 15;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.s.3
 #  (let ((*print-readably* nil)
@@ -238,6 +249,7 @@ def_format_test 'format.s.2' =>
 #  "      ()"
 #  "       ()"
 #  "        ()")
+}
 
 # (def-format-test format.s.15
 #   "~vS" (nil nil) "NIL")
@@ -359,6 +371,11 @@ def_format_test 'format.s.28' =>
 
 ### With minpad
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.s.29
 #  (with-standard-io-syntax
 #   (let ((*print-readably* nil)
@@ -384,6 +401,7 @@ def_format_test 'format.s.28' =>
 #   "ABC     "
 #   "ABC      "
 #   "ABC       "))
+}
 
 # (def-format-test format.s.30
 #   "~3,,+2S" ('ABC) "ABC  ")
@@ -501,6 +519,11 @@ def_format_test 'format.s.43' =>
   [ undef, 246 ],
   "246";
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
+
 #(deftest format.s.44
 #  (with-standard-io-syntax
 #   (let ((*print-readably* nil)
@@ -536,6 +559,7 @@ def_format_test 'format.s.43' =>
 #   "    ABC"
 #   "     ABC"
 #   "      ABC"))
+}
 
 # (def-format-test format.s.45
 #   "~4,,vs" (-1 1234) "1234")
