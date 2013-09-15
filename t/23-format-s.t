@@ -11,23 +11,31 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  my $count = 2;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.s.1
 #  (let ((*print-readably* nil)
 #        (*print-case* :upcase))
 #    (format nil "~s" nil))
 #  "NIL")
 
+deftest 'format.s.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  local $JGoff::Lisp::Format::print_readably = undef;
+  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::upcase;
+  return $f->format( undef, "~s", undef );
+}, "UNDEF";
+
 #(deftest formatter.s.1
 #  (let ((*print-readably* nil)
 #        (*print-case* :upcase))
 #    (formatter-call-to-string (formatter "~s") nil))
 #  "NIL")
-}
+
+deftest 'formatter.s.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  local $JGoff::Lisp::Format::print_readably = undef;
+  local $JGoff::Lisp::Format::print_case = $JGoff::Lisp::Format::upcase;
+  return formatter_call_to_string( $f->formatter( "~s" ), undef );
+}, "UNDEF";
 
 # (def-format-test format.s.2
 #   "~:s" (nil) "()")

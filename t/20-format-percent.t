@@ -52,11 +52,6 @@ def_format_test 'format.%.4' =>
   [ 1 ],
   "\n";
 
-SKIP: {
-  my $count = 4;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.%.5
 #  (loop for i from 0 to 100
 #        for s1 = (make-string i :initial-element #\Newline)
@@ -64,6 +59,19 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'format.%.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $i ( 0 .. 100 ) {
+    my $s1 = make_string( $i, initial_element => "\n" );
+    my $s2 = $f->format( undef, "~v%", $i );
+    unless( $s1 eq $s2 ) {
+      collect( $list, $i );
+    }
+  }
+  return $list;
+}, [];
 
 #(deftest formatter.%.5
 #  (let ((fn (formatter "~v%")))
@@ -73,6 +81,25 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
+
+deftest 'formatter.%.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~v%" );
+  my $list = [];
+  for my $i ( 0 .. 100 ) {
+    my $s1 = make_string( $i, initial_element => "\n" );
+    my $s2 = formatter_call_to_string( $fn, $i );
+    unless( $s1 eq $s2 ) {
+      collect( $list, $i );
+    }
+  }
+  return $list;
+}, [];
+
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.%.6
 #  (loop for i from 0 to (min (- call-arguments-limit 3) 100)

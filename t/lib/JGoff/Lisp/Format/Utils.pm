@@ -27,6 +27,8 @@ our @standard_chars =
   map { JGoff::Lisp::Format::Utils::Character->new( character => $_ ) }
       split //, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+|\\=-`{}[]:\";'<>?,./\n";
 our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
+# XXX The real argument limit from SBCL is 4611686018427387903, so fake it.
+our $call_arguments_limit = 1114112;
 
 sub char_name {
   my ( $char ) = @_;

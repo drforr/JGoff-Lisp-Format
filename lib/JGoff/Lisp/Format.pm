@@ -10,6 +10,7 @@ Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
 Readonly our $capitalize => 'capitalize';
 
+our $print_readably = undef; # default value from the CLISP spec
 our $print_case = $upcase; # default value from the CLISP spec
 our $print_radix = undef; # XXX ?
 

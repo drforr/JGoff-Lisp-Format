@@ -1,6 +1,7 @@
 #!perl
 
 use Test::More tests => 22;
+use List::Util qw( min );
 
 BEGIN {
   use lib 't/lib';
@@ -149,11 +150,6 @@ def_format_test 'format.&.8' =>
   [ undef ],
   concatenate( "X", "\n" );
 
-SKIP: {
-  my $count = 4;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.&.9
 #  (loop for i from 1 to 100
 #        for s1 = (make-string (1- i) :initial-element #\Newline)
@@ -161,6 +157,19 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'format.&.9' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $i ( 1 .. 100 ) {
+    my $s1 = make_string( $i - 1, initial_element => "\n" );
+    my $s2 = $f->format( undef, "~V&", $i );
+    unless ( $s1 eq $s2 ) {
+      collect( $list, $i );
+    }
+  }
+  return $list;
+}, [];
 
 #(deftest formatter.&.9
 #  (let ((fn (formatter "~V&")))
@@ -170,6 +179,25 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
+
+deftest 'formatter.&.9' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~V&" );
+  my $list = [];
+  for my $i ( 1 .. 100 ) {
+    my $s1 = make_string( $i - 1, initial_element => "\n" );
+    my $s2 = formatter_call_to_string( $fn, $i );
+    unless ( $s1 eq $s2 ) {
+      collect( $list, $i );
+    }
+  }
+  return $list;
+}, [];
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.&.10
 #  (loop for i from 1 to (min (- call-arguments-limit 3) 100)
