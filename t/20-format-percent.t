@@ -14,6 +14,9 @@ use warnings;
 #SKIP: {
 #  diag "Make these tests work";
 #  skip 'Not ready yet', 3;
+# (def-format-test format.%.1
+#   "~%" nil #.(string #\Newline))
+
 def_format_test 'format.%.1' =>
   "~%",
   undef,
@@ -30,10 +33,16 @@ def_format_test 'format.%.1' =>
 #        collect i)
 #  nil)
 
+# (def-format-test format.%.3
+#   "~v%" (nil) #.(string #\Newline))
+
 def_format_test 'format.%.3' =>
   "~v%",
   [ undef ],
   "\n";
+
+# (def-format-test format.%.4
+#   "~V%" (1) #.(string #\Newline))
 
 def_format_test 'format.%.4' =>
   "~V%",

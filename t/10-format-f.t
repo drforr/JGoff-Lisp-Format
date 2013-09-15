@@ -525,6 +525,9 @@ use warnings;
 
 ### This failed in sbcl 0.8.12.25
 
+# (def-format-test format.f.43
+#   "~,,,,',f" (0.0) "0.0")
+
 def_format_test 'format.f.43' =>
   "~,,,,',f",
   [ 0.0 ],

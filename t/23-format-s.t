@@ -23,6 +23,9 @@ use warnings;
 #    (formatter-call-to-string (formatter "~s") nil))
 #  "NIL")
 
+# (def-format-test format.s.2
+#   "~:s" (nil) "()")
+
 def_format_test 'format.s.2' =>
   "~:s",
   [ undef ],
@@ -236,30 +239,48 @@ def_format_test 'format.s.2' =>
 #  "       ()"
 #  "        ()")
 
+# (def-format-test format.s.15
+#   "~vS" (nil nil) "NIL")
+
 def_format_test 'format.s.15' =>
   "~vS",
   [ undef, undef ],
   "UNDEF";
+
+# (def-format-test format.s.16
+#   "~v:S" (nil nil) "()")
 
 def_format_test 'format.s.16' =>
   "~v:S",
   [ undef, undef ],
   "[]";
 
+# (def-format-test format.s.17
+#   "~@S" (nil) "NIL")
+
 def_format_test 'format.s.17' =>
   '~@S',
   [ undef ],
   "UNDEF";
+
+# (def-format-test format.s.18
+#   "~v@S" (nil nil) "NIL")
 
 def_format_test 'format.s.18' =>
   '~v@S',
   [ undef, undef ],
   "UNDEF";
 
+# (def-format-test format.s.19
+#   "~v:@s" (nil nil) "()")
+
 def_format_test 'format.s.19' =>
   '~v:@s',
   [ undef, undef ],
   "[]";
+
+# (def-format-test format.s.20
+#   "~v@:s" (nil nil) "()")
 
 def_format_test 'format.s.20' =>
   '~v@:s',
@@ -272,40 +293,64 @@ def_format_test 'format.s.20' =>
 # Changed the constants in order to account for 'NIL' => 'UNDEF'.
 #
 
+# (def-format-test format.s.21
+#   "~3,1s" (nil) "NIL")
+
 def_format_test 'format.s.21' =>
   "~5,1s",
   [ undef ],
   "UNDEF";
+
+# (def-format-test format.s.22
+#   "~4,3s" (nil) "NIL   ")
 
 def_format_test 'format.s.22' =>
   "~6,3s",
   [ undef ],
   "UNDEF   ";
 
+# (def-format-test format.s.23
+#   "~3,3@s" (nil) "NIL")
+
 def_format_test 'format.s.23' =>
   '~5,3@s',
   [ undef ],
   "UNDEF";
+
+# (def-format-test format.s.24
+#   "~4,4@s" (nil) "    NIL")
 
 def_format_test 'format.s.24' =>
   '~6,4@s',
   [ undef ],
   "    UNDEF";
 
+# (def-format-test format.s.25
+#   "~5,3@s" (nil) "   NIL")
+
 def_format_test 'format.s.25' =>
   '~9,5@s',
   [ undef ],
   "     UNDEF";
+
+# (def-format-test format.s.26
+#   "~5,3S" (nil) "NIL   ")
 
 def_format_test 'format.s.26' =>
   "~9,5S",
   [ undef ],
   "UNDEF     ";
 
+# (def-format-test format.s.27
+#   "~7,3@s" (nil) "      NIL")
+
 def_format_test 'format.s.27' =>
   '~11,5@s',
   [ undef ],
   "          UNDEF";
+
+# (def-format-test format.s.28
+#   "~7,3S" (nil) "NIL      ")
 
 def_format_test 'format.s.28' =>
   "~11,5S",
@@ -340,25 +385,40 @@ def_format_test 'format.s.28' =>
 #   "ABC      "
 #   "ABC       "))
 
+# (def-format-test format.s.30
+#   "~3,,+2S" ('ABC) "ABC  ")
+
 def_format_test 'format.s.30' =>
   "~3,,+2S",
   [ "ABC" ],
   "ABC  ";
+
+# (def-format-test format.s.31
+#   "~3,,0S" ('ABC) "ABC")
 
 def_format_test 'format.s.31' =>
   "~3,,0S",
   [ "ABC" ],
   "ABC";
 
+# (def-format-test format.s.32
+#   "~3,,-1S" ('ABC) "ABC")
+
 def_format_test 'format.s.32' =>
   "~3,,-1S",
   [ "ABC" ],
   "ABC";
 
+# (def-format-test format.s.33
+#   "~3,,0S" ('ABCD) "ABCD")
+
 def_format_test 'format.s.33' =>
   "~3,,0S",
   [ "ABCD" ],
   "ABCD";
+
+# (def-format-test format.s.34
+#   "~3,,-1S" ('ABCD) "ABCD")
 
 def_format_test 'format.s.34' =>
   "~3,,-1S",
@@ -367,40 +427,64 @@ def_format_test 'format.s.34' =>
 
 ### With padchar
 
+# (def-format-test format.s.35
+#   "~4,,,'XS" ('AB) "ABXX")
+
 def_format_test 'format.s.35' =>
   "~4,,,'XS",
   [ "AB" ],
   "ABXX";
+
+# (def-format-test format.s.36
+#   "~4,,,s" ('AB) "AB  ")
 
 def_format_test 'format.s.36' =>
   "~4,,,s",
   [ "AB" ],
   "AB  ";
 
+# (def-format-test format.s.37
+#   "~4,,,'X@s" ('AB) "XXAB")
+
 def_format_test 'format.s.37' =>
   q{~4,,,'X@s},
   [ "AB" ],
   "XXAB";
+
+# (def-format-test format.s.38
+#   "~4,,,@S" ('AB) "  AB")
 
 def_format_test 'format.s.38' =>
   '~4,,,@S',
   [ "AB" ],
   "  AB";
 
+# (def-format-test format.s.39
+#   "~10,,,vS" (nil 'ABCDE) "ABCDE     ")
+
 def_format_test 'format.s.39' =>
   "~10,,,vS",
   [ undef, "ABCDE" ],
   "ABCDE     ";
+
+# (def-format-test format.s.40
+#   "~10,,,v@S" (nil 'ABCDE) "     ABCDE")
 
 def_format_test 'format.s.40' =>
   '~10,,,v@S',
   [ undef, "ABCDE" ],
   "     ABCDE";
 
+# (def-format-test format.s.41
+#   "~10,,,vs" (#\* 'ABCDE) "ABCDE*****")
+
 def_format_test 'format.s.41' =>
   "~10,,,vs",
   [ '*', "ABCDE" ],
   "ABCDE*****";
+
+# (def-format-test format.s.42
+#   "~10,,,v@s" (#\* 'ABCDE) "*****ABCDE")
 
 def_format_test 'format.s.42' =>
   '~10,,,v@s',
@@ -408,6 +492,9 @@ def_format_test 'format.s.42' =>
   "*****ABCDE";
 
 ### Other tests
+
+# (def-format-test format.s.43
+#   "~3,,vS" (nil 246) "246")
 
 def_format_test 'format.s.43' =>
   "~3,,vS",
@@ -450,20 +537,32 @@ def_format_test 'format.s.43' =>
 #   "     ABC"
 #   "      ABC"))
 
+# (def-format-test format.s.45
+#   "~4,,vs" (-1 1234) "1234")
+
 def_format_test 'format.s.45' =>
   "~4,,vs",
   [ -1, 1234 ],
   "1234";
+
+# (def-format-test format.s.46
+#   "~5,vS" (nil 123) "123  ")
 
 def_format_test 'format.s.46' =>
   "~5,vS",
   [ undef, 123 ],
   "123  ";
 
+# (def-format-test format.s.47
+#   "~5,vS" (3 456) "456   ")
+
 def_format_test 'format.s.47' =>
   "~5,vS",
   [ 3, 456 ],
   "456   ";
+
+# (def-format-test format.s.48
+#   "~5,v@S" (3 789) "   789")
 
 def_format_test 'format.s.48' =>
   '~5,v@S',

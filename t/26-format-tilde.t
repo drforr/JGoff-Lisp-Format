@@ -11,6 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
+# (def-format-test format.~.1
+#   "~~" nil "~")
+
 def_format_test 'format.~.1' =>
   "~~",
   undef,
@@ -34,6 +37,9 @@ def_format_test 'format.~.1' =>
 #        unless (string= s s2)
 #        collect (list i s s2))
 #  nil)
+
+# (def-format-test format.~.3
+#   "~v~" (0) "")
 
 def_format_test 'format.~.3' =>
   "~v~",

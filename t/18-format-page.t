@@ -11,6 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
+# (def-format-test format.page.1
+#   "~0|" nil "")
+
 def_format_test 'format.page.1' =>
   "~0|",
   undef,
@@ -44,10 +47,16 @@ def_format_test 'format.page.1' =>
 #              collect i)))))
 #  nil)
 
+# (def-format-test format.page.4
+#   "~V|" (0) "")
+
 def_format_test 'format.page.4' =>
   "~V|",
   [ 0 ],
   "";
+
+# (def-format-test format.page.5
+#   "~v|" (nil) #.(format nil "~|"))
 
 def_format_test 'format.page.5' =>
   "~v|",

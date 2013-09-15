@@ -11,15 +11,24 @@ BEGIN {
 use strict;
 use warnings;
 
+# (def-format-test format.p.1
+#   "~p" (1) "")
+
 def_format_test 'format.p.1' =>
   "~p",
   [ 1 ],
   "";
 
+# (def-format-test format.p.2
+#   "~P" (2) "s")
+
 def_format_test 'format.p.2' =>
   "~P",
   [ 2 ],
   "s";
+
+# (def-format-test format.p.3
+#   "~p" (0) "s")
 
 def_format_test 'format.p.3' =>
   "~p",
@@ -48,20 +57,32 @@ def_format_test 'format.p.3' =>
 
 ### :p
 
+# (def-format-test format.p.6
+#   "~D cat~:P" (1) "1 cat")
+
 def_format_test 'format.p.6' =>
   "~D cat~:P",
   [ 1 ],
   "1 cat";
+
+# (def-format-test format.p.7
+#   "~D cat~:p" (2) "2 cats")
 
 def_format_test 'format.p.7' =>
   "~D cat~:p",
   [ 2 ],
   "2 cats";
 
+# (def-format-test format.p.8
+#   "~D cat~:P" (0) "0 cats")
+
 def_format_test 'format.p.8' =>
   "~D cat~:P",
   [ 0 ],
   "0 cats";
+
+# (def-format-test format.p.9
+#   "~D cat~:p" ("No") "No cats")
 
 def_format_test 'format.p.9' =>
   "~D cat~:p",
@@ -70,20 +91,32 @@ def_format_test 'format.p.9' =>
 
 ### :@p
 
+# (def-format-test format.p.10
+#   "~D penn~:@P" (1) "1 penny")
+
 def_format_test 'format.p.10' =>
   '~D penn~:@P',
   [ 1 ],
   "1 penny";
+
+# (def-format-test format.p.11
+#   "~D penn~:@p" (2) "2 pennies")
 
 def_format_test 'format.p.11' =>
   '~D penn~:@p',
   [ 2 ],
   "2 pennies";
 
+# (def-format-test format.p.12
+#   "~D penn~@:P" (0) "0 pennies")
+
 def_format_test 'format.p.12' =>
   '~D penn~@:P',
   [ 0 ],
   "0 pennies";
+
+# (def-format-test format.p.13
+#   "~D penn~@:p" ("No") "No pennies")
 
 def_format_test 'format.p.13' =>
   '~D penn~@:p',
@@ -92,15 +125,24 @@ def_format_test 'format.p.13' =>
 
 ### @p
 
+# (def-format-test format.p.14
+#   "~@p" (1) "y")
+
 def_format_test 'format.p.14' =>
   '~@p',
   [ 1 ],
   "y";
 
+# (def-format-test format.p.15
+#   "~@P" (2) "ies")
+
 def_format_test 'format.p.15' =>
   '~@P',
   [ 2 ],
   "ies";
+
+# (def-format-test format.p.16
+#   "~@p" (0) "ies")
 
 def_format_test 'format.p.16' =>
   '~@p',

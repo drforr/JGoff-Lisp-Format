@@ -14,6 +14,9 @@ use warnings;
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 23;
+# (def-format-test format.paren.1
+#   "~(XXyy~AuuVV~)" ("ABc dEF ghI") "xxyyabc def ghiuuvv")
+
 def_format_test 'format.paren.1' =>
   "~(XXyy~AuuVV~)",
   ("ABc dEF ghI"),
@@ -57,26 +60,40 @@ def_format_test 'format.paren.1' =>
 #          collect it))
 #  nil)
 
+# (def-format-test format.paren.3
+#   "~@(this is a TEST.~)" nil "This is a test.")
 
 def_format_test 'format.paren.3' =>
   '~@(this is a TEST.~)',
   undef,
   "This is a test.";
 
+# (def-format-test format.paren.4
+#   "~@(!@#$%^&*this is a TEST.~)" nil "!@#$%^&*This is a test.")
+
 def_format_test 'format.paren.4' =>
   '~@(!@#$%^&*this is a TEST.~)',
   undef,
   '!@#$%^&*This is a test.';
+
+# (def-format-test format.paren.5
+#   "~:(this is a TEST.~)" nil "This Is A Test.")
 
 def_format_test 'format.paren.5' =>
   "~:(this is a TEST.~)",
   undef,
   "This Is A Test.";
 
+# (def-format-test format.paren.6
+#   "~:(this is7a TEST.~)" nil "This Is7a Test.")
+
 def_format_test 'format.paren.6' =>
   "~:(this is7a TEST.~)",
   undef,
   "This Is7a Test.";
+
+# (def-format-test format.paren.7
+#   "~:@(this is AlSo A teSt~)" nil "THIS IS ALSO A TEST")
 
 def_format_test 'format.paren.7' =>
   '~:@(this is AlSo A teSt~)',
@@ -122,85 +139,136 @@ def_format_test 'format.paren.7' =>
 
 ### Nested conversion
 
+# (def-format-test format.paren.9
+#   "~(aBc ~:(def~) GHi~)" nil "abc def ghi")
+
 def_format_test 'format.paren.9' =>
   "~(aBc ~:(def~) GHi~)",
   undef,
   "abc def ghi";
+
+# (def-format-test format.paren.10
+#   "~(aBc ~(def~) GHi~)" nil "abc def ghi")
 
 def_format_test 'format.paren.10' =>
   "~(aBc ~(def~) GHi~)",
   undef,
   "abc def ghi";
 
+# (def-format-test format.paren.11
+#   "~@(aBc ~:(def~) GHi~)" nil "Abc def ghi")
+
 def_format_test 'format.paren.11' =>
   '~@(aBc ~:(def~) GHi~)',
   undef,
   "Abc def ghi";
+
+# (def-format-test format.paren.12
+#   "~(aBc ~@(def~) GHi~)" nil "abc def ghi")
 
 def_format_test 'format.paren.12' =>
   '~(aBc ~@(def~) GHi~)',
   undef,
   "abc def ghi";
 
+# (def-format-test format.paren.13
+#   "~(aBc ~:(def~) GHi~)" nil "abc def ghi")
+
 def_format_test 'format.paren.13' =>
   "~(aBc ~:(def~) GHi~)",
   undef,
   "abc def ghi";
+
+# (def-format-test format.paren.14
+#   "~:(aBc ~(def~) GHi~)" nil "Abc Def Ghi")
 
 def_format_test 'format.paren.14' =>
   "~:(aBc ~(def~) GHi~)",
   undef,
   "Abc Def Ghi";
 
+# (def-format-test format.paren.15
+#   "~:(aBc ~:(def~) GHi~)" nil "Abc Def Ghi")
+
 def_format_test 'format.paren.15' =>
   "~:(aBc ~:(def~) GHi~)",
   undef,
   "Abc Def Ghi";
+
+# (def-format-test format.paren.16
+#   "~:(aBc ~@(def~) GHi~)" nil "Abc Def Ghi")
 
 def_format_test 'format.paren.16' =>
   '~:(aBc ~@(def~) GHi~)',
   undef,
   "Abc Def Ghi";
 
+# (def-format-test format.paren.17
+#   "~:(aBc ~@:(def~) GHi~)" nil "Abc Def Ghi")
+
 def_format_test 'format.paren.17' =>
   '~:(aBc ~@:(def~) GHi~)',
   undef,
   "Abc Def Ghi";
+
+# (def-format-test format.paren.18
+#   "~@(aBc ~(def~) GHi~)" nil "Abc def ghi")
 
 def_format_test 'format.paren.18' =>
   '~@(aBc ~(def~) GHi~)',
   undef,
   "Abc def ghi";
 
+# (def-format-test format.paren.19
+#   "~@(aBc ~:(def~) GHi~)" nil "Abc def ghi")
+
 def_format_test 'format.paren.19' =>
   '~@(aBc ~:(def~) GHi~)',
   undef,
   "Abc def ghi";
+
+# (def-format-test format.paren.20
+#   "~@(aBc ~@(def~) GHi~)" nil "Abc def ghi")
 
 def_format_test 'format.paren.20' =>
   '~@(aBc ~@(def~) GHi~)',
   undef,
   "Abc def ghi";
 
+# (def-format-test format.paren.21
+#   "~@(aBc ~@:(def~) GHi~)" nil "Abc def ghi")
+
 def_format_test 'format.paren.21' =>
   '~@(aBc ~@:(def~) GHi~)',
   undef,
   "Abc def ghi";
+
+# (def-format-test format.paren.22
+#   "~:@(aBc ~(def~) GHi~)" nil "ABC DEF GHI")
 
 def_format_test 'format.paren.22' =>
   '~:@(aBc ~(def~) GHi~)',
   undef,
   "ABC DEF GHI";
 
+# (def-format-test format.paren.23
+#   "~@:(aBc ~:(def~) GHi~)" nil "ABC DEF GHI")
+
 def_format_test 'format.paren.23' =>
   '~@:(aBc ~:(def~) GHi~)',
   undef,
   "ABC DEF GHI";
 
+# (def-format-test format.paren.24
+#   "~:@(aBc ~@(def~) GHi~)" nil "ABC DEF GHI")
+
 def_format_test 'format.paren.24' =>
   '~:@(aBc ~@(def~) GHi~)',
   undef,
   "ABC DEF GHI";
+
+# (def-format-test format.paren.25
+#   "~@:(aBc ~@:(def~) GHi~)" nil "ABC DEF GHI")
 
 def_format_test 'format.paren.25' =>
   '~@:(aBc ~@:(def~) GHi~)',

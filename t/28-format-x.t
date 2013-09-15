@@ -364,20 +364,32 @@ use warnings;
 
 ### NIL arguments
 
+# (def-format-test format.x.14
+#   "~vx" (nil #x100) "100")
+
 def_format_test 'format.x.14' =>
   "~vx",
   [ undef, 0x100 ],
   "100";
+
+# (def-format-test format.x.15
+#   "~6,vX" (nil #x100) "   100")
 
 def_format_test 'format.x.15' =>
   "~6,vX",
   [ undef, 0x100 ],
   "   100";
 
+# (def-format-test format.x.16
+#   "~,,v:x" (nil #x12345) "12,345")
+
 def_format_test 'format.x.16' =>
   "~,,v:x",
   [ undef, 0x12345 ],
   "12,345";
+
+# (def-format-test format.x.17
+#   "~,,'*,v:x" (nil #x12345) "12*345")
 
 def_format_test 'format.x.17' =>
   "~,,'*,v:x",
@@ -511,25 +523,40 @@ def_format_test 'format.x.17' =>
 #  "+1234567890"
 #  "+1234567890")
 
+# (def-format-test format.x.25
+#   "~+10x" (#x1234) "      1234")
+
 def_format_test 'format.x.25' =>
   "~+10x",
   [ 0x1234 ],
   "      1234";
+
+# (def-format-test format.x.26
+#   "~+10@X" (#x1234) "     +1234")
 
 def_format_test 'format.x.26' =>
   '~+10@X',
   [ 0x1234 ],
   "     +1234";
 
+# (def-format-test format.x.27
+#   "~-1X" (#x1234) "1234")
+
 def_format_test 'format.x.27' =>
   "~-1X",
   [ 0x1234 ],
   "1234";
 
+# (def-format-test format.x.28
+#   "~-1000000000000000000x" (#x1234) "1234")
+
 def_format_test 'format.x.28' =>
   "~-1000000000000000000x",
   [ 0x1234 ],
   "1234";
+
+# (def-format-test format.x.29
+#   "~vx" ((1- most-negative-fixnum) #x1234) "1234")
 
 def_format_test 'format.x.29' =>
   "~vx",

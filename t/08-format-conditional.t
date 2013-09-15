@@ -14,30 +14,49 @@ use warnings;
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 28;
+
+# (def-format-test format.cond.1
+#   "~[~]" (0) "")
+
 def_format_test 'format.cond.1' =>
   "~[~]",
    [ 0 ],
    "";
+
+# (def-format-test format.cond.2
+#   "~[a~]" (0) "a")
 
 def_format_test 'format.cond.2' =>
   "~[a~]",
    [ 0 ],
    "a";
 
+# (def-format-test format.cond.3
+#   "~[a~]" (-1) "")
+
 def_format_test 'format.cond.3' =>
   "~[a~]",
    [ -1 ],
    "";
+
+# (def-format-test format.cond.4
+#   "~[a~]" ((1- most-negative-fixnum)) "")
 
 def_format_test 'format.cond.4' =>
   "~[a~]",
    [ $JGoff::Lisp::Format::most_negative_fixnum - 1 ],
    "";
 
+# (def-format-test format.cond.5
+#   "~[a~]" (1) "")
+
 def_format_test 'format.cond.5' =>
   "~[a~]",
    [ 1 ],
    "";
+
+# (def-format-test format.cond.6
+#   "~[a~]" ((1+ most-positive-fixnum)) "")
 
 def_format_test 'format.cond.6' =>
   "~[a~]",
@@ -55,11 +74,17 @@ def_format_test 'format.cond.6' =>
 #          collect (formatter-call-to-string fn i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
 
+# (def-format-test format.cond.8
+#   "~0[a~;b~;c~;d~]" (3) "a" 1)
+
 def_format_test 'format.cond.8' =>
   "~0[a~;b~;c~;d~]",
    [ 3 ],
    "a",
    1;
+
+# (def-format-test format.cond.9
+#   "~-1[a~;b~;c~;d~]" (3) "" 1)
 
 def_format_test 'format.cond.9' =>
   "~-1[a~;b~;c~;d~]",
@@ -67,17 +92,26 @@ def_format_test 'format.cond.9' =>
    "",
    1;
 
+# (def-format-test format.cond.10
+#   "~1[a~;b~;c~;d~]" (3) "b" 1)
+
 def_format_test 'format.cond.10' =>
   "~1[a~;b~;c~;d~]",
    [ 3 ],
    "b",
    1;
 
+# (def-format-test format.cond.11
+#   "~4[a~;b~;c~;d~]" (3) "" 1)
+
 def_format_test 'format.cond.11' =>
   "~4[a~;b~;c~;d~]",
    [ 3 ],
    "",
    1;
+
+# (def-format-test format.cond.12
+#   "~100000000000000000000000000000000[a~;b~;c~;d~]" (3) "" 1)
 
 def_format_test 'format.cond.12' =>
   "~100000000000000000000000000000000[a~;b~;c~;d~]",
@@ -107,10 +141,16 @@ def_format_test 'format.cond.12' =>
 #          collect (formatter-call-to-string fn nil i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
 
+# (def-format-test format.cond.15
+#   "~#[A~;B~]" nil "A")
+
 def_format_test 'format.cond.15' =>
   "~#[A~;B~]",
    undef,
    "A";
+
+# (def-format-test format.cond.16
+#   "~#[A~;B~]" (nil) "B" 1)
 
 def_format_test 'format.cond.16' =>
   "~#[A~;B~]",
@@ -135,15 +175,24 @@ def_format_test 'format.cond.16' =>
 #          collect (list i s)))
 #  nil)
 
+# (def-format-test format.cond\:.2
+#   "~[a~:;b~]" (0) "a")
+
 def_format_test 'format.cond\:.2' =>
   "~[a~:;b~]",
    [ 0 ],
    "a";
 
+# (def-format-test format.cond\:.3
+#   "~[a~:;b~]" ((1- most-negative-fixnum)) "b")
+
 def_format_test 'format.cond\:.3' =>
   "~[a~:;b~]",
    [ $JGoff::Lisp::Format::most_negative_fixnum - 1 ],
    "b";
+
+# (def-format-test format.cond\:.4
+#   "~[a~:;b~]" ((1+ most-positive-fixnum)) "b")
 
 def_format_test 'format.cond\:.4' =>
   "~[a~:;b~]",
@@ -183,10 +232,16 @@ def_format_test 'format.cond\:.4' =>
 #          collect (formatter-call-to-string fn nil i)))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
 
+# (def-format-test format.cond\:.8
+#   "~#[A~:;B~]" nil "A")
+
 def_format_test 'format.cond\:.8' =>
   "~#[A~:;B~]",
    undef,
    "A";
+
+# (def-format-test format.cond\:.9
+#   "~#[A~:;B~]" (nil nil) "B" 2)
 
 def_format_test 'format.cond\:.9' =>
   "~#[A~:;B~]",
@@ -195,6 +250,9 @@ def_format_test 'format.cond\:.9' =>
    2;
 
 ### ~:[...~]
+
+# (def-format-test format.\:cond.1
+#   "~:[a~;b~]" (nil) "a")
 
 def_format_test 'format.\:cond.1' =>
   "~:[a~;b~]",
@@ -218,10 +276,16 @@ def_format_test 'format.\:cond.1' =>
 
 ### ~@[ ... ~]
 
+# (def-format-test format.@cond.1
+#   "~@[X~]Y~A" (1) "XY1")
+
 def_format_test 'format.@cond.1' =>
   "~@[X~]Y~A",
    [ 1 ],
    "XY1";
+
+# (def-format-test format.@cond.2
+#   "~@[X~]Y~A" (nil 2) "Y2")
 
 def_format_test 'format.@cond.2' =>
    "~@[X~]Y~A" ,

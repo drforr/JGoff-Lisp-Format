@@ -55,6 +55,9 @@ use warnings;
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
 
+# (def-format-test format.c.3
+#   "~:C" (#\Space) #.(char-name #\Space))
+
 def_format_test 'format.c.3' =>
   "~:C",
   [ " " ],

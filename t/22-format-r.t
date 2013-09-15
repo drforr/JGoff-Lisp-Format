@@ -566,10 +566,16 @@ is( _ternary_to_decimal( '102' ), 11, 'ternary => decimal 11' );
 #         collect (list i x s1 s2)))
 #  nil)
 
+# (def-format-test format.r.2
+#   "~2r" (14) "1110")
+
 def_format_test 'format.r.2' =>
   "~2r",
   [ 14 ],
   "1110";
+
+# (def-format-test format.r.3
+#   "~3r" (29) "1002")
 
 def_format_test 'format.r.3' =>
   "~3r",
@@ -646,6 +652,13 @@ def_format_test 'format.r.3' =>
 #              collect (list base mincol s)))
 #  nil)
 
+# (deftest format.r.6
+#   (loop for base from 2 to 36
+#         for s = (format nil "~vr" base (1+ base))
+#         unless (string= s "11")
+#         collect (list base s))
+#   nil)
+
 deftest 'format.r.6' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $list = [];
@@ -657,6 +670,14 @@ deftest 'format.r.6' => sub {
   }
   return $list;
 }, [];
+
+# (deftest formatter.r.6
+#   (let ((fn (formatter "~vr")))
+#     (loop for base from 2 to 36
+#           for s = (formatter-call-to-string fn base (1+ base))
+#           unless (string= s "11")
+#           collect (list base s)))
+#   nil)
 
 deftest 'formatter.r.6' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -729,17 +750,29 @@ my @english_number_names = (
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 1;
+# (def-format-test format.r.8
+#   "~vr" (nil 5) "five")
+
 def_format_test 'format.r.8' =>
   "~vr",
   [ undef, 5 ],
   "five";
 }
 
+# (def-format-test format.r.9
+#   "~#r" (4 nil nil) "11" 2)
+
 def_format_test 'format.r.9' =>
   "~#r",
   [ 4, undef, undef ],
   "11",
   2;
+
+# (deftest format.r.10
+#   (with-standard-io-syntax
+#    (let ((*print-radix* t))
+#      (format nil "~10r" 123)))
+#   "123")
 
 deftest 'format.r.10' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -759,15 +792,24 @@ deftest 'format.r.10' => sub {
 #  "123"
 #  "123")
 
+# (def-format-test format.r.11
+#   "~8@R" (65) "+101")
+
 def_format_test 'format.r.11' =>
   '~8@R',
   [ 65 ],
   "+101";
 
+# (def-format-test format.r.12
+#   "~2:r" (126) "1,111,110")
+
 def_format_test 'format.r.12' =>
   "~2:r",
   [ 126 ],
   "1,111,110";
+
+# (def-format-test format.r.13
+#   "~3@:r" (#3r2120012102) "+2,120,012,102")
 
 def_format_test 'format.r.13' =>
   '~3@:r',
@@ -806,10 +848,16 @@ def_format_test 'format.r.13' =>
 #   collect (list i interval comma x s1 y))
 #  nil)
 
+# (def-format-test format.r.16
+#   "~2,,,,1000000000000000000r" (17) "10001")
+
 def_format_test 'format.r.16' =>
   "~2,,,,1000000000000000000r",
   [ 17 ],
   "10001";
+
+# (def-format-test format.r.17
+#   "~8,10:@r" (#o526104) "  +526,104")
 
 def_format_test 'format.r.17' =>
   '~8,10:@r',
@@ -890,6 +938,14 @@ my @english_ordinal_names = (
 
 ### Old roman numerals
 
+# (deftest format.r.20
+#   (loop for i from 1 to 4999
+#         for s1 = (format nil "~:@r" i)
+#         for s2 = (old-roman-numeral i)
+#         unless (string= s1 s2)
+#         collect (list i s1 s2))
+#   nil)
+
 deftest 'format.r.20' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $list = [];
@@ -902,6 +958,15 @@ deftest 'format.r.20' => sub {
   }
   return $list;
 }, [];
+
+# (deftest formatter.r.20
+#   (let ((fn (formatter "~@:R")))
+#     (loop for i from 1 to 4999
+#           for s1 = (formatter-call-to-string fn i)
+#           for s2 = (old-roman-numeral i)
+#           unless (string= s1 s2)
+#           collect (list i s1 s2)))
+#   nil)
 
 deftest 'formatter.r.20' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -916,6 +981,14 @@ deftest 'formatter.r.20' => sub {
   }
   return $list;
 }, [];
+
+# (deftest format.r.21
+#   (loop for i from 1 to 4999
+#         for s1 = (format nil "~:@r" i)
+#         for s2 = (format nil "~@:R" i)
+#         unless (string= s1 s2)
+#         collect (list i s1 s2))
+#   nil)
 
 deftest 'format.r.21' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -935,10 +1008,16 @@ deftest 'format.r.21' => sub {
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 1;
+# (def-format-test format.r.22
+#   "~2,12,,'*:r" (#b1011101) "   1*011*101")
+
 def_format_test 'format.r.22' =>
   "~2,12,,'*:r",
   [ 0b1011101 ],
   "   1*011*101";
+
+# (def-format-test format.r.23
+#   "~3,14,'X,',:R" (#3r1021101) "XXXXX1,021,101")
 
 def_format_test 'format.r.23' =>
   "~3,14,'X,',:R",
@@ -948,10 +1027,20 @@ def_format_test 'format.r.23' =>
 
 ### v directive in various positions
 
+# (def-format-test format.r.24
+#   "~10,vr" (nil 12345) "12345")
+
 def_format_test 'format.r.24' =>
   "~10,vr",
   [ undef, 12345 ],
   "12345";
+
+# (deftest format.r.25
+#   (loop for i from 0 to 5
+#         for s = (format nil "~10,vr" i 12345)
+#         unless (string= s "12345")
+#         collect (list i s))
+#   nil)
 
 deftest 'format.r.25' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -964,6 +1053,14 @@ deftest 'format.r.25' => sub {
   };
   return $list;
 }, [];
+
+# (deftest formatter.r.25
+#   (let ((fn (formatter "~10,vr")))
+#     (loop for i from 0 to 5
+#           for s = (formatter-call-to-string fn i 12345)
+#           unless (string= s "12345")
+#           collect (list i s)))
+#   nil)
 
 deftest 'formatter.r.25' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -981,11 +1078,17 @@ deftest 'formatter.r.25' => sub {
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 3;
+# (def-format-test format.r.26
+#   "~10,#r" (12345 nil nil nil nil nil) " 12345" 5)
+
 def_format_test 'format.r.26' =>
   "~10,#r",
   [ 12345, undef, undef, undef, undef, undef ],
   " 12345",
   5;
+
+# (def-format-test format.r.27
+#   "~10,12,vr" (#\/ 123456789) "///123456789")
 
 def_format_test 'format.r.27' =>
   "~10,12,vr",
@@ -993,25 +1096,40 @@ def_format_test 'format.r.27' =>
   "///123456789";
 }
 
+# (def-format-test format.r.28
+#   "~10,,,v:r" (#\/ 123456789) "123/456/789")
+
 def_format_test 'format.r.28' =>
   "~10,,,v:r",
   [ '/', 123456789 ],
   "123/456/789";
+
+# (def-format-test format.r.29
+#   "~10,,,v:r" (nil 123456789) "123,456,789")
 
 def_format_test 'format.r.29' =>
   "~10,,,v:r",
   [ undef, 123456789 ],
   "123,456,789";
 
+# (def-format-test format.r.30
+#   "~8,,,,v:R" (nil #o12345670) "12,345,670")
+
 def_format_test 'format.r.30' =>
   "~8,,,,v:R",
   [ undef, 012345670 ],
   "12,345,670";
 
+# (def-format-test format.r.31
+#   "~8,,,,v:R" (2 #o12345670) "12,34,56,70")
+
 def_format_test 'format.r.31' =>
   "~8,,,,v:R",
   [ 2, 012345670 ],
   "12,34,56,70";
+
+# (def-format-test format.r.32
+#   "~16,,,,#:r" (#x12345670 nil nil nil) "1234,5670" 3)
 
 def_format_test 'format.r.32' =>
   "~16,,,,#:r",
@@ -1019,12 +1137,18 @@ def_format_test 'format.r.32' =>
   "1234,5670",
   3;
 
+# (def-format-test format.r.33
+#   "~16,,,,1:r" (#x12345670) "1,2,3,4,5,6,7,0")
+
 def_format_test 'format.r.33' =>
   "~16,,,,1:r",
   [ 0x12345670 ],
   "1,2,3,4,5,6,7,0";
 
 ### Explicit signs
+
+# (def-format-test format.r.34
+#   "~+10r" (12345) "12345")
 
 def_format_test 'format.r.34' =>
   "~+10r",
@@ -1034,21 +1158,33 @@ def_format_test 'format.r.34' =>
 SKIP: {
   diag "Make these tests work";
   skip 'Not ready yet', 1;
+# (def-format-test format.r.35
+#   "~10,+8r" (12345) "   12345")
+
 def_format_test 'format.r.35' =>
   "~10,+8r",
   [ 12345 ],
   "   12345";
 }
 
+# (def-format-test format.r.36
+#   "~10,0r" (12345) "12345")
+
 def_format_test 'format.r.36' =>
   "~10,0r",
   [ 12345 ],
   "12345";
 
+# (def-format-test format.r.37
+#   "~10,-1r" (12345) "12345")
+
 def_format_test 'format.r.37' =>
   "~10,-1r",
   [ 12345 ],
   "12345";
+
+# (def-format-test format.r.38
+#   "~10,-1000000000000000r" (12345) "12345")
 
 def_format_test 'format.r.38' =>
   "~10,-1000000000000000r",

@@ -361,20 +361,32 @@ use warnings;
 
 ### NIL arguments
 
+# (def-format-test format.o.14
+#   "~vO" (nil #o100) "100")
+
 def_format_test 'format.o.14' =>
   "~vO",
   [ undef, 0100 ],
   "100";
+
+# (def-format-test format.o.15
+#   "~6,vO" (nil #o100) "   100")
 
 def_format_test 'format.o.15' =>
   "~6,vO",
   [ undef, 0100 ],
   "   100";
 
+# (def-format-test format.o.16
+#   "~,,v:o" (nil #o12345) "12,345")
+
 def_format_test 'format.o.16' =>
   "~,,v:o",
   [ undef, 012345 ],
   "12,345";
+
+# (def-format-test format.o.17
+#   "~,,'*,v:o" (nil #o12345) "12*345")
 
 def_format_test 'format.o.17' =>
   "~,,'*,v:o",
@@ -507,25 +519,40 @@ def_format_test 'format.o.17' =>
 #  "+1234567012"
 #  "+1234567012")
 
+# (def-format-test format.o.25
+#   "~+10o" (#o1234) "      1234")
+
 def_format_test 'format.o.25' =>
   "~+10o",
   [ 01234 ],
   "      1234";
+
+# (def-format-test format.o.26
+#   "~+10@O" (#o1234) "     +1234")
 
 def_format_test 'format.o.26' =>
   '~+10@O',
   [ 01234 ],
   "     +1234";
 
+# (def-format-test format.o.27
+#   "~-1O" (#o1234) "1234")
+
 def_format_test 'format.o.27' =>
   "~-1O",
   [ 01234 ],
   "1234";
 
+# (def-format-test format.o.28
+#   "~-1000000000000000000o" (#o1234) "1234")
+
 def_format_test 'format.o.28' =>
   "~-1000000000000000000o",
   [ 01234 ],
   "1234";
+
+# (def-format-test format.o.29
+#   "~vo" ((1- most-negative-fixnum) #o1234) "1234")
 
 def_format_test 'format.o.29' =>
   "~vo",
