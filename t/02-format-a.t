@@ -103,14 +103,14 @@ def_format_test 'format.a.5' =>
 
 SKIP: {
   my $count = 2;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests of LISP symbols, not needed in perl";
   diag $str; skip $str, $count;
 
 # (def-format-test format.a.6
 #   "~:A" (#(nil)) "#(NIL)")
 
 #def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
-#  "~:A" (#(nil)) "#(NIL)") # Perl doesn't really have the notion of symbols
+#  "~:A" (#(nil)) "#(NIL)")
 }
 
 # (deftest format.a.7
@@ -138,11 +138,6 @@ deftest 'format.a.7' => sub {
   return $list;
 }, [];
 
-SKIP: {
-  my $count = 7;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.a.8
 #  (let ((fn (formatter "~A")))
 #    (loop with count = 0
@@ -156,6 +151,33 @@ SKIP: {
 #          when (> count 100) collect "count limit exceeded" and do (loop-finish)))
 #  nil)
 
+deftest 'format.a.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~A" );
+  my $count = 0;
+  my $list = [];
+  for my $i ( 0 .. min( 0x10000,
+                        $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
+    my $c = code_char( $i );
+    my $s1 = $c && string( $c );
+    my $s2 = $c && JGoff::Lisp::Format->new->format( undef, "~A", $s1 );
+    my $s3 = $c && formatter_call_to_string( $fn, $s1 );
+    unless ( ( !defined( $c ) ) or ( $s1 eq $s2 ) or ( $s2 eq $s3 ) ) {
+      $count++;
+      collect( $list, $c, $s1, $s2, $s3 );
+    }
+    if ( $count > 100 ) {
+      collect( "count limit exceeded" );
+      last;
+    }
+  }
+  return $list;
+}, [];
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 #(deftest format.a.9
 #  (with-standard-io-syntax
 #   (apply

@@ -17,6 +17,8 @@ our @EXPORT = qw(
   collect
   concatenate
   with_standard_io_syntax
+  code_char
+  make_string
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -97,6 +99,19 @@ sub deftest {
   else {
     is( $test, $result, $name ) or
       diag( "  at test file $filename line $line" );
+  }
+}
+
+sub code_char {
+  my $code = shift;
+  return chr( $code );
+}
+
+sub make_string {
+  my $count = shift;
+  my %args = @_;
+  if ( $args{initial_element} ) {
+    return $args{initial_element} x $count;
   }
 }
 

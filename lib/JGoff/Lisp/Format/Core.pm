@@ -155,7 +155,7 @@ sub _format {
         $before_percent = 1 if
           $id > 0 and
           $tree->[ $id - 1 ]->isa( 'JGoff::Lisp::Format::Tokens::Percent' );
-        $output .= $operation->format( $is_first, $before_percent );
+        $output .= $operation->format( $self, $is_first, $before_percent );
       }
       elsif ( exists $token_names{ ref( $operation ) } ) {
         $output .= $operation->format( $self );

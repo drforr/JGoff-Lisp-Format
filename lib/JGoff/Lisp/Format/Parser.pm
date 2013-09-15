@@ -159,8 +159,10 @@ sub __token_ampersand_percent_vertical_bar_tilde {
   my $match = $self->expect( qr{ ~ $PARAMETER? [&%|~] }x );
   my $rv = $self->___parse_token( $match );
 
-  return JGoff::Lisp::Format::Tokens::Ampersand->new
-    if $rv->{format} eq q{~&};
+  return JGoff::Lisp::Format::Tokens::Ampersand->new(
+    n => defined $rv->{arguments} &&
+         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+  ) if $rv->{format} eq q{~&};
 
   return JGoff::Lisp::Format::Tokens::Percent->new(
     n => defined $rv->{arguments} &&
