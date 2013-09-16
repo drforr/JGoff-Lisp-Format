@@ -97,7 +97,7 @@ deftest 'formatter.%.5' => sub {
 }, [];
 
 SKIP: {
-  my $count = 4;
+  my $count = 2;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
 
@@ -121,5 +121,4 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
-
 }

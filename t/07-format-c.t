@@ -25,6 +25,18 @@ SKIP: {
 #        collect (list c s))
 #  nil)
 
+deftest 'format.c.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
+    my $s = $f->format( undef, "~C", $c );
+    unless ( string( $c ) eq $s ) {
+      collect( $list, $c, $s );
+    }
+  }
+  return $list;
+}, [];
+
 #(deftest format.c.1a
 #  (loop with count = 0
 #        for i from 0 below (min #x10000 char-code-limit)

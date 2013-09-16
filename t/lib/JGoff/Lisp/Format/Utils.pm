@@ -19,6 +19,7 @@ our @EXPORT = qw(
   with_standard_io_syntax
   code_char
   make_string
+  random_from_seq
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -115,6 +116,11 @@ sub make_string {
   if ( $args{initial_element} ) {
     return $args{initial_element} x $count;
   }
+}
+
+sub random_from_seq {
+  my @seq = @_;
+  return $seq[rand @seq];
 }
 
 1;

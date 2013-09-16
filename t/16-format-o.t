@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 SKIP: {
-  my $count = 17;
+  my $count = 11;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
 
@@ -221,6 +221,27 @@ SKIP: {
 #          unless (and (string= s1 s2) (string= s2 s3))
 #          collect (list i s1 s2 s3)))
 #  nil)
+}
+
+deftest 'format.o.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~:O" );
+  my $list = [];
+  for my $i ( -0777 .. +0777 ) {
+    my $s1 = $f->format( undef, "~o", $i );
+    my $s2 = $f->format( undef, "~:o", $i );
+    my $s3 = formatter_call_to_string( $fn, $i );
+    unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
+      collect( $list, $i, $s1, $s2, $s3 );
+    }
+  }
+  return $list;
+}, [];
+
+SKIP: {
+  my $count = 6;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest format.o.9
 #  (let ((fn (formatter "~:o")))
