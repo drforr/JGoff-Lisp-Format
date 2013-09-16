@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 94;
+use Test::More tests => 92;
 use List::Util qw( min );
 
 BEGIN {
@@ -101,17 +101,17 @@ def_format_test 'format.a.5' =>
   [ [ undef ] ],
   "[UNDEF]";
 
-SKIP: {
-  my $count = 2;
-  my $str = "$count tests of LISP symbols, not needed in perl";
-  diag $str; skip $str, $count;
-
+#
+# test of LISP symbols, not needed in perl
+#
 # (def-format-test format.a.6
 #   "~:A" (#(nil)) "#(NIL)")
 
-#def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
-#  "~:A" (#(nil)) "#(NIL)")
-}
+#
+# test of LISP symbols, not needed in perl
+#
+# (def_format_test 'format.a.6' => "~:A", [ [ undef ] ], "[UNDEF]";
+#   "~:A" (#(nil)) "#(NIL)")
 
 # (deftest format.a.7
 #   (let ((fn (formatter "~a")))

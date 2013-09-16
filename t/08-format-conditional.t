@@ -75,11 +75,57 @@ SKIP: {
 #        collect (format nil "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]" i))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
 
+deftest 'format.cond.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $list, $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
+
 #(deftest formatter.cond.7
 #  (let ((fn (formatter "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
+
+deftest 'formatter.cond.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( formatter_call_to_strng( $fn, $i ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
+
 }
 
 SKIP: {
@@ -143,22 +189,113 @@ SKIP: {
 #        collect (format nil "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" i nil))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
 
+deftest 'format.cond.13' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
+
 #(deftest formatter.cond.13
 #  (let ((fn (formatter "~V[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
 
+
+deftest 'formatter.cond.13' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~V[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( formatter_call_to_strng( $fn, $i ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
+
 #(deftest format.cond.14
 #  (loop for i from -1 to 10
 #        collect (format nil "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" nil i))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
+
+deftest 'format.cond.14' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
 
 #(deftest formatter.cond.14
 #  (let ((fn (formatter "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn nil i)))
 #  ("" "a" "b" "c" "d" "e" "f" "g" "h" "i" "" ""))
+
+deftest 'formatter.cond.14' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
+  my $list = [];
+  for my $i ( -1 .. 10 ) {
+    collect( formatter_call_to_strng( $fn, undef $i ) );
+  }
+  return $list;
+}, [
+  "",
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "",
+  ""
+];
 }
 
 SKIP: {
