@@ -279,7 +279,7 @@ deftest 'formatter.cond.14' => sub {
   my $fn = $f->formatter( "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
   my $list = [];
   for my $i ( -1 .. 10 ) {
-    collect( formatter_call_to_strng( $fn, undef $i ) );
+    collect( formatter_call_to_strng( $fn, undef, $i ) );
   }
   return $list;
 }, [

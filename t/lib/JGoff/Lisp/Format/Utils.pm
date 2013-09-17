@@ -20,6 +20,7 @@ our @EXPORT = qw(
   code_char
   make_string
   random_from_seq
+  remove_duplicates
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -121,6 +122,12 @@ sub make_string {
 sub random_from_seq {
   my @seq = @_;
   return $seq[rand @seq];
+}
+
+sub remove_duplicates {
+  my @seq = @_;
+  my %dedup;
+  return grep { !$dedup{$_}++ } @seq;
 }
 
 1;
