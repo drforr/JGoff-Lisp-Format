@@ -12,6 +12,7 @@ our @EXPORT = qw(
   subseq
   char_name
   def_format_test
+  def_pprint_test
   deftest
   formatter_call_to_string
   collect
@@ -90,6 +91,10 @@ sub def_format_test {
 #    is( scalar @$args, $num_left, $name . " argument count" ) or
 #      diag( "  at test file $filename line $line ($format)" );
 #  }
+}
+
+sub def_pprint_test {
+  die "NOT IMPLEMENTED YET!";
 }
 
 sub deftest {
