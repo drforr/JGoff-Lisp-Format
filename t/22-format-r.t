@@ -673,14 +673,14 @@ SKIP: {
 
 deftest 'format.r.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $base ( 2 .. 36 ) {
     my $s = $f->format( undef, '~vr', $base, $base + 1 );
     unless ( $s eq '11' ) {
-      collect( $list, $base, $s );
+      collect( $remainder, $base, $s );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 # (deftest formatter.r.6
@@ -693,15 +693,15 @@ deftest 'format.r.6' => sub {
 
 deftest 'formatter.r.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   my $fn = $f->formatter( "~vr" );
   for my $base ( 2 .. 36 ) {
     my $s = formatter_call_to_string( $fn, $base, $base + 1 );
     unless ( $s eq '11' ) {
-      collect( $list, $base, $s );
+      collect( $remainder, $base, $s );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 # {{{ @english_number_names
@@ -984,15 +984,15 @@ SKIP: {
 
 deftest 'format.r.20' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 4999 ) {
     my $s1 = $f->format( undef, '~:@r', $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i, $s1, $s2 );
+      collect( $remainder, $i, $s1, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 # (deftest formatter.r.20
@@ -1006,16 +1006,16 @@ deftest 'format.r.20' => sub {
 
 deftest 'formatter.r.20' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   my $fn = $f->formatter( '~@:R' );
   for my $i ( 1 .. 4999 ) {
     my $s1 = formatter_call_to_string( $fn, $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i, $s1, $s2 );
+      collect( $remainder, $i, $s1, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 # (deftest format.r.21
@@ -1028,15 +1028,15 @@ deftest 'formatter.r.20' => sub {
 
 deftest 'format.r.21' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 4999 ) {
     my $s1 = $f->format( undef, '~:@r', $i );
     my $s2 = $f->format( undef, '~@:R', $i );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i, $s1, $s2 );
+      collect( $remainder, $i, $s1, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 ### Combinations of mincol and comma chars
@@ -1080,14 +1080,14 @@ def_format_test 'format.r.24' =>
 
 deftest 'format.r.25' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 5 ) {
     my $s = $f->format( undef, "~10,vr", $i, 12345 );
     unless ( $s eq '12345' ) {
-      collect( $list, $i, $s );
+      collect( $remainder, $i, $s );
     }
   };
-  return $list;
+  return $remainder;
 }, [];
 
 # (deftest formatter.r.25
@@ -1101,14 +1101,14 @@ deftest 'format.r.25' => sub {
 deftest 'formatter.r.25' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~10,vr" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 5 ) {
     my $s = formatter_call_to_string ( $fn, $i, 12345 );
     unless ( $s eq '12345' ) {
-      collect( $list, $i, $s );
+      collect( $remainder, $i, $s );
     }
   };
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {

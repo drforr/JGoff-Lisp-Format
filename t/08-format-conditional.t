@@ -77,11 +77,11 @@ SKIP: {
 
 deftest 'format.cond.7' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( $list, $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
+    collect( $remainder, $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",
@@ -106,11 +106,12 @@ deftest 'format.cond.7' => sub {
 deftest 'formatter.cond.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( formatter_call_to_strng( $fn, $i ) );
+    collect( $remainder,
+             formatter_call_to_strng( $fn, $i ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",
@@ -191,11 +192,12 @@ SKIP: {
 
 deftest 'format.cond.13' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
+    collect( $remainder,
+             $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",
@@ -221,11 +223,12 @@ deftest 'format.cond.13' => sub {
 deftest 'formatter.cond.13' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( formatter_call_to_strng( $fn, $i ) );
+    collect( $remainder,
+             formatter_call_to_strng( $fn, $i ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",
@@ -248,11 +251,12 @@ deftest 'formatter.cond.13' => sub {
 
 deftest 'format.cond.14' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
+    collect( $remainder,
+             $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",
@@ -277,11 +281,12 @@ deftest 'format.cond.14' => sub {
 deftest 'formatter.cond.14' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( formatter_call_to_strng( $fn, undef, $i ) );
+    collect( $remainder,
+             formatter_call_to_strng( $fn, undef, $i ) );
   }
-  return $list;
+  return $remainder;
 }, [
   "",
   "a",

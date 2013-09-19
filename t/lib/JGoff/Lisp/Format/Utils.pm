@@ -11,6 +11,8 @@ our @EXPORT = qw(
   string
   subseq
   char_name
+  char_code
+  char_int
   def_format_test
   def_pprint_test
   deftest
@@ -22,6 +24,7 @@ our @EXPORT = qw(
   make_string
   random_from_seq
   remove_duplicates
+  graphic_char_p
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -36,7 +39,18 @@ our $call_arguments_limit = 1114112;
 sub char_name {
   my ( $char ) = @_;
   return 'Space' if $char and $char eq ' ';
+  return 'Newline' if $char and $char eq "\n";
   return $char;
+}
+
+sub char_code {
+  my ( $char ) = @_;
+  return ord( $char );
+}
+
+sub char_int {
+  my ( $char ) = @_;
+die "Not implemented yet - Not sure what the difference is vis-a-vis char_code";
 }
 
 sub string {
@@ -133,6 +147,10 @@ sub remove_duplicates {
   my @seq = @_;
   my %dedup;
   return grep { !$dedup{$_}++ } @seq;
+}
+
+sub graphic_char_p {
+  die "Not implemented yet!";
 }
 
 1;

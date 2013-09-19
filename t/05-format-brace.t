@@ -92,14 +92,14 @@ def_format_test 'format.{.7' =>
 
 deftest 'format.{.8' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 10 ) {
     my $s = $f->format( undef, "~v{~A~}", $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
-      collect( $list, $i, $s );
+      collect( $remainder, $i, $s );
     }
   }
-  $list;
+  $remainder;
 }, [];
 
 # (deftest formatter.{.8
@@ -113,15 +113,15 @@ deftest 'format.{.8' => sub {
 deftest 'formatter.{.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V{~A~}" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 10 ) {
     my $s = formatter_call_to_string( $fn,
       $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
-      collect( $list, $i, $s );
+      collect( $remainder, $i, $s );
     }
   }
-  $list;
+  $remainder;
 }, [];
 
 # (def-format-test format.{.9
@@ -393,9 +393,9 @@ def_format_test 'format.\:{.10' =>
 
 deftest 'format.\:{.11' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 10 ) {
-    collect( $list,
+    collect( $remainder,
       $f->format(
         undef,
         "~v:{~A~}",
@@ -403,7 +403,7 @@ deftest 'format.\:{.11' => sub {
       )
     );
   }
-  return $list;
+  return $remainder;
 }, [
   '',
   '1',
@@ -427,16 +427,16 @@ deftest 'format.\:{.11' => sub {
 
 deftest 'format.\:{.11' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   my $fn = $f->formatter( "~v:{~A~}" );
   for my $i ( 0 .. 10 ) {
-    collect( $list,
+    collect( $remainder,
       formatter_call_to_list( $fn, $i,
         [ $i, [ [ 1 ], [ 2 ], [ 3, 'X' ], [ 4, 'Y', 'Z' ], [ 5 ], [ 6 ] ] ]
       )
     );
   }
-  return $list;
+  return $remainder;
 }, [
   '',
   '1',
@@ -484,9 +484,9 @@ def_format_test 'format.\:{.14' =>
 
 deftest 'format.\:{.15' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 10 ) {
-    collect( $list,
+    collect( $remainder,
       $f->format(
         undef,
         "~v:{~A~:}",
@@ -494,7 +494,7 @@ deftest 'format.\:{.15' => sub {
       )
     );
   }
-  return $list;
+  return $remainder;
 }, [
   '',
   '1',
@@ -518,16 +518,16 @@ deftest 'format.\:{.15' => sub {
 
 deftest 'formatter.\:{.15' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   my $fn = $f->formatter( "~v:{~A~:}" );
   for my $i ( 0 .. 10 ) {
-    collect( $list,
+    collect( $remainder,
       formatter_call_to_string(
         $fn, $i, [ [ 1, 'X' ], [ 2, 'Y' ], [ 3 ], [ 4, 'A', 'B' ] ]
       )
     );
   }
-  return $list;
+  return $remainder;
 }, [
   '',
   '1',

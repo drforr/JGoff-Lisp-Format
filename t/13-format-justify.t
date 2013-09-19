@@ -35,15 +35,15 @@ def_pprint_test 'format.justify.1' => sub {
 
 def_pprint_test 'format.justify.2' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 20 ) {
     my $s1 = make_string( $i, initial_element => "x" );
     my $s2 = $f->format( undef, "~<~A~>", $s1 );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i, $s1, $s2 );
+      collect( $remainder, $i, $s1, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(def-pprint-test format.justify.3
@@ -56,15 +56,15 @@ def_pprint_test 'format.justify.2' => sub {
 
 def_pprint_test 'format.justify.3' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 20 ) {
     my $s1 = make_string( $i, initial_element => "x" );
     my $s2 = $f->format( undef, "~<~A~;~A~>", $s1, $s1 );
     unless ( $s2 eq concatenate( $s1, $s1 ) ) {
-      collect( $list, $i, $s1, $s2 );
+      collect( $remainder, $i, $s1, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(def-pprint-test format.justify.4
@@ -78,16 +78,16 @@ def_pprint_test 'format.justify.3' => sub {
 
 def_pprint_test 'format.justify.4' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 20 ) {
     my $s1 = make_string( $i, initial_element => "x" );
     my $expected = concatenate( $s1, ' ', $s1 );
     my $s2 = $f->format( undef, "~,,1<~A~;~A~>", $s1, $s1 );
     unless ( $s2 eq $expected ) {
-      collect( $list, $i, $expected, $s2 );
+      collect( $remainder, $i, $expected, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(def-pprint-test format.justify.5
@@ -101,16 +101,16 @@ def_pprint_test 'format.justify.4' => sub {
 
 def_pprint_test 'format.justify.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 20 ) {
     my $s1 = make_string( $i, initial_element => "x" );
     my $expected = concatenate( $s1, ',', $s1 );
     my $s2 = $f->format( undef, "~,,1,',<~A~;~A~>", $s1, $s1 );
     unless ( $s2 eq $expected ) {
-      collect( $list, $i, $expected, $s2 );
+      collect( $remainder, $i, $expected, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(def-pprint-test format.justify.6
@@ -124,16 +124,16 @@ def_pprint_test 'format.justify.5' => sub {
 
 def_pprint_test 'format.justify.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 20 ) {
     my $s1 = make_string( $i, initial_element => "x" );
     my $expected = concatenate( $s1, ' ', $s1 );
     my $s2 = $f->format( undef, "~,,2<~A~;~A~>", $s1, $s1 );
     unless ( $s2 eq $expected ) {
-      collect( $list, $i, $expected, $s2 );
+      collect( $remainder, $i, $expected, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(def-pprint-test format.justify.7

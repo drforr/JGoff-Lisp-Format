@@ -264,17 +264,17 @@ deftest 'format.d.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn1 = $f->formatter( "~d" );
   my $fn2 = $f->formatter( "~:d" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -999 .. 999 ) {
     my $s1 = $f->format( undef, "~d", $i );
     my $s2 = $f->format( undef, "~:d", $i );
     my $s3 = formatter_call_to_string( $fn1, $i );
     my $s4 = formatter_call_to_string( $fn2, $i );
     unless ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) and ( $s1 eq $s4 ) ) {
-      collect( $list, $i, $s1, $s2, $s3, $s4 );
+      collect( $remainder, $i, $s1, $s2, $s3, $s4 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.d.9

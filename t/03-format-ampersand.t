@@ -62,16 +62,16 @@ def_format_test 'format.&.jgoff.1' =>
 
 deftest 'format.&.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $format_string = $f->format( undef, "~~~D&", $i );
     my $s2 = $f->format( undef, $format_string );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {
@@ -103,17 +103,17 @@ SKIP: {
 
 deftest 'format.&.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 100 ) {
     my $s1 = concatenate( "X",
                           make_string( $i, initial_element => "\n" ) );
     my $format_string = $f->format( undef, "X~~~D&", $i );
     my $s2 = $f->format( undef, $format_string );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {
@@ -160,15 +160,15 @@ def_format_test 'format.&.8' =>
 
 deftest 'format.&.9' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $s2 = $f->format( undef, "~V&", $i );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest formatter.&.9
@@ -183,15 +183,15 @@ deftest 'format.&.9' => sub {
 deftest 'formatter.&.9' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V&" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $s2 = formatter_call_to_string( $fn, $i );
     unless ( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {

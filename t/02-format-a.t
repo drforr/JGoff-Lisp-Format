@@ -126,16 +126,16 @@ def_format_test 'format.a.5' =>
 deftest 'format.a.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~a" );
-  my $list = [];
+  my $remainder = [];
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s1 = string( $c );
     my $s2 = $f->format( undef, "~a", $s1 );
     my $s3 = formatter_call_to_string( $fn, $s1 );
     unless ( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $list, $c, $s1, $s2, $s3 );
+      collect( $remainder, $c, $s1, $s2, $s3 );
     }
   };
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.a.8
@@ -155,7 +155,7 @@ deftest 'format.a.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~A" );
   my $count = 0;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. min( 0x10000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
     my $c = code_char( $i );
@@ -164,14 +164,14 @@ deftest 'format.a.8' => sub {
     my $s3 = $c && formatter_call_to_string( $fn, $s1 );
     unless ( ( !defined( $c ) ) or ( $s1 eq $s2 ) or ( $s2 eq $s3 ) ) {
       $count++;
-      collect( $list, $c, $s1, $s2, $s3 );
+      collect( $remainder, $c, $s1, $s2, $s3 );
     }
     if ( $count > 100 ) {
       collect( "count limit exceeded" );
       last;
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {
@@ -466,14 +466,14 @@ def_format_test 'format.a.28' =>
 deftest 'format.a.29' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v,,2A" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -4 .. 10 ) {
     my $s = $f->format( undef, "~v,,2A", $i, "ABC" );
     my $s2 = formatter_call_to_string( $fn, $i, "ABC" );
     is( $s, $s2, 'format.a.29' ); # XXX capture the name.
-    push @$list, $s; # XXX Different (collect)
+    push @$remainder, $s;
   };
-  return $list;
+  return $remainder;
 }, [
   "ABC  ", "ABC  ", "ABC  ",
   "ABC  ",
@@ -624,14 +624,14 @@ def_format_test 'format.a.43' =>
 deftest 'format.a.44' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3,,vA" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, "~3,,vA", $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
-    push @$list, $s;
+    push @$remainder, $s;
   }
-  return $list;
+  return $remainder;
 }, [
   "ABC",
   "ABC ",
@@ -660,14 +660,14 @@ deftest 'format.a.44' => sub {
 deftest 'format.a.44a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~3,,v@A' );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, '~3,,v@A', $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
-    push @$list, $s;
+    push @$remainder, $s;
   }
-  return $list;
+  return $remainder;
 }, [
   "ABC",
   " ABC",

@@ -62,15 +62,15 @@ def_format_test 'format.%.4' =>
 
 deftest 'format.%.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 100 ) {
     my $s1 = make_string( $i, initial_element => "\n" );
     my $s2 = $f->format( undef, "~v%", $i );
     unless( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest formatter.%.5
@@ -85,15 +85,15 @@ deftest 'format.%.5' => sub {
 deftest 'formatter.%.5' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v%" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( 0 .. 100 ) {
     my $s1 = make_string( $i, initial_element => "\n" );
     my $s2 = formatter_call_to_string( $fn, $i );
     unless( $s1 eq $s2 ) {
-      collect( $list, $i );
+      collect( $remainder, $i );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {

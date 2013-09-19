@@ -15,7 +15,7 @@ use warnings;
 
 SKIP: {
   my $count = 4;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 
 #(deftest format.c.1
@@ -27,14 +27,14 @@ SKIP: {
 
 deftest 'format.c.1' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $list = [];
+  my $remainder = [];
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s = $f->format( undef, "~C", $c );
     unless ( string( $c ) eq $s ) {
-      collect( $list, $c, $s );
+      collect( $remainder, $c, $s );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.c.1a
@@ -58,6 +58,20 @@ deftest 'format.c.1' => sub {
 #        collect (list c s))
 #  nil)
 
+deftest 'format.c.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
+    my $s = $f->format( undef, "~:c", $c );
+    unless ( !graphic_char_p( $c ) or
+             ( $c eq ' ' ) or
+             ( $s eq $c ) ) {
+      collect( $remainder, $c, $s );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.c.2a
 #  (loop with count = 0
 #        for i from 0 below (min #x10000 char-code-limit)
@@ -71,6 +85,30 @@ deftest 'format.c.1' => sub {
 #        do (incf count) and collect (list i c s)
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
+
+deftest 'format.c.2a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $count = 0;
+  my $remainder = [];
+  for my $i ( min( 0x10000, $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
+    my $c = code_char( $i );
+    my $s = $c and $f->format( undef, "~:C", $c );
+    unless ( !defined $c or
+             !( char_code( $c ) eq char_int( $c ) ) or
+             !graphic_char_p( $c ) or
+             ( $c eq ' ' ) or
+             ( $s eq string( $c ) ) ) {
+      $count++;
+      collect( $remainder, $c, $s );
+    }
+    if ( $count > 100 ) {
+      collect( $remainder, "count limit exceeded" );
+      last;
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 # (def-format-test format.c.3
@@ -94,6 +132,20 @@ SKIP: {
 #        collect (list c (char-name c) s))
 #  nil)
 
+deftest 'format.c.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $count = 0;
+  my $remainder = [];
+  for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
+    my $s = $f->format( undef, "~:C", $c );
+    unless ( graphic_char_p( $c ) or
+             ( $s eq char_name( $c ) ) ) {
+      collect( $remainder, $c, char_name( $c ), $s );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.c.4a
 #  (loop with count = 0
 #        for i from 0 below (min #x10000 char-code-limit)
@@ -106,6 +158,29 @@ SKIP: {
 #        do (incf count) and collect (print (list i c s))
 #        when (> count 100) collect "count limit exceeded" and do (loop-finish))
 #  nil)
+
+deftest 'format.c.4a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $count = 0;
+  my $remainder = [];
+  for my $i ( min( 0x10000, $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
+    my $c = code_char( $i );
+    my $s = $c and $f->format( undef, "~:c", $c );
+    unless ( !defined $c or
+             !( char_code( $c ) eq char_int( $c ) ) or
+             !graphic_char_p( $c ) or
+             ( $c eq ' ' ) or
+             ( $s eq char_name( $c ) ) ) {
+      $count++;
+      collect( $remainder, $c, $s );
+    }
+    if ( $count > 100 ) {
+      collect( $remainder, "count limit exceeded" );
+      last;
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest format.c.5
 #  (loop for c across +standard-chars+

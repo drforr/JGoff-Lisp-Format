@@ -222,16 +222,16 @@ SKIP: {
 deftest 'format.b.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:B" );
-  my $list = [];
+  my $remainder = [];
   for my $i ( -7 .. 7 ) {
     my $s1 = $f->format( undef, "~b", $i );
     my $s2 = $f->format( undef, "~:b", $i );
     my $s3 = formatter_call_to_string( $fn, $i );
     unless( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $list, $i, $s1, $s2, $s3 );
+      collect( $remainder, $i, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 SKIP: {

@@ -85,15 +85,15 @@ SKIP: {
 deftest 'format.f.4' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, "~3f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '1.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.5
@@ -108,15 +108,15 @@ deftest 'format.f.4' => sub {
 deftest 'format.f.5' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~2f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, "~2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '1.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.6
@@ -131,15 +131,15 @@ deftest 'format.f.5' => sub {
 deftest 'format.f.6' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, "~4F", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 1.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.7
@@ -154,15 +154,15 @@ deftest 'format.f.6' => sub {
 deftest 'format.f.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~4@F' );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, '~4@F', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+1.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.8
@@ -177,15 +177,15 @@ deftest 'format.f.7' => sub {
 deftest 'format.f.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~3@F' );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, '~3@F', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+1.' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.9
@@ -200,15 +200,15 @@ deftest 'format.f.8' => sub {
 deftest 'format.f.9' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, "~4f", -$x );
     my $s2 = formatter_call_to_string( $fn, -$x );
     unless ( ( $s eq '-1.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, -$x, $s, $s2 );
+      collect( $remainder, -$x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.10
@@ -223,15 +223,15 @@ deftest 'format.f.9' => sub {
 deftest 'format.f.10' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~3f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.5' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.11
@@ -246,15 +246,15 @@ deftest 'format.f.10' => sub {
 deftest 'format.f.11' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~4f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 0.5' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.12
@@ -269,15 +269,15 @@ deftest 'format.f.11' => sub {
 deftest 'format.f.12' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4,2F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~4,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 0.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.13
@@ -292,15 +292,15 @@ deftest 'format.f.12' => sub {
 deftest 'format.f.13' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3,2F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~3,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.14
@@ -315,15 +315,15 @@ deftest 'format.f.13' => sub {
 deftest 'format.f.14' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~2,1F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~2,1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.5' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.15
@@ -338,15 +338,15 @@ deftest 'format.f.14' => sub {
 deftest 'format.f.15' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~4,2@F' );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, '~4,2@f', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.16
@@ -361,15 +361,15 @@ deftest 'format.f.15' => sub {
 deftest 'format.f.16' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~2,2F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~2,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.17
@@ -384,15 +384,15 @@ deftest 'format.f.16' => sub {
 deftest 'format.f.17' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~2,2F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~2,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.18
@@ -408,16 +408,16 @@ deftest 'format.f.17' => sub {
 deftest 'format.f.18' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~,2F" );
-  my $list = [];
+  my $remainder = [];
   for my $xn ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $x = -$xn;
     my $s = $f->format( undef, "~,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '-0.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.19
@@ -432,15 +432,15 @@ deftest 'format.f.18' => sub {
 deftest 'format.f.19' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4,2,-1F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 5, 5.0, 5.0, 5.0 ) ) {
     my $s = $f->format( undef, "~4,2,-1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.20
@@ -455,15 +455,15 @@ deftest 'format.f.19' => sub {
 deftest 'format.f.20' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4,2,0F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/2, 0.5, 0.5, 0.5 ) ) {
     my $s = $f->format( undef, "~4,2,0f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.21
@@ -478,15 +478,15 @@ deftest 'format.f.20' => sub {
 deftest 'format.f.21' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4,2,1f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1/20, 0.05, 0.05, 0.05 ) ) {
     my $s = $f->format( undef, "~4,2,1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 ### overflow
@@ -504,15 +504,15 @@ deftest 'format.f.21' => sub {
 deftest 'format.f.22' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~5,1,,'*F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 1000, 1000.0, 1000.0, 1000.0, 1000.0 ) ) {
     my $s = $f->format( undef, "~5,1,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '*****' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.23
@@ -528,15 +528,15 @@ deftest 'format.f.22' => sub {
 deftest 'format.f.23' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~5,1,,'*F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 100, 100.0, 100.0, 100.0, 100.0 ) ) {
     my $s = $f->format( undef, "~5,1,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.24
@@ -552,15 +552,15 @@ deftest 'format.f.23' => sub {
 deftest 'format.f.24' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~4,0,,'*F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 100, 100.0, 100.0, 100.0, 100.0 ) ) {
     my $s = $f->format( undef, "~4,0,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.25
@@ -576,15 +576,15 @@ deftest 'format.f.24' => sub {
 deftest 'format.f.25' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~1,1,,f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 100, 100.0, 100.0, 100.0, 100.0 ) ) {
     my $s = $f->format( undef, "~1,1,,f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 ### padchar
@@ -602,15 +602,15 @@ deftest 'format.f.25' => sub {
 deftest 'format.f.26' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~10,1,,f" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 100, 100.0, 100.0, 100.0, 100.0 ) ) {
     my $s = $f->format( undef, "~10,1,,f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '     100.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.27
@@ -626,15 +626,15 @@ deftest 'format.f.26' => sub {
 deftest 'format.f.27' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~10,1,,,'*F" );
-  my $list = [];
+  my $remainder = [];
   for my $x ( remove_duplicates( 100, 100.0, 100.0, 100.0, 100.0 ) ) {
     my $s = $f->format( undef, "~10,1,,,'*F", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '*****100.0' ) and ( $s eq $s2 ) ) {
-      collect( $list, $x, $s, $s2 );
+      collect( $remainder, $x, $s, $s2 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 ### v parameters
@@ -653,17 +653,17 @@ deftest 'format.f.27' => sub {
 deftest 'format.f.28' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~VF" );
-  my $list = [];
+  my $remainder = [];
   for ( 1 .. 100 ) {
     my $x = rand( 100.0 );
     my $s1 = $f->format( undef, "~f", $x );
     my $s2 = $f->format( undef, "~vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $list, $x, $s1, $s2, $s3 );
+      collect( $remainder, $x, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.29
@@ -680,17 +680,17 @@ deftest 'format.f.28' => sub {
 deftest 'format.f.29' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~,vf" );
-  my $list = [];
+  my $remainder = [];
   for ( 1 .. 100 ) {
     my $x = rand( 100.0 );
     my $s1 = $f->format( undef, "~f", $x );
     my $s2 = $f->format( undef, "~,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $list, $x, $s1, $s2, $s3 );
+      collect( $remainder, $x, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.30
@@ -707,17 +707,17 @@ deftest 'format.f.29' => sub {
 deftest 'format.f.30' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~,,Vf" );
-  my $list = [];
+  my $remainder = [];
   for ( 1 .. 100 ) {
     my $x = rand( 100.0 );
     my $s1 = $f->format( undef, "~f", $x );
     my $s2 = $f->format( undef, "~,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $list, $x, $s1, $s2, $s3 );
+      collect( $remainder, $x, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.31
@@ -734,17 +734,17 @@ deftest 'format.f.30' => sub {
 deftest 'format.f.31' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~,,,Vf" );
-  my $list = [];
+  my $remainder = [];
   for ( 1 .. 100 ) {
     my $x = rand( 100.0 );
     my $s1 = $f->format( undef, "~f", $x );
     my $s2 = $f->format( undef, "~,,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $list, $x, $s1, $s2, $s3 );
+      collect( $remainder, $x, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 #(deftest format.f.32
@@ -761,17 +761,17 @@ deftest 'format.f.31' => sub {
 deftest 'format.f.32' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~,,,,VF" );
-  my $list = [];
+  my $remainder = [];
   for ( 1 .. 100 ) {
     my $x = rand( 100.0 );
     my $s1 = $f->format( undef, "~f", $x );
     my $s2 = $f->format( undef, "~,,,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $list, $x, $s1, $s2, $s3 );
+      collect( $remainder, $x, $s1, $s2, $s3 );
     }
   }
-  return $list;
+  return $remainder;
 }, [];
 
 ### Randomized tests
