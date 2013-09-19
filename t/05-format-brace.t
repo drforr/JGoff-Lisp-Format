@@ -96,7 +96,7 @@ deftest 'format.{.8' => sub {
   for my $i ( 0 .. 10 ) {
     my $s = $f->format( undef, "~v{~A~}", $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
-      collect( $remainder, $i, $s );
+      collect( $remainder, list( $i, $s ) );
     }
   }
   $remainder;
@@ -118,7 +118,7 @@ deftest 'formatter.{.8' => sub {
     my $s = formatter_call_to_string( $fn,
       $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
-      collect( $remainder, $i, $s );
+      collect( $remainder, list( $i, $s ) );
     }
   }
   $remainder;

@@ -79,7 +79,8 @@ deftest 'format.cond.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
   for my $i ( -1 .. 10 ) {
-    collect( $remainder, $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
+    collect( $remainder,
+             $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
   }
   return $remainder;
 }, [

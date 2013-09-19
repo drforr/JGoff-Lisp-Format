@@ -228,7 +228,7 @@ deftest 'format.b.8' => sub {
     my $s2 = $f->format( undef, "~:b", $i );
     my $s3 = formatter_call_to_string( $fn, $i );
     unless( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $remainder, $i, $s1, $s2, $s3 );
+      collect( $remainder, list( $i, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;

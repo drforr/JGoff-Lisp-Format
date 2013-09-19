@@ -132,7 +132,7 @@ deftest 'format.a.7' => sub {
     my $s2 = $f->format( undef, "~a", $s1 );
     my $s3 = formatter_call_to_string( $fn, $s1 );
     unless ( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $remainder, $c, $s1, $s2, $s3 );
+      collect( $remainder, list( $c, $s1, $s2, $s3 ) );
     }
   };
   return $remainder;
@@ -164,7 +164,7 @@ deftest 'format.a.8' => sub {
     my $s3 = $c && formatter_call_to_string( $fn, $s1 );
     unless ( ( !defined( $c ) ) or ( $s1 eq $s2 ) or ( $s2 eq $s3 ) ) {
       $count++;
-      collect( $remainder, $c, $s1, $s2, $s3 );
+      collect( $remainder, list( $c, $s1, $s2, $s3 ) );
     }
     if ( $count > 100 ) {
       collect( "count limit exceeded" );

@@ -677,7 +677,7 @@ deftest 'format.r.6' => sub {
   for my $base ( 2 .. 36 ) {
     my $s = $f->format( undef, '~vr', $base, $base + 1 );
     unless ( $s eq '11' ) {
-      collect( $remainder, $base, $s );
+      collect( $remainder, list( $base, $s ) );
     }
   }
   return $remainder;
@@ -698,7 +698,7 @@ deftest 'formatter.r.6' => sub {
   for my $base ( 2 .. 36 ) {
     my $s = formatter_call_to_string( $fn, $base, $base + 1 );
     unless ( $s eq '11' ) {
-      collect( $remainder, $base, $s );
+      collect( $remainder, list( $base, $s ) );
     }
   }
   return $remainder;
@@ -989,7 +989,7 @@ deftest 'format.r.20' => sub {
     my $s1 = $f->format( undef, '~:@r', $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
-      collect( $remainder, $i, $s1, $s2 );
+      collect( $remainder, list( $i, $s1, $s2 ) );
     }
   }
   return $remainder;
@@ -1012,7 +1012,7 @@ deftest 'formatter.r.20' => sub {
     my $s1 = formatter_call_to_string( $fn, $i );
     my $s2 = old_roman_numeral( $i );
     unless ( $s1 eq $s2 ) {
-      collect( $remainder, $i, $s1, $s2 );
+      collect( $remainder, list( $i, $s1, $s2 ) );
     }
   }
   return $remainder;
@@ -1033,7 +1033,7 @@ deftest 'format.r.21' => sub {
     my $s1 = $f->format( undef, '~:@r', $i );
     my $s2 = $f->format( undef, '~@:R', $i );
     unless ( $s1 eq $s2 ) {
-      collect( $remainder, $i, $s1, $s2 );
+      collect( $remainder, list( $i, $s1, $s2 ) );
     }
   }
   return $remainder;
@@ -1084,7 +1084,7 @@ deftest 'format.r.25' => sub {
   for my $i ( 0 .. 5 ) {
     my $s = $f->format( undef, "~10,vr", $i, 12345 );
     unless ( $s eq '12345' ) {
-      collect( $remainder, $i, $s );
+      collect( $remainder, list( $i, $s ) );
     }
   };
   return $remainder;
@@ -1105,7 +1105,7 @@ deftest 'formatter.r.25' => sub {
   for my $i ( 0 .. 5 ) {
     my $s = formatter_call_to_string ( $fn, $i, 12345 );
     unless ( $s eq '12345' ) {
-      collect( $remainder, $i, $s );
+      collect( $remainder, list( $i, $s ) );
     }
   };
   return $remainder;

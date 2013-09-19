@@ -90,7 +90,7 @@ deftest 'format.f.4' => sub {
     my $s = $f->format( undef, "~3f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '1.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -113,7 +113,7 @@ deftest 'format.f.5' => sub {
     my $s = $f->format( undef, "~2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '1.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -136,7 +136,7 @@ deftest 'format.f.6' => sub {
     my $s = $f->format( undef, "~4F", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 1.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -159,7 +159,7 @@ deftest 'format.f.7' => sub {
     my $s = $f->format( undef, '~4@F', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+1.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -182,7 +182,7 @@ deftest 'format.f.8' => sub {
     my $s = $f->format( undef, '~3@F', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+1.' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -205,7 +205,7 @@ deftest 'format.f.9' => sub {
     my $s = $f->format( undef, "~4f", -$x );
     my $s2 = formatter_call_to_string( $fn, -$x );
     unless ( ( $s eq '-1.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, -$x, $s, $s2 );
+      collect( $remainder, list( -$x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -228,7 +228,7 @@ deftest 'format.f.10' => sub {
     my $s = $f->format( undef, "~3f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.5' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -251,7 +251,7 @@ deftest 'format.f.11' => sub {
     my $s = $f->format( undef, "~4f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 0.5' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -274,7 +274,7 @@ deftest 'format.f.12' => sub {
     my $s = $f->format( undef, "~4,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq ' 0.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -297,7 +297,7 @@ deftest 'format.f.13' => sub {
     my $s = $f->format( undef, "~3,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -320,7 +320,7 @@ deftest 'format.f.14' => sub {
     my $s = $f->format( undef, "~2,1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.5' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -343,7 +343,7 @@ deftest 'format.f.15' => sub {
     my $s = $f->format( undef, '~4,2@f', $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '+.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -366,7 +366,7 @@ deftest 'format.f.16' => sub {
     my $s = $f->format( undef, "~2,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -389,7 +389,7 @@ deftest 'format.f.17' => sub {
     my $s = $f->format( undef, "~2,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -414,7 +414,7 @@ deftest 'format.f.18' => sub {
     my $s = $f->format( undef, "~,2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '-0.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -437,7 +437,7 @@ deftest 'format.f.19' => sub {
     my $s = $f->format( undef, "~4,2,-1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -460,7 +460,7 @@ deftest 'format.f.20' => sub {
     my $s = $f->format( undef, "~4,2,0f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -483,7 +483,7 @@ deftest 'format.f.21' => sub {
     my $s = $f->format( undef, "~4,2,1f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '0.50' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -509,7 +509,7 @@ deftest 'format.f.22' => sub {
     my $s = $f->format( undef, "~5,1,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '*****' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -533,7 +533,7 @@ deftest 'format.f.23' => sub {
     my $s = $f->format( undef, "~5,1,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -557,7 +557,7 @@ deftest 'format.f.24' => sub {
     my $s = $f->format( undef, "~4,0,,'*f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -581,7 +581,7 @@ deftest 'format.f.25' => sub {
     my $s = $f->format( undef, "~1,1,,f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '100.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -607,7 +607,7 @@ deftest 'format.f.26' => sub {
     my $s = $f->format( undef, "~10,1,,f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '     100.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -631,7 +631,7 @@ deftest 'format.f.27' => sub {
     my $s = $f->format( undef, "~10,1,,,'*F", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
     unless ( ( $s eq '*****100.0' ) and ( $s eq $s2 ) ) {
-      collect( $remainder, $x, $s, $s2 );
+      collect( $remainder, list( $x, $s, $s2 ) );
     }
   }
   return $remainder;
@@ -660,7 +660,7 @@ deftest 'format.f.28' => sub {
     my $s2 = $f->format( undef, "~vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, $x, $s1, $s2, $s3 );
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -687,7 +687,7 @@ deftest 'format.f.29' => sub {
     my $s2 = $f->format( undef, "~,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, $x, $s1, $s2, $s3 );
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -714,7 +714,7 @@ deftest 'format.f.30' => sub {
     my $s2 = $f->format( undef, "~,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, $x, $s1, $s2, $s3 );
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -741,7 +741,7 @@ deftest 'format.f.31' => sub {
     my $s2 = $f->format( undef, "~,,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, $x, $s1, $s2, $s3 );
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -768,7 +768,7 @@ deftest 'format.f.32' => sub {
     my $s2 = $f->format( undef, "~,,,,vf", undef, $x );
     my $s3 = formatter_call_to_string( $fn, undef, $x );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, $x, $s1, $s2, $s3 );
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;

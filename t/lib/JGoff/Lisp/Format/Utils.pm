@@ -18,6 +18,7 @@ our @EXPORT = qw(
   deftest
   formatter_call_to_string
   collect
+  list
   concatenate
   with_standard_io_syntax
   code_char
@@ -75,7 +76,12 @@ sub concatenate {
 
 sub collect {
   my $list = shift;
-  push @$list, [ @_ ];
+  push @$list, @_;
+}
+
+sub list {
+  my @list = @_;
+  return [ @list ];
 }
 
 # XXX This needs lots of work, there's lots going on in the original function.

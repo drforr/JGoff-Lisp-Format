@@ -31,7 +31,7 @@ deftest 'format.c.1' => sub {
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s = $f->format( undef, "~C", $c );
     unless ( string( $c ) eq $s ) {
-      collect( $remainder, $c, $s );
+      collect( $remainder, list( $c, $s ) );
     }
   }
   return $remainder;
@@ -66,7 +66,7 @@ deftest 'format.c.2' => sub {
     unless ( !graphic_char_p( $c ) or
              ( $c eq ' ' ) or
              ( $s eq $c ) ) {
-      collect( $remainder, $c, $s );
+      collect( $remainder, list( $c, $s ) );
     }
   }
   return $remainder;
@@ -99,7 +99,7 @@ deftest 'format.c.2a' => sub {
              ( $c eq ' ' ) or
              ( $s eq string( $c ) ) ) {
       $count++;
-      collect( $remainder, $c, $s );
+      collect( $remainder, list( $i, $c, $s ) );
     }
     if ( $count > 100 ) {
       collect( $remainder, "count limit exceeded" );
@@ -140,7 +140,7 @@ deftest 'format.c.4' => sub {
     my $s = $f->format( undef, "~:C", $c );
     unless ( graphic_char_p( $c ) or
              ( $s eq char_name( $c ) ) ) {
-      collect( $remainder, $c, char_name( $c ), $s );
+      collect( $remainder, list( $c, char_name( $c ), $s ) );
     }
   }
   return $remainder;
@@ -172,7 +172,7 @@ deftest 'format.c.4a' => sub {
              ( $c eq ' ' ) or
              ( $s eq char_name( $c ) ) ) {
       $count++;
-      collect( $remainder, $c, $s );
+      collect( $remainder, list( $i, $c, $s ) );
     }
     if ( $count > 100 ) {
       collect( $remainder, "count limit exceeded" );
