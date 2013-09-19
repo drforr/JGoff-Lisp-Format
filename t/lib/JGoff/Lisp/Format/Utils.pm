@@ -26,6 +26,8 @@ our @EXPORT = qw(
   random_from_seq
   remove_duplicates
   graphic_char_p
+  read_from_string
+  search
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -156,6 +158,14 @@ sub remove_duplicates {
 }
 
 sub graphic_char_p {
+  die "Not implemented yet!";
+}
+
+sub read_from_string {
+  die "Not implemented yet!";
+}
+
+sub search {
   die "Not implemented yet!";
 }
 

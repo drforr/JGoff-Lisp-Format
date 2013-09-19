@@ -341,6 +341,19 @@ SKIP: {
 #        collect (list i s))
 #  nil)
 
+deftest 'format.cond\:.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( -100 .. 100 ) {
+    my $s = $f->format( undef, "~[~:;a~]", $i );
+    unless ( ( $i == 0 ) or
+             ( $s eq "a" ) ) {
+      collect( $remainder, list( $i, $s ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest formatter.cond\:.1
 #  (let ((fn (formatter "~[~:;a~]")))
 #    (loop for i from -100 to 100
@@ -348,6 +361,21 @@ SKIP: {
 #          unless (or (zerop i) (string= s "a"))
 #          collect (list i s)))
 #  nil)
+
+deftest 'formatter.cond\:.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~[~:;a~]" );
+  my $remainder = [];
+  for my $i ( -100 .. 100 ) {
+    my $s = formatter_call_to_string( $fn, $i );
+    unless ( ( $i == 0 ) or
+             ( $s eq "a" ) ) {
+      collect( $remainder, list( $i, $s ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 SKIP: {
@@ -390,16 +418,45 @@ SKIP: {
 #        collect (format nil "~[a~;b~;c~;d~:;e~]" i))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
 
+deftest 'format.cond\:.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder, $f->format( undef, "~[a~;b~;c~;d~:;e~]", $i ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
+
 #(deftest formatter.cond\:.5
 #  (let ((fn (formatter "~[a~;b~;c~;d~:;e~]")))
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn i)))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
 
+deftest 'formatter.cond\:.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~[a~;b~;c~;d~:;e~]" );
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder, formatter_call_to_string( $fn, $i ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
+
 #(deftest format.cond\:.6
 #  (loop for i from -1 to 10
 #        collect (format nil "~v[a~;b~;c~;d~:;e~]" i nil))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
+
+deftest 'format.cond\:.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder,
+             $f->format( undef, "~v[a~;b~;c~;d~:;e~]", $i, undef ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
 
 #(deftest formatter.cond\:.6
 #  (let ((fn (formatter "~v[a~;b~;c~;d~:;e~]")))
@@ -407,16 +464,47 @@ SKIP: {
 #          collect (formatter-call-to-string fn i)))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
 
+deftest 'formatter.cond\:.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~v[a~;b~;c~;d~:;e~]" );
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder, formatter_call_to_string( $fn, $i ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
+
 #(deftest format.cond\:.7
 #  (loop for i from -1 to 10
 #        collect (format nil "~v[a~;b~;c~;d~:;e~]" nil i))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
+
+deftest 'format.cond\:.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder,
+             $f->format( undef, "~v[a~;b~;c~;d~:;e~]", undef, $i ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
 
 #(deftest formatter.cond\:.7
 #  (let ((fn (formatter "~v[a~;b~;c~;d~:;e~]")))
 #    (loop for i from -1 to 10
 #          collect (formatter-call-to-string fn nil i)))
 #  ("e" "a" "b" "c" "d" "e" "e" "e" "e" "e" "e" "e"))
+
+deftest 'formatter.cond\:.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~v[a~;b~;c~;d~:;e~]" );
+  my $remainder = [];
+  for my $i ( -1 .. 10 ) {
+    collect( $remainder, formatter_call_to_string( $fn, undef, $i ) );
+  }
+  return $remainder;
+}, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
+
 }
 
 SKIP: {

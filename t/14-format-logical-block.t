@@ -143,61 +143,196 @@ SKIP: {
 #  (format nil "~<~A~:>" '(nil))
 #  "NIL")
 
+def_pprint_test 'format.logical-block.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~<~A~:>",
+    [ undef ]
+  );
+}, "UNDEF";
+
 #(def-pprint-test format.logical-block.2
 #  (format nil "~@<~A~:>" nil)
 #  "NIL")
+
+def_pprint_test 'format.logical-block.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~@<~A~:>",
+    undef
+  );
+}, "UNDEF";
 
 #(def-pprint-test format.logical-block.3
 #  (format nil "~:<~A~:>" '(nil))
 #  "(NIL)")
 
+def_pprint_test 'format.logical-block.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~:<~A~:>",
+    [ undef ]
+  );
+}, "[UNDEF]";
+
 #(def-pprint-test format.logical-block.4
 #  (format nil "~:@<~A~:>" nil)
 #  "(NIL)")
+
+def_pprint_test 'format.logical-block.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~:@<~A~:>",
+    undef
+  );
+}, "[UNDEF]";
 
 #(def-pprint-test format.logical-block.5
 #  (format nil "~@:<~A~:>" nil)
 #  "(NIL)")
 
+def_pprint_test 'format.logical-block.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~@:<~A~:>',
+    undef
+  );
+}, "[UNDEF]";
+
 #(def-pprint-test format.logical-block.6
 #  (format nil "~<~@{~A~^*~}~:>" '(1 2 3))
 #  "1*2*3")
+
+def_pprint_test 'format.logical-block.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~<~@{~A~^*~}~:>',
+    [ 1, 2, 3 ]
+  );
+}, "1*2*3";
 
 #(def-pprint-test format.logical-block.7
 #  (format nil "~:<~@{~A~^*~}~:>" '(1 2 3))
 #  "(1*2*3)")
 
+def_pprint_test 'format.logical-block.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~:<~@{~A~^*~}~:>',
+    [ 1, 2, 3 ]
+  );
+}, "[1*2*3]";
+
 #(def-pprint-test format.logical-block.8
 #  (format nil "~:<~@{~A~^*~}~:>" 1)
 #  "1")
+
+def_pprint_test 'format.logical-block.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~:<~@{~A~^*~}~:>',
+    1
+  );
+}, "1";
 
 #(def-pprint-test format.logical-block.9
 #  (format nil "~<~;~A~;~:>" '(1 2 3))
 #  "1")
 
+def_pprint_test 'format.logical-block.9' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~<~;~A~;~:>",
+    [ 1, 2, 3 ]
+  );
+}, "1";
+
 #(def-pprint-test format.logical-block.10
 #  (format nil "~<~;~A~:>" '(1 2 3))
 #  "1")
+
+def_pprint_test 'format.logical-block.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    "~<~;~A~:>",
+    [ 1, 2, 3 ]
+  );
+}, "1";
 
 #(def-pprint-test format.logical-block.11
 #  (format nil "~@<~;~A~;~:>" '(1 2 3))
 #  "(1 2 3)")
 
+def_pprint_test 'format.logical-block.11' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~@<~;~A~;~:>',
+    [ 1, 2, 3 ]
+  );
+}, "[1 2 3]";
+
 #(def-pprint-test format.logical-block.12
 #  (format nil "~@<~;~A~:>" '(1 2 3))
 #  "(1 2 3)")
+
+def_pprint_test 'format.logical-block.12' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~@<~;~A~:>',
+    [ 1, 2, 3 ]
+  );
+}, "[1 2 3]";
 
 #(def-pprint-test format.logical-block.13
 #  (format nil "~:<[~;~@{~A~^/~}~:>" '(1 2 3))
 #  "[1/2/3)")
 
+def_pprint_test 'format.logical-block.13' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~:<[~;~@{~A~^/~}~:>',
+    [ 1, 2, 3 ]
+  );
+}, "[1/2/3]";
+
 #(def-pprint-test format.logical-block.14
 #  (format nil "~:<~;~@{~A~^/~}~;]~:>" '(1 2 3))
 #  "1/2/3]")
 
+def_pprint_test 'format.logical-block.14' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~:<~;~@{~A~^/~}~;]~:>',
+    [ 1, 2, 3 ]
+  );
+}, "1/2/3]";
+
 #(def-pprint-test format.logical-block.15
 #  (format nil "~:<[~;~@{~A~^/~}~;]~:>" '(1 2 3))
 #  "[1/2/3]")
+
+def_pprint_test 'format.logical-block.15' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return $f->format(
+    undef,
+    '~:<[~;~@{~A~^/~}~;]~:>',
+    [ 1, 2, 3 ]
+  );
+}, "[1/2/3]";
 
 #(def-pprint-test format.logical-block.16
 #  (format nil "~@<~@{~A~^*~}~:>" 1 2 3)

@@ -88,6 +88,22 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'formatter.&.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( 1 .. 100 ) {
+    my $s1 = make_string( $i - 1, initial_element => "\n" );
+    my $format_string = $f->format( undef, "~~~D&", $i );
+    my $fn = $f->formatter( $format_string );
+    my $s2 = formatter_call_to_string( $fn );
+    unless ( $s1 eq $s2 ) {
+      collect( $i );
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 #(deftest format.&.6
@@ -132,6 +148,22 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'formatter.&.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( 1 .. 100 ) {
+    my $s1 = concatenate( "X", make_string( $i, initial_element => "\n" ) );
+    my $format_string = $f->format( undef, "X~~~D&", $i );
+    my $fn = $f->formatter( $format_string );
+    my $s2 = formatter_call_to_string( $fn );
+    unless ( $s1 eq $s2 ) {
+      collect( $i );
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 # (def-format-test format.&.7
