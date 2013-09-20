@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 22;
+use Test::More tests => 19;
 use List::Util qw( min );
 
 BEGIN {
@@ -74,11 +74,6 @@ deftest 'format.&.5' => sub {
   return $remainder;
 }, [];
 
-SKIP: {
-  my $count = 1;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest formatter.&.5
 #  (loop for i from 1 to 100
 #        for s1 = (make-string (1- i) :initial-element #\Newline)
@@ -103,8 +98,6 @@ deftest 'formatter.&.5' => sub {
   }
   return $remainder;
 }, [];
-
-}
 
 #(deftest format.&.6
 #  (loop for i from 1 to 100
@@ -132,11 +125,6 @@ deftest 'format.&.6' => sub {
   return $remainder;
 }, [];
 
-SKIP: {
-  my $count = 4;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest formatter.&.6
 #  (loop for i from 1 to 100
 #        for s1 = (concatenate 'string
@@ -163,8 +151,6 @@ deftest 'formatter.&.6' => sub {
   }
   return $remainder;
 }, [];
-
-}
 
 # (def-format-test format.&.7
 #   "~v&" (nil) "")
