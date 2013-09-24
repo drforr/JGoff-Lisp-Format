@@ -212,11 +212,6 @@ deftest 'formatter.&.9' => sub {
   return $remainder;
 }, [];
 
-SKIP: {
-  my $count = 2;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.&.10
 #  (loop for i from 1 to (min (- call-arguments-limit 3) 100)
 #        for s1 = (make-string (1- i) :initial-element #\Newline)
@@ -225,6 +220,26 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'format.&.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
+                        100 ) ) {
+    my $s1 = make_string( $i - 1, initial_element => "\n" );
+    my $args = make_list( $i );
+    my $s2 = apply( sub { $f->format( @_ ) }, undef, "~#&", @$args );
+    unless ( $s1 eq $s2 ) {
+      collect( $remainder, $i );
+    }
+  }
+  return $remainder;
+}, [];
+
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 
 #(deftest formatter.&.10
 #  (let ((fn (formatter "~#&")))

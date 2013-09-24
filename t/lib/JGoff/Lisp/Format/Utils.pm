@@ -28,6 +28,9 @@ our @EXPORT = qw(
   graphic_char_p
   read_from_string
   search
+  make_list
+  apply
+  cons
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -167,6 +170,23 @@ sub read_from_string {
 
 sub search {
   die "Not implemented yet!";
+}
+
+sub make_list {
+  my $count = shift;
+  return [ (undef) x $count ];
+}
+
+sub apply {
+  my $fn = shift;
+  my @args = @_;
+  return $fn->( @args );
+}
+
+sub cons {
+  my $element = shift;
+  my $list = shift;
+  return [ @$list, $element ];
 }
 
 1;

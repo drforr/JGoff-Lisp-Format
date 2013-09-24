@@ -654,6 +654,33 @@ SKIP: {
 #   ("" "1" "12" "123" "1234" "12345"
 #    "123456" "1234567" "12345678" "123456789" "12345678910"))
 
+deftest 'format.@{.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  my $x = [];
+  for my $i ( 0 .. 10 ) {
+    #$x = cons( $i, $x ); # XXX Need to move this to the bottom of the loop.
+    collect( $remainder,
+             apply( sub { $f->format },
+                    undef,
+                    '~v@{~A~}', $i, reverse( @$x ) ) );
+    $x = cons( $i, $x ) if $i != 0; # XXX JMG sneaky way of
+  }
+  return $remainder;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '12345',
+  '123456',
+  '1234567',
+  '12345678',
+  '123456789',
+  '12345678910',
+];
+
 #(deftest formatter.@{.10
 #  (let ((fn (formatter "~v@{~A~}")))
 #    (loop for i from 0 to 10
@@ -663,6 +690,7 @@ SKIP: {
 #          (with-output-to-string
 #            (s)
 #            (assert (equal (apply fn s i (append (reverse x) rest)) rest)))))
+
 #  ("" "1" "12" "123" "1234" "12345"
 #   "123456" "1234567" "12345678" "123456789" "12345678910"))
 }
@@ -791,6 +819,34 @@ SKIP: {
 #        (apply #'format nil "~V:@{~A~}" i (reverse x)))
 #  ("" "1" "12" "123" "1234" "12345" "123456" "1234567" "12345678"
 #   "123456789" "12345678910"))
+
+deftest 'format.\:@.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $remainder = [];
+  my $x = [];
+  for my $i ( 0 .. 10 ) {
+    #$x = cons( list( $i ), $x ); # XXX Need to move this to the bottom of the loop.
+    
+    collect( $remainder,
+             apply( sub { $f->format( @_ ) },
+                    undef,
+                    '~V:@{~A~}', $i, reverse( @$x ) ) );
+    $x = cons( list( $i ), $x ); # JMG Moved from the top of the loop.
+  }
+  return $remainder;
+}, [
+  '',
+  '1',
+  '12',
+  '123',
+  '1234',
+  '12345',
+  '123456',
+  '1234567',
+  '12345678',
+  '123456789',
+  '12345678910'
+];
 
 #(deftest formatter.\:@.10
 #  (let ((fn (formatter "~V@:{~A~}")))
