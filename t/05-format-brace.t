@@ -165,7 +165,7 @@ deftest 'format.{.17' => sub {
 #   (format nil "~1{~}" (formatter "") '(1 2 3 4))
 #   "")
 
-deftest 'format.{.18' => sub { # XXX Vet the arguments
+deftest 'format.{.18' => sub {
   my $f = JGoff::Lisp::Format->new;
   $f->format( undef, "~1{~}", $f->formatter( "" ), [ 1, 2, 3, 4 ] );
 }, "";
@@ -809,7 +809,7 @@ def_format_test 'format.\:@.9' =>
 
 SKIP: {
   my $count = 16;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 
 #(deftest format.\:@.10
@@ -862,6 +862,9 @@ deftest 'format.\:@.10' => sub {
 
 ### Error tests
 
+#
+# test of LISP symbols, not needed in perl
+#
 #(deftest format.{.error.1 ;;; }
 #  (signals-type-error x 'A (format nil "~{~A~}" x))
 #  t)
@@ -870,14 +873,38 @@ deftest 'format.\:@.10' => sub {
 #  (signals-type-error x 1 (format nil "~{~A~}" x))
 #  t)
 
+deftest 'format.{.error.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x, 1, sub { $f->format( undef, "~{~A~}", $x ) } );
+}, 1;
+
 #(deftest format.{.error.3 ;;; }
 #  (signals-type-error x "foo" (format nil "~{~A~}" x))
 #  t)
+
+deftest 'format.{.error.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x, "foo", sub { $f->format( undef, "~{~A~}", $x ) } );
+}, 1;
 
 #(deftest format.{.error.4 ;;; }
 #  (signals-type-error x #*01101 (format nil "~{~A~}" x))
 #  t)
 
+deftest 'format.{.error.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x, 0b01101, sub { $f->format( undef, "~{~A~}", $x ) } );
+}, 1;
+
+#
+# test of dotted list, perl doesn't have these.
+#
 #(deftest format.{.error.5 ;;; }
 #  (signals-error (format nil "~{~A~}" '(x y . z)) type-error)
 #  t)
@@ -886,10 +913,23 @@ deftest 'format.\:@.10' => sub {
 #  (signals-error (format nil "~:{~A~}" '(x)) type-error)
 #  t)
 
+deftest 'format.{.error.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return
+    signals_error( sub { $f->format( undef, "~:{~A~}", [ 'x' ] ) },
+                   $JGoff::Lisp::Format::Utils::type_error );
+}, 1;
+
+#
+# test of symbols, which Perl doesn't really have
+#
 #(deftest format.\:{.error.2 ;;; }
 #  (signals-type-error x 'x (format nil "~:{~A~}" x))
 #  t)
 
+#
+# test of dotted list, which Perl doesn't really have
+#
 #(deftest format.\:{.error.3 ;;; }
 #  (signals-error (format nil "~:{~A~}" '((x) . y)) type-error)
 #  t)
@@ -898,10 +938,23 @@ deftest 'format.\:@.10' => sub {
 #  (signals-error (format nil "~:{~A~}" '("X")) type-error)
 #  t)
 
+deftest 'format.\:{.error.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  return
+    signals_error( sub { $f->format( undef, "~:{~A~}", [ 'x' ] ) },
+                   $JGoff::Lisp::Format::Utils::type_error );
+}, 1;
+
+#
+# test of sharp-(, which Perl doesn't really have # )
+#
 #(deftest format.\:{.error.5 ;;; }
 #  (signals-error (format nil "~:{~A~}" '(#(X Y Z))) type-error)
 #  t)
 
+#
+# test of quoted-object, which Perl doesn't really have # )
+#
 #(deftest format.\:@{.error.1 ;;; }
 #  (signals-type-error x 'x (format nil "~:@{~A~}" x))
 #  t)
@@ -910,14 +963,40 @@ deftest 'format.\:@.10' => sub {
 #  (signals-type-error x 0 (format nil "~:@{~A~}" x))
 #  t)
 
+deftest 'format.\:@{.error.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x, 0, sub { $f->format( undef, '~:@{~A~}', $x ) } );
+}, 1;
+
 #(deftest format.\:@{.error.3 ;;; }
 #  (signals-type-error x #*01101 (format nil "~:@{~A~}" x))
 #  t)
+
+deftest 'format.\:@{.error.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x,
+                        0b01101, sub { $f->format( undef, '~:@{~A~}', $x ) } );
+}, 1;
 
 #(deftest format.\:@{.error.4 ;;; }
 #  (signals-type-error x "abc" (format nil "~:@{~A~}" x))
 #  t)
 
+deftest 'format.\:@{.error.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $x;
+  return
+    signals_type_error( $x,
+                        "abc", sub { $f->format( undef, '~:@{~A~}', $x ) } );
+}, 1;
+
+#
+# test of dotted list, which perl really doesn't have.
+#
 #(deftest format.\:@{.error.5 ;;; }
 #  (signals-error (format nil "~:@{~A ~A~}" '(x . y)) type-error)
 #  t)

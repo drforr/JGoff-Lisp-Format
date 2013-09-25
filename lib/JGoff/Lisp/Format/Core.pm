@@ -160,6 +160,9 @@ sub _format {
       elsif ( exists $token_names{ ref( $operation ) } ) {
         $output .= $operation->format( $self );
       }
+      else {
+        croak "No operation defined for '$operation'!";
+      }
     }
     elsif ( ref( $operation ) and ref( $operation ) eq 'ARRAY' ) {
       my ( $open, $_operation, $close ) = @{ $operation };

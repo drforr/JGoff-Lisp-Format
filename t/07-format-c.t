@@ -1,6 +1,7 @@
 #!perl
 
 use Test::More tests => 13;
+use List::Util qw( min );
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -52,6 +53,7 @@ SKIP: {
 deftest 'format.c.1a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );
@@ -227,6 +229,7 @@ deftest 'format.c.4a' => sub {
 deftest 'format.c.5a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );
@@ -279,8 +282,8 @@ deftest 'format.c.6' => sub {
 
 deftest 'format.c.6a' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $count = 0;
   my $remainder = [];
+  my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );

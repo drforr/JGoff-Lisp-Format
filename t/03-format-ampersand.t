@@ -238,7 +238,7 @@ deftest 'format.&.10' => sub {
 
 SKIP: {
   my $count = 1;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 
 #(deftest formatter.&.10
@@ -252,6 +252,26 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
+
+deftest 'formatter.&.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~#&" );
+  my $remainder = [];
+  my $stream = []; # XXX Think about this
+  for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
+                        100 ) ) {
+    my $s1 = make_string( $i - 1, initial_element => "\n" );
+    my $args = [ 0 .. $i ]; # XXX More perlish
+    my $s2 = with_output_to_string $stream, sub {
+      assert( apply( $fn, $stream, $args ) eq $args ); # XXX XXX
+    };
+    unless ( $s1 eq $s2 ) {
+      collect( $remainder, $i );
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 # (def-format-test format.&.11

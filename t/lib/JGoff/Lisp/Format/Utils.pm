@@ -31,6 +31,10 @@ our @EXPORT = qw(
   make_list
   apply
   cons
+  signals_type_error
+  signals_error
+  with_output_to_string
+  assert
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -41,6 +45,7 @@ our @standard_chars =
 our $char_code_limit = 1114112; # XXX Don't ask me, from sbcl.
 # XXX The real argument limit from SBCL is 4611686018427387903, so fake it.
 our $call_arguments_limit = 1114112;
+our @mini_universe = ( ); # XXX UNDEFINED DAMNIT
 
 sub char_name {
   my ( $char ) = @_;
@@ -187,6 +192,22 @@ sub cons {
   my $element = shift;
   my $list = shift;
   return [ @$list, $element ];
+}
+
+sub signals_type_error {
+  die "Not implemented yet!";
+}
+
+sub signals_error {
+  die "Not implemented yet!";
+}
+
+sub with_output_to_string {
+  die "Not implemented yet!";
+}
+
+sub assert {
+  die "Not implemented yet!";
 }
 
 1;

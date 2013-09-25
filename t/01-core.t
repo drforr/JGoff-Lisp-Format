@@ -1,21 +1,122 @@
 #!perl
 
-use Test::More tests => 203;
+use Test::More tests => 33;
 use YAML;
 
 BEGIN {
-    use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
+  use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!\n";
+  use lib 't/lib';
+  use_ok( 'JGoff::Lisp::Format::Utils' ) || print "Bail out!";
 }
 
 use strict;
 use warnings;
 
-my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
+#
+# and now on to the utilities the test utils will use.
+#
+ok $JGoff::Lisp::Format::Utils::most_positive_fixnum > 0,
+   'most_positive_fixnum is positive';
+ok $JGoff::Lisp::Format::Utils::most_negative_fixnum < 0,
+   'most_negative_fixnum is negative';
+ok @JGoff::Lisp::Format::Utils::standard_chars > 0,
+   'standard_chars has chars';
+isa_ok $JGoff::Lisp::Format::Utils::standard_chars[0],
+       'JGoff::Lisp::Format::Utils::Character',
+       'standard_chars are typed objects for testing purposes';
+my @multibyte_chars =
+   grep { ord( $_->toString ) > 0x7f }
+        @JGoff::Lisp::Format::Utils::standard_chars;
+ok @multibyte_chars == 0,
+   'standard_chars objects are all ASCII';
+ok $JGoff::Lisp::Format::Utils::char_code_limit > 0,
+   'char_code_limit > 0';
+ok $JGoff::Lisp::Format::Utils::call_arguments_limit > 0,
+   'call_char_limit > 0';
+
+SKIP: {
+  diag 'Missing stuff';
+  skip 'Not ready yet', 1;
+ok @JGoff::Lisp::Format::Utils::mini_universe > 0,
+   'mini_universe populated';
+is char_int( ' ' ), 32,
+   'XXX Should this be the correct return value?';
+}
+
+is char_name( ' ' ), 'Space';
+is char_name( "\n" ), 'Newline';
+is char_name( 'n' ), 'n';
+
+is char_code( ' ' ), 32;
+
+SKIP: {
+  diag 'Missing stuff';
+  skip 'Not ready yet', 1;
+is char_int( ' ' ), 32, 'XXX Should this be the correct return value?';
+}
+
+is string( 'f' ), 'f';
+is string( JGoff::Lisp::Format::Utils::Character->new( character => 'f' ) ),
+   'f';
+
+is subseq( 'foo', 1, 2 ), 'o';
+is subseq( 'foo', 1, 3 ), 'oo';
+
+is with_standard_io_syntax { 'foo' }, 'foo';
+
+is concatenate( 'foo', 'bar' ), 'foobar';
+
+my $foo = [];
+collect( $foo, 1 );
+is_deeply $foo, [ 1 ];
+
+is_deeply list( 'a', 'b' ), [ 'a', 'b' ];
+
+# XXX formatter_call_to_string
+
+def_format_test 'core.2' => 
+  "42",
+  undef,
+  42;
+
+# XXX def_pprint_test
+
+# Regardless of (format), deftest() should run
+{
+  my $side_effect = 0;
+  deftest 'core.1' => sub { $side_effect++; 42 }, 42;
+  ok $side_effect == 1, 'deftest() had required side effect';
+}
+
+is code_char( 32 ), ' ';
+is make_string( 3, initial_element => 'x' ), 'xxx';
+
+is random_from_seq( 'x' ), 'x';
+
+is_deeply [ remove_duplicates( 'a', 'b', 'a', 'c', 'c', 'd' ) ],
+          [ 'a', 'b', 'c', 'd' ];
+
+# XXX graphic_char_p
+
+# XXX read_from_string
+
+# XXX search
+
+is_deeply make_list( 3 ), [ undef, undef, undef ];
+
+is apply( sub { scalar @_ }, undef, undef, undef ), 3;
+
+is_deeply cons( 3, [ undef, undef, undef ] ), [ undef, undef, undef, 3 ];
+
+# XXX signals_type_error
+
+# XXX signals_error
 
 SKIP: {
   diag "Rethink these tests";
-  skip 'Not ready yet', 202;
-  
+  skip 'Not ready yet', 0;
+
+my $p = JGoff::Lisp::Format::Parser->new( patterns => { ws => undef } );
 
 sub parse_deeply {
   my ( $str, $expected ) = @_;
