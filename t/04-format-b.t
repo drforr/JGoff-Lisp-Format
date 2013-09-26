@@ -463,6 +463,26 @@ die "mini_universe not defined yet!";
 #          collect (list x s1 s2 s3)))
 #  nil)
 
+deftest 'format.b.19' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( '~:b' );
+  my $remainder = [];
+die "mini_universe not defined yet!";
+  for my $x ( @JGoff::Lisp::Format::mini_universe ) {
+    my $s1 = $f->format( undef, '~:B', $x );
+    my $s2 = do {
+      local $JGoff::Lisp::Format::print_base = 2;
+      $f->format( undef, "~A", $x );
+    };
+    my $s3 = formatter_call_to_string( $fn, $x );
+    unless ( ( integerp $x ) or
+             ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) ) {
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.b.20
 #  (let ((fn (formatter "~@b")))
 #    (loop for x in *mini-universe*
@@ -504,6 +524,31 @@ die "mini_universe not defined yet!";
 #                     (string/= s1 s4))
 #          collect (list x s1 s2 s3)))
 #  nil)
+
+deftest 'format.b.21' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( '~:@b' );
+  my $remainder = [];
+die "mini_universe not defined yet!";
+  for my $x ( @JGoff::Lisp::Format::mini_universe ) {
+    my $s1 = do {
+      local $JGoff::Lisp::Format::print_base = 2;
+      $f->format( undef, "~A", $x );
+    };
+    my $s2 = $f->format( undef, "~@:B", $x );
+    my $s3 = formatter_call_to_string( $fn, $x );
+    my $s4 = do {
+      local $JGoff::Lisp::Format::print_base = 2;
+      $f->format( undef, "~A", $x );
+    };
+    unless ( integerp( $x ) or
+             ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) or
+             ( $s1 ne $s4 ) ) {
+      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+    }
+  }
+  return $remainder;
+}, [];
 
 ### Must add tests for non-integers when the parameters
 ### are specified, but it's not clear what the meaning is.
