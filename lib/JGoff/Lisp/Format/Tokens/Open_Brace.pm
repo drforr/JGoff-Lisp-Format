@@ -28,6 +28,19 @@ sub format {
   my $self = shift;
   my ( $core, $operation, $close ) = @_;
   my $iteration_count = undef;
+  my $output = '';
+
+  if ( $self->colon and not $self->at ) {
+    for my $argument ( @{ $core->current_argument } ) {
+      my $sub_self = $core->new(
+        stream => $core->stream,
+        tree => $operation,
+        arguments => $argument
+      );
+      $output .= $sub_self->_format;
+    }
+    return $output;
+  }
 
   if ( $self->arguments and defined( $self->arguments->[0] ) ) {
     my $first_argument = $self->arguments->[0];
@@ -43,7 +56,6 @@ sub format {
     }
   }
 
-  my $output = '';
   if ( $core->current_argument and
        ref( $core->current_argument ) and
        ref( $core->current_argument ) eq 'CODE' ) {

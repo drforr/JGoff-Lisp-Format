@@ -35,6 +35,7 @@ our @EXPORT = qw(
   signals_error
   with_output_to_string
   assert
+  ash
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -61,7 +62,7 @@ sub char_code {
 
 sub char_int {
   my ( $char ) = @_;
-die "Not implemented yet - Not sure what the difference is vis-a-vis char_code";
+die "char_int not implemented yet - Not sure what the difference is vis-a-vis char_code";
 }
 
 sub string {
@@ -166,15 +167,15 @@ sub remove_duplicates {
 }
 
 sub graphic_char_p {
-  die "Not implemented yet!";
+  die "graphic_char_p not implemented yet!";
 }
 
 sub read_from_string {
-  die "Not implemented yet!";
+  die "read_from_string not implemented yet!";
 }
 
 sub search {
-  die "Not implemented yet!";
+  die "search not implemented yet!";
 }
 
 sub make_list {
@@ -195,19 +196,24 @@ sub cons {
 }
 
 sub signals_type_error {
-  die "Not implemented yet!";
+  die "signals_type_error not implemented yet!";
 }
 
 sub signals_error {
-  die "Not implemented yet!";
+  die "signals_error not implemented yet!";
 }
 
 sub with_output_to_string {
-  die "Not implemented yet!";
+  die "with_output_to_string not implemented yet!";
 }
 
 sub assert {
-  die "Not implemented yet!";
+  die "assert not implemented yet!";
+}
+
+sub ash {
+  my ( $shift, $value ) = @_;
+  $value *= 2**$shift;
 }
 
 1;

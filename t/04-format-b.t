@@ -535,7 +535,7 @@ die "mini_universe not defined yet!";
       local $JGoff::Lisp::Format::print_base = 2;
       $f->format( undef, "~A", $x );
     };
-    my $s2 = $f->format( undef, "~@:B", $x );
+    my $s2 = $f->format( undef, '~@:B', $x );
     my $s3 = formatter_call_to_string( $fn, $x );
     my $s4 = do {
       local $JGoff::Lisp::Format::print_base = 2;

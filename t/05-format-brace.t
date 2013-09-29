@@ -295,17 +295,15 @@ def_format_test 'format.{.33' =>
 
 ### ~:{ ... ~}
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 4;
-# (def-format-test format.\:{.1
-#   "~:{(~A ~A)~}" ('((1 2 3)(4 5)(6 7 8))) "(1 2)(4 5)(6 7)")
-
 def_format_test 'format.\:{.1' =>
-  "~:{[~A ~A]~}",
-  [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7, 8 ] ] ], # It *is* 3 layers deep.
-  "[1 2][4 5][6 7]";
+  "~:{(~A ~A)~}",
+  [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7 ] ] ],
+  "(1 2)(4 5)(6 7)";
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.\:{.2
 #   (concatenate 'string "~:{~" (string #\Newline) "~}")
 #   (nil) "")
