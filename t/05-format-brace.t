@@ -325,10 +325,6 @@ def_format_test 'format.\:{.4' =>
   [ "~A", undef ],
   "";
 
-SKIP: {
-  my $count = 26;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
 # (def-format-test format.\:{.5
 #   "~:{~}" ("X" '(nil (1 2) (3))) "XXX")
 
@@ -337,6 +333,10 @@ def_format_test 'format.\:{.5' =>
   [ "X", [ undef, [ 1, 2 ], [ 3 ] ] ],
   "XXX";
 
+SKIP: {
+  my $count = 25;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (deftest format.\:{.6
 #   (format nil "~:{~}" (formatter "~A") '((1 2) (3) (4 5 6)))
 #   "134")
@@ -693,10 +693,6 @@ deftest 'format.@{.10' => sub {
 #   "123456" "1234567" "12345678" "123456789" "12345678910"))
 }
 
-SKIP: {
-  my $count = 3;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
 # (def-format-test format.@{.11
 #   "~@{X~:}" nil "X")
 
@@ -705,6 +701,10 @@ def_format_test 'format.@{.11' =>
   undef,
   'X';
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 #def_format_test format.@{.12
 #  "~@{~}" ((formatter "X~AY") 1) "X1Y")
 
@@ -713,6 +713,7 @@ def_format_test 'format.@{.12' => # XXX double-check
   #[ $f->formatter( "X~AY" ), 1 ],
   [ JGoff::Lisp::Format->new->formatter( "X~AY" ), 1 ],
   "X1Y";
+#}
 
 #def_format_test format.@{.13
 #  "~v@{~}" (1 (formatter "X") 'foo) "X" 1)

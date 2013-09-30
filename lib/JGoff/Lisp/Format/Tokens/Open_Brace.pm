@@ -31,7 +31,8 @@ sub format {
   my $output = '';
 
   if ( $self->colon and not $self->at ) {
-    if ( ref( $core->current_argument ) and
+    if ( $core->current_argument and
+         ref( $core->current_argument ) and
          ref( $core->current_argument ) eq 'ARRAY' ) {
       for my $argument ( @{ $core->current_argument } ) {
         my $sub_self = $core->new(
@@ -41,8 +42,8 @@ sub format {
         );
         $output .= $sub_self->_format;
       }
+      return $output;
     }
-    return $output;
   }
 
   if ( $self->arguments and defined( $self->arguments->[0] ) ) {
@@ -64,7 +65,10 @@ sub format {
        ref( $core->current_argument ) eq 'CODE' ) {
     my $fn = $core->current_argument;
     $core->forward_argument;
-    if ( $core->remaining_arguments and @{ $core->remaining_arguments } ) {
+    if ( $core->remaining_arguments and
+         ref( $core->remaining_arguments ) and
+         ref( $core->remaining_arguments ) eq 'ARRAY' and
+         @{ $core->remaining_arguments } ) {
       for my $argument ( @{ $core->remaining_arguments } ) {
         if ( defined $iteration_count ) {
           last if $iteration_count-- <= 0;
@@ -90,16 +94,18 @@ sub format {
   elsif ( $core->current_argument ) {
     my $format = $core->current_argument;
     $core->forward_argument;
-    for my $argument ( @{ $core->current_argument } ) {
-      if ( defined $iteration_count ) {
-        last if $iteration_count-- <= 0;
+    if ( $core->current_argument ) {
+      for my $argument ( @{ $core->current_argument } ) {
+        if ( defined $iteration_count ) {
+          last if $iteration_count-- <= 0;
+        }
+        my $sub_self = $core->new(
+          stream => $core->stream,
+          format => $format,
+          arguments => [ $argument ]
+        );
+        $output .= $sub_self->apply;
       }
-      my $sub_self = $core->new(
-        stream => $core->stream,
-        format => $format,
-        arguments => [ $argument ]
-      );
-      $output .= $sub_self->apply;
     }
   }
   else {
