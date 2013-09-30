@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 61;
+use Test::More tests => 92;
 
 BEGIN {
   use lib 't/lib';
@@ -300,10 +300,6 @@ def_format_test 'format.\:{.1' =>
   [ [ [ 1, 2, 3 ], [ 4, 5 ], [ 6, 7 ] ] ],
   "(1 2)(4 5)(6 7)";
 
-SKIP: {
-  my $count = 3;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
 # (def-format-test format.\:{.2
 #   (concatenate 'string "~:{~" (string #\Newline) "~}")
 #   (nil) "")
@@ -329,6 +325,10 @@ def_format_test 'format.\:{.4' =>
   [ "~A", undef ],
   "";
 
+SKIP: {
+  my $count = 26;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.\:{.5
 #   "~:{~}" ("X" '(nil (1 2) (3))) "XXX")
 
@@ -639,12 +639,12 @@ def_format_test 'format.@{.9' =>
   '~#@{~A~}',
   [ 1, 2, 3 ],
   "123";
+}
 
 SKIP: {
   my $count = 2;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
-
 # (deftest format.@{.10
 #   (loop for i from 0 to 10
 #         for x = nil then (cons i x)
@@ -693,6 +693,10 @@ deftest 'format.@{.10' => sub {
 #   "123456" "1234567" "12345678" "123456789" "12345678910"))
 }
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.@{.11
 #   "~@{X~:}" nil "X")
 

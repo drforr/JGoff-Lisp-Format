@@ -31,13 +31,16 @@ sub format {
   my $output = '';
 
   if ( $self->colon and not $self->at ) {
-    for my $argument ( @{ $core->current_argument } ) {
-      my $sub_self = $core->new(
-        stream => $core->stream,
-        tree => $operation,
-        arguments => $argument
-      );
-      $output .= $sub_self->_format;
+    if ( ref( $core->current_argument ) and
+         ref( $core->current_argument ) eq 'ARRAY' ) {
+      for my $argument ( @{ $core->current_argument } ) {
+        my $sub_self = $core->new(
+          stream => $core->stream,
+          tree => $operation,
+          arguments => $argument
+        );
+        $output .= $sub_self->_format;
+      }
     }
     return $output;
   }
