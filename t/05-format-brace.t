@@ -317,6 +317,10 @@ def_format_test 'format.\:{.3' =>
   [ "", undef ],
   "";
 
+SKIP: {
+  my $count = 27;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.\:{.4
 #   "~:{~}" ("~A" nil) "")
 
@@ -333,10 +337,6 @@ def_format_test 'format.\:{.5' =>
   [ "X", [ undef, [ 1, 2 ], [ 3 ] ] ],
   "XXX";
 
-SKIP: {
-  my $count = 25;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
 # (deftest format.\:{.6
 #   (format nil "~:{~}" (formatter "~A") '((1 2) (3) (4 5 6)))
 #   "134")

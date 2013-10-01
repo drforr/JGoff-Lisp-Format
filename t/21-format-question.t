@@ -86,8 +86,9 @@ def_format_test 'format.@?.4' =>
   "abc1xyz";
 
 SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
+  my $count = 1;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.@?.5
 #   "~{~A~@?~A~}" ('(1 "~4*" 2 3 4 5 6)) "16")
 

@@ -21,7 +21,7 @@ def_format_test 'format.%.1' =>
 
 SKIP: {
   my $count = 1;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 
 #(deftest format.%.2
@@ -34,6 +34,22 @@ SKIP: {
 #        unless (and (string= s1 s2) (string= s1 s3))
 #        collect i)
 #  nil)
+
+deftest 'format.%.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. 100 ) {
+    my $s1 = make_string( $i, initial_element => "\n" );
+    my $format_string = $f->format( undef, "~~~D%", $i );
+    my $s2 = $f->format( undef, $format_string );
+    my $fn = $f->formatter( $s2 );
+    my $s3 = formatter_call_to_string( $fn );
+    unless ( $s1 eq $s2 and $s1 eq $s3 ) {
+      $collector->( $i );
+    }
+  }
+  return $remainder;
+}, [];
 }
 
 # (def-format-test format.%.3
@@ -98,7 +114,7 @@ deftest 'formatter.%.5' => sub {
 
 SKIP: {
   my $count = 2;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 
 #(deftest format.%.6
@@ -109,6 +125,21 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect i)
 #  nil)
+
+deftest 'format.%.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
+                        100 ) ) {
+    my $args = make_list( $i );
+    my $s1 = make_string( $i, initial_element => "\n" );
+    my $s2 = apply( sub { $f->format( @_ ) }, undef, "~#%", $args );
+    unless ( $s1 eq $s2 ) {
+      $collector->( $i );
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest formatter.%.6
 #  (let ((fn (formatter "~#%")))
@@ -121,4 +152,23 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect i))
 #  nil)
+
+deftest 'formatter.%.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~#%" );
+  my ( $remainder, $collector ) = _make_collector;
+  my $stream = []; # XXX Think about this
+  for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
+                        100 ) ) {
+    my $args = make_list( $i );
+    my $s1 = make_string( $i, initial_element => "\n" );
+    my $s2 = with_output_to_string $stream,  sub {
+      assert( apply( $fn, $stream, $args ) eq $args ); # XXX XXX
+    };
+    unless ( $s1 eq $s2 ) {
+      $collector->( $i );
+    }
+  }
+  return $remainder;
+}, [];
 }

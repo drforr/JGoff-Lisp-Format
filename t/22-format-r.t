@@ -745,6 +745,19 @@ SKIP: {
 #        collect (list i s1 s2))
 #  nil)
 
+deftest 'format.r.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s1 = $f->format( undef, "~r", $i );
+    my $s2 = $english_number_names[ $i ];
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest formatter.r.7
 #  (let ((fn (formatter "~r")))
 #    (loop for i from 0 to 100
@@ -753,6 +766,20 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect (list i s1 s2)))
 #  nil)
+
+deftest 'formatter.r.7' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~r" );
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s1 = formatter_call_to_string( $fn, $i );
+    my $s2 = $english_number_names[ $i ];
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest format.r.7a
 #  (loop for i from 1 to 100
@@ -763,6 +790,21 @@ SKIP: {
 #        unless (or (string= s1 s3) (string= s1 s4))
 #        collect (list i s1 s3 s4))
 #  nil)
+
+# XXX finish this....
+
+deftest 'format.r.7a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. 100 ) {
+    my $s1 = $f->format( undef, "~r", -$i );
+    my $s2 = $english_number_names[ $i + 1 ]; # XXX Simulate (cdr)
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 }
 
 SKIP: {

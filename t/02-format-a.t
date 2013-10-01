@@ -466,12 +466,12 @@ def_format_test 'format.a.28' =>
 deftest 'format.a.29' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v,,2A" );
-  my $remainder = [];
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( -4 .. 10 ) {
     my $s = $f->format( undef, "~v,,2A", $i, "ABC" );
     my $s2 = formatter_call_to_string( $fn, $i, "ABC" );
     is( $s, $s2, 'format.a.29' ); # XXX capture the name.
-    push @$remainder, $s;
+    $collector->( $s );
   };
   return $remainder;
 }, [

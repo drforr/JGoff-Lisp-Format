@@ -129,9 +129,6 @@ def_format_test 'format.\:*.4' =>
   "121",
   2;
 
-#SKIP: {
-#  diag "Make these tests work";
-#  skip 'Not ready yet', 31;
 # (def-format-test format.\:*.5
 #   "~A~A~v:*~A" (1 2 0 3) "123")
 
