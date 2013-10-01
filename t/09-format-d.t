@@ -264,8 +264,7 @@ deftest 'format.d.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn1 = $f->formatter( "~d" );
   my $fn2 = $f->formatter( "~:d" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( -999 .. 999 ) {
     my $s1 = $f->format( undef, "~d", $i );
     my $s2 = $f->format( undef, "~:d", $i );

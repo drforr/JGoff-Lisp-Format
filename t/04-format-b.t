@@ -34,8 +34,7 @@ SKIP: {
 deftest 'format.b.1' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~b" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   with_standard_io_syntax {
     for my $count ( 1 .. 1000 ) {
       my $x = ash( 1, 2 + random( 80 ) );
@@ -253,8 +252,7 @@ die "XXX not implemented yet"
 deftest 'format.b.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:B" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( -7 .. 7 ) {
     my $s1 = $f->format( undef, "~b", $i );
     my $s2 = $f->format( undef, "~:b", $i );
@@ -468,8 +466,7 @@ SKIP: {
 deftest 'format.b.18' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~b' );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~b', $x );
@@ -499,8 +496,7 @@ die "mini_universe not defined yet!";
 deftest 'format.b.19' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~:b' );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~:B', $x );
@@ -530,8 +526,7 @@ die "mini_universe not defined yet!";
 deftest 'format.b.20' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~@b' );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~@b', $x );
@@ -563,8 +558,7 @@ die "mini_universe not defined yet!";
 deftest 'format.b.21' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~:@b' );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = do {

@@ -92,8 +92,7 @@ def_format_test 'format.{.7' =>
 
 deftest 'format.{.8' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 10 ) {
     my $s = $f->format( undef, "~v{~A~}", $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
@@ -114,8 +113,7 @@ deftest 'format.{.8' => sub {
 deftest 'formatter.{.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V{~A~}" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 10 ) {
     my $s = formatter_call_to_string( $fn,
       $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
@@ -393,8 +391,7 @@ def_format_test 'format.\:{.10' =>
 
 deftest 'format.\:{.11' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 10 ) {
     $collector->(
       $f->format(
@@ -428,8 +425,7 @@ deftest 'format.\:{.11' => sub {
 
 deftest 'format.\:{.11' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $fn = $f->formatter( "~v:{~A~}" );
   for my $i ( 0 .. 10 ) {
     $collector->(
@@ -486,8 +482,7 @@ def_format_test 'format.\:{.14' =>
 
 deftest 'format.\:{.15' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 10 ) {
     $collector->(
       $f->format(
@@ -521,8 +516,7 @@ deftest 'format.\:{.15' => sub {
 
 deftest 'formatter.\:{.15' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $fn = $f->formatter( "~v:{~A~:}" );
   for my $i ( 0 .. 10 ) {
     $collector->(
@@ -660,8 +654,7 @@ SKIP: {
 
 deftest 'format.@{.10' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $x = [];
   for my $i ( 0 .. 10 ) {
     #$x = cons( $i, $x ); # XXX Need to move this to the bottom of the loop.
@@ -831,8 +824,7 @@ SKIP: {
 
 deftest 'format.\:@.10' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $x = [];
   for my $i ( 0 .. 10 ) {
     #$x = cons( list( $i ), $x ); # XXX Need to move this to the bottom of the loop.

@@ -62,8 +62,7 @@ def_format_test 'format.%.4' =>
 
 deftest 'format.%.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 100 ) {
     my $s1 = make_string( $i, initial_element => "\n" );
     my $s2 = $f->format( undef, "~v%", $i );
@@ -86,8 +85,7 @@ deftest 'format.%.5' => sub {
 deftest 'formatter.%.5' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v%" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 100 ) {
     my $s1 = make_string( $i, initial_element => "\n" );
     my $s2 = formatter_call_to_string( $fn, $i );

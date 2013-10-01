@@ -93,10 +93,10 @@ sub collect {
 }
 
 sub _make_collector {
-  my $remainder = shift;
-  sub {
+  my $remainder = [];
+  return ( $remainder, sub {
     push @$remainder, @_;
-  }
+  } );
 }
 
 sub list {

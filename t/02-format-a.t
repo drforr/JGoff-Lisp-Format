@@ -126,8 +126,7 @@ def_format_test 'format.a.5' =>
 deftest 'format.a.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~a" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s1 = string( $c );
     my $s2 = $f->format( undef, "~a", $s1 );
@@ -156,8 +155,7 @@ deftest 'format.a.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~A" );
   my $count = 0;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. min( 0x10000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
     my $c = code_char( $i );
@@ -626,8 +624,7 @@ def_format_test 'format.a.43' =>
 deftest 'format.a.44' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3,,vA" );
-  my $remainder = []; 
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, "~3,,vA", $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
@@ -663,8 +660,7 @@ deftest 'format.a.44' => sub {
 deftest 'format.a.44a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~3,,v@A' );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, '~3,,v@A', $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );

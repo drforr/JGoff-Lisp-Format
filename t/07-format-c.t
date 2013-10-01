@@ -23,8 +23,7 @@ use warnings;
 
 deftest 'format.c.1' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s = $f->format( undef, "~C", $c->toString ); # JMG XXX hack
     unless ( string( $c ) eq $s ) {
@@ -53,8 +52,7 @@ SKIP: {
 
 deftest 'format.c.1a' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
@@ -85,8 +83,7 @@ deftest 'format.c.1a' => sub {
 
 deftest 'format.c.2' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s = $f->format( undef, "~:c", $c );
     unless ( !graphic_char_p( $c ) or
@@ -115,8 +112,7 @@ deftest 'format.c.2' => sub {
 deftest 'format.c.2a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $count = 0;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( min( 0x10_000,
                    $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );
@@ -163,8 +159,7 @@ SKIP: {
 deftest 'format.c.4' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $count = 0;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s = $f->format( undef, "~:C", $c );
     unless ( graphic_char_p( $c ) or
@@ -191,8 +186,7 @@ deftest 'format.c.4' => sub {
 deftest 'format.c.4a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $count = 0;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( min( 0x10_000,
                    $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );
@@ -234,8 +228,7 @@ deftest 'format.c.4a' => sub {
 
 deftest 'format.c.5a' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
@@ -265,8 +258,7 @@ deftest 'format.c.5a' => sub {
 
 deftest 'format.c.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s1 = $f->format( undef, "~:C", $c );
     my $s2 = $f->format( undef, '~:@C', $c );
@@ -290,8 +282,7 @@ deftest 'format.c.6' => sub {
 
 deftest 'format.c.6a' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $count = 0;
   for my $i ( 0 .. min( 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {

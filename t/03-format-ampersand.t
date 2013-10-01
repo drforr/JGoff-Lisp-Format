@@ -62,8 +62,7 @@ def_format_test 'format.&.jgoff.1' =>
 
 deftest 'format.&.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $format_string = $f->format( undef, "~~~D&", $i );
@@ -87,8 +86,7 @@ deftest 'format.&.5' => sub {
 
 deftest 'formatter.&.5' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $format_string = $f->format( undef, "~~~D&", $i );
@@ -114,8 +112,7 @@ deftest 'formatter.&.5' => sub {
 
 deftest 'format.&.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = concatenate( "X",
                           make_string( $i, initial_element => "\n" ) );
@@ -142,8 +139,7 @@ deftest 'format.&.6' => sub {
 
 deftest 'formatter.&.6' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = concatenate( "X", make_string( $i, initial_element => "\n" ) );
     my $format_string = $f->format( undef, "X~~~D&", $i );
@@ -182,8 +178,7 @@ def_format_test 'format.&.8' =>
 
 deftest 'format.&.9' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $s2 = $f->format( undef, "~V&", $i );
@@ -206,8 +201,7 @@ deftest 'format.&.9' => sub {
 deftest 'formatter.&.9' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V&" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
     my $s2 = formatter_call_to_string( $fn, $i );
@@ -229,8 +223,7 @@ deftest 'formatter.&.9' => sub {
 
 deftest 'format.&.10' => sub {
   my $f = JGoff::Lisp::Format->new;
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
                         100 ) ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
@@ -263,8 +256,7 @@ SKIP: {
 deftest 'formatter.&.10' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~#&" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   my $stream = []; # XXX Think about this
   for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
                         100 ) ) {

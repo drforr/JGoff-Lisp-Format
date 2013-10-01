@@ -226,8 +226,7 @@ SKIP: {
 deftest 'format.o.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:O" );
-  my $remainder = [];
-  my $collector = _make_collector( $remainder );
+  my ( $remainder, $collector ) = _make_collector;
   for my $i ( -0777 .. +0777 ) {
     my $s1 = $f->format( undef, "~o", $i );
     my $s2 = $f->format( undef, "~:o", $i );
