@@ -18,6 +18,7 @@ our @EXPORT = qw(
   deftest
   formatter_call_to_string
   collect
+  _make_collector
   list
   concatenate
   with_standard_io_syntax
@@ -36,6 +37,7 @@ our @EXPORT = qw(
   with_output_to_string
   assert
   ash
+  random
 );
 
 our $most_positive_fixnum = ~0; # XXX Probably wrong
@@ -88,6 +90,13 @@ sub concatenate {
 sub collect {
   my $list = shift;
   push @$list, @_;
+}
+
+sub _make_collector {
+  my $remainder = shift;
+  sub {
+    push @$remainder, @_;
+  }
 }
 
 sub list {
@@ -214,6 +223,11 @@ sub assert {
 sub ash {
   my ( $shift, $value ) = @_;
   $value *= 2**$shift;
+}
+
+sub random {
+  my $value = shift;
+  return rand( $value );
 }
 
 1;

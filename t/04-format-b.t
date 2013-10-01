@@ -31,6 +31,37 @@ SKIP: {
 #           collect (list i s1 j s2))))
 #  nil)
 
+deftest 'format.b.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~b" );
+  my $remainder = [];
+  my $collector = _make_collector( $remainder );
+  with_standard_io_syntax {
+    for my $count ( 1 .. 1000 ) {
+      my $x = ash( 1, 2 + random( 80 ) );
+      my $i = random( $x + $x ) - $x;
+      my $s1 = $f->format( undef, "~B", $i );
+      my $s2 = formatter_call_to_string( $fn, $i );
+      my $j = do {
+        local $JGoff::Lisp::Format::read_base = 2;
+        read_from_string( $s1 );
+      };
+      if ( !( $s1 eq $s2 ) or
+           ( $i != $j ) or
+           find( sub { $_[0] + $_[1] }, $s1 ) or
+die "XXX not implemented yet"
+#           do {
+#             for my $c ( split //, $s1 ) {
+#             }
+#           }
+ ) {
+        $collector->( list( $i, $s1, $j, $s2 ) );
+      }
+    }
+  };
+  return $remainder;
+}, [];
+
 #(deftest format.b.2
 #  (let ((fn (formatter "~@b")))
 #    (with-standard-io-syntax
@@ -223,12 +254,13 @@ deftest 'format.b.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:B" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -7 .. 7 ) {
     my $s1 = $f->format( undef, "~b", $i );
     my $s2 = $f->format( undef, "~:b", $i );
     my $s3 = formatter_call_to_string( $fn, $i );
     unless( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $remainder, list( $i, $s1, $s2, $s3 ) );
+      $collector->( list( $i, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -437,6 +469,7 @@ deftest 'format.b.18' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~b' );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~b', $x );
@@ -447,7 +480,7 @@ die "mini_universe not defined yet!";
     my $s3 = formatter_call_to_string( $fn, $x );
     unless ( ( integerp $x ) or
              ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) ) {
-      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+      $collector->( list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -467,6 +500,7 @@ deftest 'format.b.19' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~:b' );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~:B', $x );
@@ -477,7 +511,7 @@ die "mini_universe not defined yet!";
     my $s3 = formatter_call_to_string( $fn, $x );
     unless ( ( integerp $x ) or
              ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) ) {
-      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+      $collector->( list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -497,6 +531,7 @@ deftest 'format.b.20' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~@b' );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = $f->format( undef, '~@b', $x );
@@ -507,7 +542,7 @@ die "mini_universe not defined yet!";
     my $s3 = formatter_call_to_string( $fn, $x );
     unless ( ( integerp $x ) or
              ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) ) {
-      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+      $collector->( list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;
@@ -529,6 +564,7 @@ deftest 'format.b.21' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~:@b' );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
 die "mini_universe not defined yet!";
   for my $x ( @JGoff::Lisp::Format::mini_universe ) {
     my $s1 = do {
@@ -544,7 +580,7 @@ die "mini_universe not defined yet!";
     unless ( integerp( $x ) or
              ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) or
              ( $s1 ne $s4 ) ) {
-      collect( $remainder, list( $x, $s1, $s2, $s3 ) );
+      $collector->( list( $x, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;

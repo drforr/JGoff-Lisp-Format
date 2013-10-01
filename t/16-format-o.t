@@ -227,12 +227,13 @@ deftest 'format.o.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~:O" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -0777 .. +0777 ) {
     my $s1 = $f->format( undef, "~o", $i );
     my $s2 = $f->format( undef, "~:o", $i );
     my $s3 = formatter_call_to_string( $fn, $i );
     unless ( ( $s1 eq $s2 ) and ( $s2 eq $s3 ) ) {
-      collect( $remainder, list( $i, $s1, $s2, $s3 ) );
+      $collector->( list( $i, $s1, $s2, $s3 ) );
     }
   }
   return $remainder;

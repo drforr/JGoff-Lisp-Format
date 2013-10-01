@@ -78,9 +78,9 @@ SKIP: {
 deftest 'format.cond.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
+    $collector->( $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
   }
   return $remainder;
 }, [
@@ -108,9 +108,9 @@ deftest 'formatter.cond.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             formatter_call_to_strng( $fn, $i ) );
+    $collector->( formatter_call_to_strng( $fn, $i ) );
   }
   return $remainder;
 }, [
@@ -194,9 +194,10 @@ SKIP: {
 deftest 'format.cond.13' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
+    $collector->(
+      $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
   }
   return $remainder;
 }, [
@@ -225,9 +226,9 @@ deftest 'formatter.cond.13' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~V[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             formatter_call_to_strng( $fn, $i ) );
+    $collector->( formatter_call_to_strng( $fn, $i ) );
   }
   return $remainder;
 }, [
@@ -253,9 +254,10 @@ deftest 'formatter.cond.13' => sub {
 deftest 'format.cond.14' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
+    $collector->(
+      $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
   }
   return $remainder;
 }, [
@@ -283,9 +285,9 @@ deftest 'formatter.cond.14' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             formatter_call_to_strng( $fn, undef, $i ) );
+    $collector->( formatter_call_to_strng( $fn, undef, $i ) );
   }
   return $remainder;
 }, [
@@ -344,11 +346,12 @@ SKIP: {
 deftest 'format.cond\:.1' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -100 .. 100 ) {
     my $s = $f->format( undef, "~[~:;a~]", $i );
     unless ( ( $i == 0 ) or
              ( $s eq "a" ) ) {
-      collect( $remainder, list( $i, $s ) );
+      $collector->( list( $i, $s ) );
     }
   }
   return $remainder;
@@ -366,11 +369,12 @@ deftest 'formatter.cond\:.1' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~[~:;a~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -100 .. 100 ) {
     my $s = formatter_call_to_string( $fn, $i );
     unless ( ( $i == 0 ) or
              ( $s eq "a" ) ) {
-      collect( $remainder, list( $i, $s ) );
+      $collector->( list( $i, $s ) );
     }
   }
   return $remainder;
@@ -421,8 +425,9 @@ SKIP: {
 deftest 'format.cond\:.5' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder, $f->format( undef, "~[a~;b~;c~;d~:;e~]", $i ) );
+    $collector->( $f->format( undef, "~[a~;b~;c~;d~:;e~]", $i ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
@@ -437,8 +442,9 @@ deftest 'formatter.cond\:.5' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~[a~;b~;c~;d~:;e~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder, formatter_call_to_string( $fn, $i ) );
+    $collector->( formatter_call_to_string( $fn, $i ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
@@ -451,9 +457,9 @@ deftest 'formatter.cond\:.5' => sub {
 deftest 'format.cond\:.6' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             $f->format( undef, "~v[a~;b~;c~;d~:;e~]", $i, undef ) );
+    $collector->( $f->format( undef, "~v[a~;b~;c~;d~:;e~]", $i, undef ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
@@ -468,8 +474,9 @@ deftest 'formatter.cond\:.6' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v[a~;b~;c~;d~:;e~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder, formatter_call_to_string( $fn, $i ) );
+    $collector->( formatter_call_to_string( $fn, $i ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
@@ -482,9 +489,9 @@ deftest 'formatter.cond\:.6' => sub {
 deftest 'format.cond\:.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder,
-             $f->format( undef, "~v[a~;b~;c~;d~:;e~]", undef, $i ) );
+    $collector->( $f->format( undef, "~v[a~;b~;c~;d~:;e~]", undef, $i ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];
@@ -499,8 +506,9 @@ deftest 'formatter.cond\:.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~v[a~;b~;c~;d~:;e~]" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( -1 .. 10 ) {
-    collect( $remainder, formatter_call_to_string( $fn, undef, $i ) );
+    $collector->( formatter_call_to_string( $fn, undef, $i ) );
   }
   return $remainder;
 }, [ "e", "a", "b", "c", "d", "e", "e", "e", "e", "e", "e", "e" ];

@@ -127,12 +127,13 @@ deftest 'format.a.7' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~a" );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
     my $s1 = string( $c );
     my $s2 = $f->format( undef, "~a", $s1 );
     my $s3 = formatter_call_to_string( $fn, $s1 );
     unless ( $s1 eq $s2 and $s2 eq $s3 ) {
-      collect( $remainder, list( $c, $s1, $s2, $s3 ) );
+      $collector->( list( $c, $s1, $s2, $s3 ) );
     }
   };
   return $remainder;
@@ -156,6 +157,7 @@ deftest 'format.a.8' => sub {
   my $fn = $f->formatter( "~A" );
   my $count = 0;
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( 0 .. min( 0x10000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
     my $c = code_char( $i );
@@ -164,10 +166,10 @@ deftest 'format.a.8' => sub {
     my $s3 = $c && formatter_call_to_string( $fn, $s1 );
     unless ( ( !defined( $c ) ) or ( $s1 eq $s2 ) or ( $s2 eq $s3 ) ) {
       $count++;
-      collect( $remainder, list( $c, $s1, $s2, $s3 ) );
+      $collector->( list( $c, $s1, $s2, $s3 ) );
     }
     if ( $count > 100 ) {
-      collect( "count limit exceeded" );
+      $collector->( "count limit exceeded" );
       last;
     }
   }
@@ -624,12 +626,13 @@ def_format_test 'format.a.43' =>
 deftest 'format.a.44' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( "~3,,vA" );
-  my $remainder = [];
+  my $remainder = []; 
+  my $collector = _make_collector( $remainder );
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, "~3,,vA", $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
-    push @$remainder, $s;
+    $collector->( $s );
   }
   return $remainder;
 }, [
@@ -661,11 +664,12 @@ deftest 'format.a.44a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~3,,v@A' );
   my $remainder = [];
+  my $collector = _make_collector( $remainder );
   for my $i ( 0 .. 6 ) {
     my $s = $f->format( undef, '~3,,v@A', $i, 'ABC' );
     my $s2 = formatter_call_to_string( $fn, $i, 'ABC' );
     is( $s, $s2, 'format.a.44' );
-    push @$remainder, $s;
+    $collector->( $s );
   }
   return $remainder;
 }, [
