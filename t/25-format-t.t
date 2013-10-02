@@ -20,13 +20,28 @@ SKIP: {
 #  (format nil "~0,0T")
 #  "")
 
+def_pprint_test 'format.t.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~0,0T" );
+}, "";
+
 #(def-pprint-test format.t.2
 #  (format nil "~1,0T")
 #  " ")
 
+def_pprint_test 'format.t.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~1,0T" );
+}, " ";
+
 #(def-pprint-test format.t.3
 #  (format nil "~0,1T")
 #  " ")
+
+def_pprint_test 'format.t.3' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~0,1T" );
+}, " ";
 
 #(def-pprint-test format.t.4
 #  (loop for i from 0 to 20
@@ -35,12 +50,34 @@ SKIP: {
 #        collect (list i s))
 #  nil)
 
+def_pprint_test 'format.t.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 20 ) {
+    my $s = $f->format( undef, "~0,1T" );
+    unless ( $s eq make_string( $i, initial_element => " " ) ){
+      $collector->( list( $i, $s ) );
+    }
+  }
+}, " ";
+
 #(def-pprint-test format.t.5
 #  (loop for i from 0 to 20
 #        for s = (format nil "~v,0T" i)
 #        unless (string= s (make-string i :initial-element #\Space))
 #        collect (list i s))
 #  nil)
+
+def_pprint_test 'format.t.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 20 ) {
+    my $s = $f->format( undef, "~v,0T", $i );
+    unless ( $s eq make_string( $i, initial_element => " " ) ){
+      $collector->( list( $i, $s ) );
+    }
+  }
+}, " ";
 
 #(def-pprint-test format.t.6
 #  (loop for n1 = (random 30)
@@ -91,6 +128,17 @@ SKIP: {
 #        collect (list i s))
 #  nil)
 
+def_pprint_test 'format.t.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. 20 ) {
+    my $s = $f->format( undef, "~v,vT", undef, $i );
+    unless ( $s eq make_string( $i + 1, initial_element => " " ) ){
+      $collector->( list( $i, $s ) );
+    }
+  }
+}, " ";
+
 #(def-pprint-test format.t.9
 #  (loop for i from 1 to 20
 #        for s = (format nil "~v,vT" i nil)
@@ -98,9 +146,26 @@ SKIP: {
 #        collect (list i s))
 #  nil)
 
+def_pprint_test 'format.t.8' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. 20 ) {
+    my $s = $f->format( undef, "~v,vT", $i, undef );
+    unless ( $s eq make_string( $i, initial_element => " " ) ){
+      $collector->( list( $i, $s ) );
+    }
+  }
+}, " ";
+
 #(def-pprint-test format.t.10
 #  (format nil "XXXXX~2,0T")
 #  "XXXXX")
+
+def_pprint_test 'format.t.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "XXXXX~2,0T" );
+}, "XXXXX";
+
 }
 
 ### @t
@@ -114,6 +179,11 @@ SKIP: {
 #  (format nil "~1,1@t")
 #  " ")
 
+def_pprint_test 'format.@t.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~1,1@T' );
+}, " ";
+
 #(def-pprint-test format.@t.2
 #  (loop for colnum from 0 to 20
 #        for s1 = (format nil "~v,1@t" colnum)
@@ -121,6 +191,18 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect (list colnum s1 s2))
 #  nil)
+
+def_pprint_test 'format.@t.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $colnum ( 0 .. 20 ) {
+    my $s1 = $f->format( undef, '~v,1@t', $colnum );
+    my $s2 = make_string( $colnum, initial_element => " " );
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $colnum, $s1, $s2 ) );
+    }
+  }
+}, " ";
 
 #(def-pprint-test format.@t.3
 #  (loop for colnum = (random 50)
@@ -171,6 +253,11 @@ SKIP: {
 #  (format nil "XX~10:tYY")
 #  "XXYY")
 
+def_pprint_test 'format.\:t.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "XX~10:tYY" );
+}, "XXYY";
+
 ### A pretty printing stream, but *print-pretty* is nil
 
 #(def-pprint-test format.\:t.2
@@ -197,25 +284,55 @@ SKIP: {
 #  (format nil "~<[~;~0,0:T~;]~:>" '(a))
 #  "[]")
 
+def_pprint_test 'format.\:t.4' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~0,0:T~;]~:>", [ 'a' ] );
+}, "[]";
+
 #(def-pprint-test format.\:t.5
 #  (format nil "~<[~;~1,0:T~;]~:>" '(a))
 #  "[ ]")
+
+def_pprint_test 'format.\:t.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~1,0:T~;]~:>", [ 'a' ] );
+}, "[ ]";
 
 #(def-pprint-test format.\:t.5a
 #  (format nil "~<[~;~,0:T~;]~:>" '(a))
 #  "[ ]")
 
+def_pprint_test 'format.\:t.5a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~,0:T~;]~:>", [ 'a' ] );
+}, "[ ]";
+
 #(def-pprint-test format.\:t.6
 #  (format nil "~<[~;~0,1:T~;]~:>" '(a))
 #  "[ ]")
+
+def_pprint_test 'format.\:t.6' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~0,1:T~;]~:>", [ 'a' ] );
+}, "[ ]";
 
 #(def-pprint-test format.\:t.6a
 #  (format nil "~<[~;~0,:T~;]~:>" '(a))
 #  "[ ]")
 
+def_pprint_test 'format.\:t.6a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~0,:T~;]~:>", [ 'a' ] );
+}, "[ ]";
+
 #(def-pprint-test format.\:t.6b
 #  (format nil "~<[~;~0:T~;]~:>" '(a))
 #  "[ ]")
+
+def_pprint_test 'format.\:t.6b' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~0:T~;]~:>", [ 'a' ] );
+}, "[ ]";
 
 #(def-pprint-test format.\:t.7
 #  (loop for i from 0 to 20
@@ -257,9 +374,19 @@ SKIP: {
 #  (format nil "~<[~;~2,0:T~;]~:>" '(a))
 #  "[  ]")
 
+def_pprint_test 'format.\:t.10' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;~2,0:T~;]~:>", [ 'a' ] );
+}, "[  ]";
+
 #(def-pprint-test format.\:t.11
 #  (format nil "~<[~;XXXX~2,0:T~;]~:>" '(a))
 #  "[XXXX]")
+
+def_pprint_test 'format.\:t.11' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<[~;XXXX~2,0:T~;]~:>", [ 'a' ] );
+}, "[XXXX]";
 
 #(def-pprint-test format.\:t.12
 #  (loop for n0 = (random 20)
@@ -314,21 +441,46 @@ SKIP: {
 #  (format nil "~<XXX~;~1,1:@t~;YYY~:>" '(a))
 #  "XXX YYY")
 
+def_pprint_test 'format.\:@t.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~<XXX~;~1,1:@t~;YYY~:>', [ 'a' ] );
+}, "XXX YYY";
+
 #(def-pprint-test format.\:@t.1a
 #  (format nil "~<XXX~;~,1:@t~;YYY~:>" '(a))
 #  "XXX YYY")
+
+def_pprint_test 'format.\:@t.1a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~<XXX~;~,1:@t~;YYY~:>', [ 'a' ] );
+}, "XXX YYY";
 
 #(def-pprint-test format.\:@t.1b
 #  (format nil "~<XXX~;~1,:@t~;YYY~:>" '(a))
 #  "XXX YYY")
 
+def_pprint_test 'format.\:@t.1b' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~<XXX~;~1,:@t~;YYY~:>', [ 'a' ] );
+}, "XXX YYY";
+
 #(def-pprint-test format.\:@t.1c
 #  (format nil "~<XXX~;~1:@t~;YYY~:>" '(a))
 #  "XXX YYY")
 
+def_pprint_test 'format.\:@t.1c' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~<XXX~;~1:@t~;YYY~:>', [ 'a' ] );
+}, "XXX YYY";
+
 #(def-pprint-test format.\:@t.1d
 #  (format nil "~<XXX~;~:@t~;YYY~:>" '(a))
 #  "XXX YYY")
+
+def_pprint_test 'format.\:@t.1d' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~<XXX~;~:@t~;YYY~:>', [ 'a' ] );
+}, "XXX YYY";
 
 #(def-pprint-test format.\:@t.2
 #  (loop for colnum from 0 to 20

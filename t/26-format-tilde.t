@@ -33,6 +33,20 @@ SKIP: {
 #        collect (list i s s2))
 #  nil)
 
+deftest 'format.~.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s = make_string( $i, initial_element => "~" );
+    my $format_string = $f->format( undef, "~~~D~~", $i );
+    my $s2 = $f->format( undef, $format_string );
+    unless ( $s eq $s2 ) {
+      $collector->( list( $i, $s, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest formatter.~.2
 #  (loop for i from 0 to 100
 #        for s = (make-string i :initial-element #\~)
@@ -42,6 +56,22 @@ SKIP: {
 #        unless (string= s s2)
 #        collect (list i s s2))
 #  nil)
+
+deftest 'formatter.~.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s = make_string( $i, initial_element => "~" );
+    my $format_string = $f->format( undef, "~~~D~~", $i );
+    my $fn = $f->formatter( $format_string );
+    my $s2 = formatter_call_to_string( $fn );
+    unless ( $s eq $s2 ) {
+      $collector->( list( $i, $s, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 }
 
 # (def-format-test format.~.3
@@ -65,6 +95,19 @@ SKIP: {
 #        collect (list i s s2))
 #  nil)
 
+deftest 'format.~.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s = make_string( $i, initial_element => "~" );
+    my $s2 = $f->format( undef, "~V~", $i );
+    unless ( $s eq $s2 ) {
+      $collector->( list( $i, $s, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest formatter.~.4
 #  (let ((fn (formatter "~v~")))
 #    (loop for i from 0 to 100
@@ -74,6 +117,20 @@ SKIP: {
 #          collect (list i s s2)))
 #  nil)
 
+deftest 'formatter.~.2' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn= $f->formatter( "~v~" );
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s = make_string( $i, initial_element => "~" );
+    my $s2 = formatter_call_to_string( $fn, $i );
+    unless ( $s eq $s2 ) {
+      $collector->( list( $i, $s, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.~.5
 #  (loop for i from 0 to (min (- call-arguments-limit 3) 100)
 #        for s = (make-string i :initial-element #\~)
@@ -82,6 +139,21 @@ SKIP: {
 #        unless (string= s s2)
 #        collect (list i s s2))
 #  nil)
+
+deftest 'format.~.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
+                        100 ) ) {
+    my $s = make_string( $i, initial_element => "~" );
+    my $args = make_list( $i );
+    my $s2 = apply( sub { $f->format( @_ ) }, undef, "~#~", @$args );
+    unless ( $s eq $s2 ) {
+      $collector->( list( $i, $s, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest formatter.~.5
 #  (let ((fn (formatter "~#~")))

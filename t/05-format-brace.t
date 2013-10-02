@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 92;
+use Test::More tests => 90;
 
 BEGIN {
   use lib 't/lib';
@@ -317,10 +317,6 @@ def_format_test 'format.\:{.3' =>
   [ "", undef ],
   "";
 
-SKIP: {
-  my $count = 27;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
 # (def-format-test format.\:{.4
 #   "~:{~}" ("~A" nil) "")
 
@@ -337,6 +333,10 @@ def_format_test 'format.\:{.5' =>
   [ "X", [ undef, [ 1, 2 ], [ 3 ] ] ],
   "XXX";
 
+SKIP: {
+  my $count = 11;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (deftest format.\:{.6
 #   (format nil "~:{~}" (formatter "~A") '((1 2) (3) (4 5 6)))
 #   "134")
@@ -540,6 +540,8 @@ deftest 'formatter.\:{.15' => sub {
   '1234',
 ];
 
+}
+
 # (def-format-test format.\:{.16
 #   "~:{ABC~:}" ('(nil)) "ABC")
 
@@ -583,6 +585,10 @@ def_format_test 'format.@{.2' =>
   undef,
   "";
 
+SKIP: {
+  my $count = 7;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.@{.3
 #   "~@{X ~A Y Z~}" (nil) "X NIL Y Z")
 
@@ -642,7 +648,7 @@ def_format_test 'format.@{.9' =>
 }
 
 SKIP: {
-  my $count = 2;
+  my $count = 1;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
 # (deftest format.@{.10
@@ -712,7 +718,6 @@ def_format_test 'format.@{.12' => # XXX double-check
   #[ $f->formatter( "X~AY" ), 1 ],
   [ JGoff::Lisp::Format->new->formatter( "X~AY" ), 1 ],
   "X1Y";
-#}
 
 #def_format_test format.@{.13
 #  "~v@{~}" (1 (formatter "X") 'foo) "X" 1)
@@ -737,10 +742,9 @@ def_format_test 'format.\:@{.1' => # }
   "";
 
 SKIP: {
-  my $count = 8;
+  my $count = 9;
   my $str = "$count tests not working yet";
   diag $str; skip $str, $count;
-
 # (def-format-test format.\:@{.2 ;;; }
 #   "~:@{~A~}" ('(1 2) '(3) '(4 5 6)) "134")
 
