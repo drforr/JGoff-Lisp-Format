@@ -798,7 +798,7 @@ deftest 'format.r.7a' => sub {
   my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = $f->format( undef, "~r", -$i );
-    my $s2 = $english_number_names[ $i + 1 ]; # XXX Simulate (cdr)
+    my $s2 = $english_number_names[ $i ]; # XXX needs a bit of TLC
     unless ( $s1 eq $s2 ) {
       $collector->( list( $i, $s1, $s2 ) );
     }
@@ -977,6 +977,19 @@ SKIP: {
 #        collect (list i s1 s2))
 #  nil)
 
+deftest 'format.r.18' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s1 = $f->format( undef, "~:r", $i );
+    my $s2 = $english_ordinal_names[ $i ]; # XXX needs a bit of TLC
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest formatter.r.18
 #  (let ((fn (formatter "~:r")))
 #    (loop for i from 0 to 100
@@ -985,6 +998,20 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect (list i s1 s2)))
 #  nil)
+
+deftest 'formatter.r.18' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( "~:r" );
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 0 .. 100 ) {
+    my $s1 = formatter_call_to_string( $fn, $i );
+    my $s2 = $english_ordinal_names[ $i ]; # XXX needs a bit of TLC
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest format.r.18a
 #  (loop for i from 1 to 100
@@ -996,6 +1023,21 @@ SKIP: {
 #        collect (list i s1 s3 s4))
 #  nil)
 
+deftest 'format.r.18a' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. 100 ) {
+    my $s1 = $f->format( undef, "~:r", -$i );
+    my $s2 = $english_ordinal_names[ $i ]; # XXX needs a bit of TLC
+    my $s3 = concatenate( "negative ", $s2 );
+    my $s4 = concatenate( "positive ", $s2 );
+    unless ( ( $s1 eq $s3 ) or ( $s1 eq $s4 ) ) {
+      $collector->( list( $i, $s1, $s3, $s4 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.r.19
 #  (loop for i from 1
 #        for s1 in *roman-numerals*
@@ -1003,6 +1045,19 @@ SKIP: {
 #        unless (string= s1 s2)
 #        collect (list i s1 s2))
 #  nil)
+
+deftest 'format.r.19' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. $#roman_numerals ) { # XXX needs a bit of TLC
+    my $s1 = $roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
+    my $s2 = $f->format( undef, '~@r', $i );
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 
 #(deftest formatter.r.19
 #  (let ((fn (formatter "~@r")))
@@ -1012,6 +1067,20 @@ SKIP: {
 #          unless (string= s1 s2)
 #          collect (list i s1 s2)))
 #  nil)
+
+deftest 'formatter.r.19' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my $fn = $f->formatter( '~@r' );
+  my ( $remainder, $collector ) = _make_collector;
+  for my $i ( 1 .. $#roman_numerals ) { # XXX needs a bit of TLC
+    my $s1 = $roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
+    my $s2 = formatter_call_to_string( $fn, $i );
+    unless ( $s1 eq $s2 ) {
+      $collector->( list( $i, $s1, $s2 ) );
+    }
+  }
+  return $remainder;
+}, [];
 }
 
 ### Old roman numerals
