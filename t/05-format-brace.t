@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 90;
+use Test::More tests => 91;
 
 BEGIN {
   use lib 't/lib';
@@ -334,7 +334,7 @@ def_format_test 'format.\:{.5' =>
   "XXX";
 
 SKIP: {
-  my $count = 11;
+  my $count = 2;
   my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 # (deftest format.\:{.6
@@ -357,6 +357,7 @@ def_format_test 'format.\:{.7' =>
   "~0:{XYZ~}",
   [ [ [ 1 ] ] ],
   "";
+}
 
 # (def-format-test format.\:{.8
 #   "~2:{XYZ~}" ('((1))) "XYZ")
@@ -374,6 +375,10 @@ def_format_test 'format.\:{.9' =>
   [ [ [ 1 ], [ 2 ] ] ],
   "12";
 
+SKIP: {
+  my $count = 3;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # XXX Testing a property-list, close to a hash.
 # (def-format-test format.\:{.10
 #   "~2:{~A~}" ('((1 X) (2 Y) (3 Z))) "12")
@@ -449,6 +454,8 @@ deftest 'format.\:{.11' => sub {
   '123456',
 ];
 
+}
+
 # (def-format-test format.\:{.12
 #   "~V:{X~}" (nil '((1) (2) (3) nil (5))) "XXXXX")
 
@@ -457,6 +464,10 @@ def_format_test 'format.\:{.12' =>
   [ undef, [ [ 1 ], [ 2 ], [ 3 ], undef, [ 5 ] ] ],
   "XXXXX";
 
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.\:{.13
 #   "~#:{~A~}" ('((1) (2) (3) (4) (5)) 'foo 'bar) "123" 2)
 
@@ -587,7 +598,7 @@ def_format_test 'format.@{.2' =>
 
 SKIP: {
   my $count = 7;
-  my $str = "$count tests not implemented yet";
+  my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 # (def-format-test format.@{.3
 #   "~@{X ~A Y Z~}" (nil) "X NIL Y Z")
