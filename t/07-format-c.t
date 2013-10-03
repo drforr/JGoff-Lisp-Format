@@ -215,6 +215,19 @@ deftest 'format.c.4a' => sub {
 #        collect (list c s c2))
 #  nil)
 
+deftest 'format.c.5' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  my ( $remainder, $collector ) = _make_collector;
+  for my $c ( @JGoff::Lisp::Format::Utils::standard_chars ) {
+    my $s = $f->format( undef, '~@C', $c->toString ); # JMG XXX hack
+    my $c2 = read_from_string( $s );
+    unless ( string( $c ) eq $c2 ) {
+      $collector->( list( $c, $s, $c2 ) );
+    }
+  }
+  return $remainder;
+}, [];
+
 #(deftest format.c.5a
 #  (loop with count = 0
 #        for i from 0 below (min #x10000 char-code-limit)

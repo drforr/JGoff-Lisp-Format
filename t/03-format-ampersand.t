@@ -261,7 +261,7 @@ deftest 'formatter.&.10' => sub {
   for my $i ( 1 .. min( $JGoff::Lisp::Format::Utils::call_arguments_limit - 3,
                         100 ) ) {
     my $s1 = make_string( $i - 1, initial_element => "\n" );
-    my $args = [ 0 .. $i ]; # XXX More perlish
+    my $args = [ 0 .. $i - 1 ]; # XXX More perlish
     my $s2 = with_output_to_string $stream, sub {
       assert( apply( $fn, $stream, $args ) eq $args ); # XXX XXX
     };
