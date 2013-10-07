@@ -4,7 +4,7 @@ use Moose;
 
 extends 'JGoff::Lisp::Format::Token';
 
-has arguments => ( is => 'rw' );
+has parameters => ( is => 'rw' );
 has colon => ( is => 'ro', isa => 'Bool' );
 has at => ( is => 'ro', isa => 'Bool' );
 
@@ -29,7 +29,7 @@ our $VERSION = '0.01';
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  $self->_resolve_arguments(
+  $self->_resolve_parameters(
     $core, [
       [ 'mincol' => 0 ],
       [ 'colinc' => 1 ],

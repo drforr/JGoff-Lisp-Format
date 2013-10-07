@@ -79,7 +79,7 @@ sub ___parse_token {
       $value = $value + 0 if $value =~ m{ ^ [-+] }x; # Numify numbers
       $value = lc $value if $value eq 'V';           # Canonicalize 'V'
     }
-    push @{ $rv->{arguments} }, $value;
+    push @{ $rv->{parameters} }, $value;
   }
   if ( $match =~ s{ ^ $PARAMETER }{}x ) {
     my $value = $1;
@@ -87,10 +87,10 @@ sub ___parse_token {
       $value = $value + 0 if $value =~ m{ ^ [-+] }x;  # Numify numbers
       $value = lc $value if $value eq 'V'; # Canonicalie 'V'
     }
-    push @{ $rv->{arguments} }, $value;
+    push @{ $rv->{parameters} }, $value;
   }
-  elsif ( $rv->{arguments} ) {
-    push @{ $rv->{arguments} }, undef;
+  elsif ( $rv->{parameters} ) {
+    push @{ $rv->{parameters} }, undef;
   }
   while ( $match =~ s{ ^ ( [:@] ) }{}x ) {
     $rv->{colon} = 1 if $1 eq ':';
@@ -160,20 +160,20 @@ sub __token_ampersand_percent_vertical_bar_tilde {
   my $rv = $self->___parse_token( $match );
 
   return JGoff::Lisp::Format::Tokens::Ampersand->new(
-    n => defined $rv->{arguments} &&
-         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
   ) if $rv->{format} eq q{~&};
 
   return JGoff::Lisp::Format::Tokens::Percent->new(
-    n => defined $rv->{arguments} &&
-         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
     colon => $rv->{colon},
     at => $rv->{at}
   ) if $rv->{format} eq q{~%};
 
   return JGoff::Lisp::Format::Tokens::Tilde->new(
-    n => defined $rv->{arguments} &&
-         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
   ) if $rv->{format} eq q{~~};
 
   return JGoff::Lisp::Format::Tokens::Vertical_Bar->new( %$rv );
@@ -188,8 +188,8 @@ sub __token_asterisk_open_bracket {
   my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\[] }x );
   my $rv = $self->___parse_token( $match );
   return JGoff::Lisp::Format::Tokens::Asterisk->new(
-    n => defined $rv->{arguments} &&
-         @{ $rv->{arguments} } ? $rv->{arguments}->[0] : undef,
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
     colon => $rv->{colon},
     at => $rv->{at}
   ) if $rv->{format} eq q{~*};

@@ -73,21 +73,21 @@ sub _argument_to_base {
 
 # }}}
 
-# {{{ _resolve_arguments( $core, $tuples )
+# {{{ _resolve_parameters( $core, $tuples )
 
-sub _resolve_arguments {
+sub _resolve_parameters {
   my $self = shift;
   my ( $core, $tuples ) = @_;
 
-  if ( $self->arguments ) {
+  if ( $self->parameters ) {
     for my $tuple ( @$tuples ) {
       my ( $name, $default ) = @$tuple;
-      my $value = shift @{ $self->arguments };
+      my $value = shift @{ $self->parameters };
       if ( defined $value ) {
         $self->{$name} = $value;
       }
     }
-    delete $self->{arguments};
+    delete $self->{parameters};
   }
   for my $tuple ( @$tuples ) {
     my ( $name, $default ) = @$tuple;

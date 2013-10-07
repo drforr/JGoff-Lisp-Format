@@ -2,7 +2,7 @@ package JGoff::Lisp::Format::Tokens::Open_Brace;
 
 use Moose;
 
-has arguments => ( is => 'rw' );
+has parameters => ( is => 'rw' );
 has colon => ( is => 'ro', isa => 'Bool' );
 has at => ( is => 'ro', isa => 'Bool' );
 
@@ -30,8 +30,8 @@ sub format {
   my $iteration_count = undef;
   my $output = '';
 
-  if ( $self->arguments and defined( $self->arguments->[0] ) ) {
-    my $first_argument = $self->arguments->[0];
+  if ( $self->parameters and defined( $self->parameters->[0] ) ) {
+    my $first_argument = $self->parameters->[0];
     if ( $first_argument eq '#' ) {
       $iteration_count = $core->num_arguments;
     }

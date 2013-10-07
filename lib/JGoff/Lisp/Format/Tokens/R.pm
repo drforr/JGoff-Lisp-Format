@@ -4,7 +4,7 @@ use Moose;
 
 extends 'JGoff::Lisp::Format::Token';
 
-has arguments => ( is => 'rw' );
+has parameters => ( is => 'rw' );
 has colon => ( is => 'ro', isa => 'Bool' );
 has at => ( is => 'ro', isa => 'Bool' );
 
@@ -51,12 +51,12 @@ sub _old_roman_numeral {
 sub format {
   my $self = shift;
   my ( $core ) = @_;
-  my $has_arguments = $self->arguments and
-                      @{ $self->arguments } ? 1 : undef;
-  my $not_number = $self->arguments and
-                   @{ $self->arguments } and
-                   $self->arguments->[0] =~ /[#v]/;
-  $self->_resolve_arguments(
+  my $has_arguments = $self->parameters and
+                      @{ $self->parameters } ? 1 : undef;
+  my $not_number = $self->parameters and
+                   @{ $self->parameters } and
+                   $self->parameters->[0] =~ /[#v]/;
+  $self->_resolve_parameters(
     $core, [
       [ 'radix' => 10 ],
       [ 'mincol' => 0 ],
