@@ -30,22 +30,6 @@ sub format {
   my $iteration_count = undef;
   my $output = '';
 
-  if ( $self->colon and not $self->at ) {
-    if ( $core->current_argument and
-         ref( $core->current_argument ) and
-         ref( $core->current_argument ) eq 'ARRAY' ) {
-      for my $argument ( @{ $core->current_argument } ) {
-        my $sub_self = $core->new(
-          stream => $core->stream,
-          tree => $operation,
-          arguments => $argument
-        );
-        $output .= $sub_self->_format;
-      }
-      return $output;
-    }
-  }
-
   if ( $self->arguments and defined( $self->arguments->[0] ) ) {
     my $first_argument = $self->arguments->[0];
     if ( $first_argument eq '#' ) {
@@ -62,7 +46,20 @@ sub format {
 
   if ( $core->current_argument and
        ref( $core->current_argument ) and
-       ref( $core->current_argument ) eq 'CODE' ) {
+       ref( $core->current_argument ) eq 'ARRAY' and
+       ( $self->colon and not $self->at ) ) {
+    for my $argument ( @{ $core->current_argument } ) {
+      my $sub_self = $core->new(
+        stream => $core->stream,
+        tree => $operation,
+        arguments => $argument
+      );
+      $output .= $sub_self->_format;
+    }
+  }
+  elsif ( $core->current_argument and
+          ref( $core->current_argument ) and
+          ref( $core->current_argument ) eq 'CODE' ) {
     my $fn = $core->current_argument;
     $core->forward_argument;
     if ( $core->remaining_arguments and
@@ -77,8 +74,8 @@ sub format {
       }
     }
   }
-  if ( $core->current_argument and
-       ref( $core->current_argument ) ) {
+  elsif ( $core->current_argument and
+          ref( $core->current_argument ) ) {
     for my $argument ( @{ $core->current_argument } ) {
       if ( defined $iteration_count ) {
         last if $iteration_count-- <= 0;
@@ -108,17 +105,15 @@ sub format {
       }
     }
   }
-  else {
-    if ( $close->colon and
+  elsif ( $close->colon and
          ( ( defined( $iteration_count ) and $iteration_count != 0 ) or
            ( !defined( $iteration_count ) ) ) ) {
-      my $sub_self = $core->new(
-        stream => $core->stream,
-        tree => $operation,
-        arguments => undef
-      );
-      $output .= $sub_self->_format;
-    }
+    my $sub_self = $core->new(
+      stream => $core->stream,
+      tree => $operation,
+      arguments => undef
+    );
+    $output .= $sub_self->_format;
   }
   return $output;
 }
