@@ -47,8 +47,12 @@ sub format {
   if ( $core->current_argument and
        ref( $core->current_argument ) and
        ref( $core->current_argument ) eq 'ARRAY' and
-       ( $self->colon and not $self->at ) ) {
+       ( $self->colon and
+         not $self->at ) ) {
     for my $argument ( @{ $core->current_argument } ) {
+      if ( defined $iteration_count ) {
+        last if $iteration_count-- <= 0;
+      }
       my $sub_self = $core->new(
         stream => $core->stream,
         tree => $operation,
@@ -59,23 +63,8 @@ sub format {
   }
   elsif ( $core->current_argument and
           ref( $core->current_argument ) and
-          ref( $core->current_argument ) eq 'CODE' ) {
-    my $fn = $core->current_argument;
-    $core->forward_argument;
-    if ( $core->remaining_arguments and
-         ref( $core->remaining_arguments ) and
-         ref( $core->remaining_arguments ) eq 'ARRAY' and
-         @{ $core->remaining_arguments } ) {
-      for my $argument ( @{ $core->remaining_arguments } ) {
-        if ( defined $iteration_count ) {
-          last if $iteration_count-- <= 0;
-        }
-        $output .= $fn->( $core->stream, $argument );
-      }
-    }
-  }
-  elsif ( $core->current_argument and
-          ref( $core->current_argument ) ) {
+          ref( $core->current_argument ) eq 'ARRAY' and
+          @{ $core->current_argument } ) {
     for my $argument ( @{ $core->current_argument } ) {
       if ( defined $iteration_count ) {
         last if $iteration_count-- <= 0;
@@ -88,9 +77,24 @@ sub format {
       $output .= $sub_self->_format;
     }
   }
+  elsif ( $core->current_argument and
+          ref( $core->current_argument ) and
+          ref( $core->current_argument ) eq 'CODE' ) {
+    my $fn = $core->forward_argument;
+    if ( $core->remaining_arguments and
+         ref( $core->remaining_arguments ) and
+         ref( $core->remaining_arguments ) eq 'ARRAY' and
+         @{ $core->remaining_arguments } ) {
+      for my $argument ( @{ $core->remaining_arguments } ) {
+        if ( defined $iteration_count ) {
+          last if $iteration_count-- <= 0;
+        }
+        $output .= $fn->( $core->stream, $argument );
+      }
+    }
+  }
   elsif ( $core->current_argument ) {
-    my $format = $core->current_argument;
-    $core->forward_argument;
+    my $format = $core->forward_argument;
     if ( $core->current_argument ) {
       for my $argument ( @{ $core->current_argument } ) {
         if ( defined $iteration_count ) {

@@ -77,9 +77,11 @@ sub remaining_arguments {
 sub forward_argument {
   my $self = shift;
   return unless $self->arguments and @{ $self->arguments };
+  my $argument = $self->arguments->[ $self->argument_index ];
   if ( $self->argument_index < $#{ $self->arguments } ) {
     $self->argument_index( $self->argument_index + 1 );
   }
+  return $argument;
 }
 
 =head2 backward_argument()
