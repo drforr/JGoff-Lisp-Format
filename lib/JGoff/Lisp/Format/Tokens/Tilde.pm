@@ -6,8 +6,8 @@ extends 'JGoff::Lisp::Format::Token';
 
 has arguments => ( is => 'rw' );
 has n => ( is => 'rw' );
-has at => ( is => 'ro' );
-has colon => ( is => 'ro' );
+has at => ( is => 'ro', isa => 'Bool' );
+has colon => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 

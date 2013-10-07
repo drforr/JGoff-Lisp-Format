@@ -2,8 +2,8 @@ package JGoff::Lisp::Format::Tokens::Newline;
 
 use Moose;
 
-has at => ( is => 'ro' );
-has colon => ( is => 'ro' );
+has at => ( is => 'ro', isa => 'Bool' );
+has colon => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 

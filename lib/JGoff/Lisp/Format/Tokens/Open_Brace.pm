@@ -3,8 +3,8 @@ package JGoff::Lisp::Format::Tokens::Open_Brace;
 use Moose;
 
 has arguments => ( is => 'rw' );
-has colon => ( is => 'ro' );
-has at => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
+has at => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -110,7 +110,8 @@ sub format {
     }
   }
   elsif ( $close->colon and
-         ( ( defined( $iteration_count ) and $iteration_count != 0 ) or
+         ( ( defined( $iteration_count ) and
+             $iteration_count != 0 ) or
            ( !defined( $iteration_count ) ) ) ) {
     my $sub_self = $core->new(
       stream => $core->stream,

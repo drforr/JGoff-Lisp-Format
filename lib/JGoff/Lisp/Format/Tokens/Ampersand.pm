@@ -28,20 +28,29 @@ sub format {
   my $self = shift;
   my ( $core, $is_first, $before_percent ) = @_;
 
-  if ( $self->n and $self->n eq 'v' ) {
+  if ( $self->n and
+       $self->n eq 'v' ) {
     $self->n( $core->current_argument );
     $core->forward_argument;
   }
-  elsif ( $self->n and $self->n eq '#' ) {
+  elsif ( $self->n and
+          $self->n eq '#' ) {
     $self->n( $core->num_arguments );
   }
 
   return "\n" x $self->n
-    if $self->n and $self->n > 0 and $is_first == 0 and $before_percent == 0;
+    if $self->n and
+       $self->n > 0 and
+       $is_first == 0 and
+       $before_percent == 0;
   return "\n" x ( $self->n - 1 )
-    if $self->n and $self->n > 0 and $is_first == 1 and $before_percent == 0;
+    if $self->n and
+       $self->n > 0 and
+       $is_first == 1 and
+       $before_percent == 0;
   return "\n"
-    if $is_first eq '' and $before_percent == 0;
+    if $is_first eq '' and
+       $before_percent == 0;
   return "";
 }
 

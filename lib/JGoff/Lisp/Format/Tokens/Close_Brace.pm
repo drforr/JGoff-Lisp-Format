@@ -2,8 +2,8 @@ package JGoff::Lisp::Format::Tokens::Close_Brace;
 
 use Moose;
 
-has colon => ( is => 'ro' );
-has at => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
+has at => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 

@@ -4,7 +4,7 @@ use Moose;
 
 extends 'JGoff::Lisp::Format::Token';
 
-has colon => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -28,8 +28,7 @@ sub format {
   my $self = shift;
   my ( $core ) = @_;
 
-  my $argument = $core->current_argument;
-  $core->forward_argument;
+  my $argument = $core->forward_argument;
   if ( $self->colon ) {
     return $self->char_name( $argument );
   }

@@ -5,8 +5,8 @@ use Moose;
 extends 'JGoff::Lisp::Format::Token';
 
 has arguments => ( is => 'rw' );
-has colon => ( is => 'ro' );
-has at => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
+has at => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -38,8 +38,7 @@ sub format {
     ]
   );
 
-  my $argument = $core->current_argument;
-  $core->forward_argument;
+  my $argument = $core->forward_argument;
   return $self->_argument_to_base( 10, $argument );
 }
 

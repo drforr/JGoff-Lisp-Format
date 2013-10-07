@@ -5,8 +5,8 @@ use Moose;
 extends 'JGoff::Lisp::Format::Token';
 
 has arguments => ( is => 'rw' );
-has colon => ( is => 'ro' );
-has at => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
+has at => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -38,8 +38,7 @@ sub format {
     ]
   );
 
-  my $argument = $core->current_argument;
-  $core->forward_argument;
+  my $argument = $core->forward_argument;
 
 # Strip escape characters
 
@@ -50,7 +49,8 @@ sub format {
     $argument = $self->_padding( 'undef' );
     return $self->_print_case( $core->print_case, $argument );
   }
-  elsif ( ref( $argument ) and ref( $argument ) eq 'ARRAY' ) {
+  elsif ( ref( $argument ) and
+          ref( $argument ) eq 'ARRAY' ) {
    my $sub = $core->new(
      stream => $core->stream,
      format => '~a',
@@ -60,7 +60,8 @@ sub format {
    );
    return '[' . $sub->apply . ']';
   }
-  elsif ( ref( $argument ) and ref( $argument ) =~ /Character/ ) {
+  elsif ( ref( $argument ) and
+          ref( $argument ) =~ /Character/ ) {
     return $argument->toString;
   }
   else {

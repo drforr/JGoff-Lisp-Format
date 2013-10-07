@@ -5,8 +5,8 @@ use Moose;
 extends 'JGoff::Lisp::Format::Token';
 
 has arguments => ( is => 'rw' );
-has colon => ( is => 'ro' );
-has at => ( is => 'ro' );
+has colon => ( is => 'ro', isa => 'Bool' );
+has at => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -93,10 +93,13 @@ $self->{colinc} = 1;
 
   my $argument = $core->current_argument;
   $core->forward_argument;
-  if ( $self->{'radix-v'} and !defined( $self->{radix} ) ) {
+  if ( $self->{'radix-v'} and
+       !defined( $self->{radix} ) ) {
     $argument = $english_number_names[ $argument ];
   }
-  elsif ( $self->at and $self->colon and not $has_arguments ) {
+  elsif ( $self->at and
+          $self->colon and
+          not $has_arguments ) {
     $argument = $self->_old_roman_numeral( $argument );
   }
   else {
