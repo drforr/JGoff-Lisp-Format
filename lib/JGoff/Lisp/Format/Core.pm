@@ -122,6 +122,8 @@ sub _format {
     F
     Newline
     O
+    Open_Brace
+    Open_Bracket
     P Percent
     Question
     R
@@ -169,6 +171,9 @@ sub _format {
     elsif ( ref( $operation ) and ref( $operation ) eq 'ARRAY' ) {
       my ( $open, $_operation, $close ) = @{ $operation };
       if ( $open->isa( 'JGoff::Lisp::Format::Tokens::Open_Brace' ) ) {
+        $output .= $open->format( $self, $_operation, $close );
+      }
+      elsif ( $open->isa( 'JGoff::Lisp::Format::Tokens::Open_Bracket' ) ) {
         $output .= $open->format( $self, $_operation, $close );
       }
       else {

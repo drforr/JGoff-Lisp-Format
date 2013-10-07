@@ -12,11 +12,13 @@ use JGoff::Lisp::Format::Tokens::B;
 use JGoff::Lisp::Format::Tokens::C;
 use JGoff::Lisp::Format::Tokens::Circumflex;
 use JGoff::Lisp::Format::Tokens::Close_Brace;
+use JGoff::Lisp::Format::Tokens::Close_Bracket;
 use JGoff::Lisp::Format::Tokens::D;
 use JGoff::Lisp::Format::Tokens::F;
 use JGoff::Lisp::Format::Tokens::Newline;
 use JGoff::Lisp::Format::Tokens::O;
 use JGoff::Lisp::Format::Tokens::Open_Brace;
+use JGoff::Lisp::Format::Tokens::Open_Bracket;
 use JGoff::Lisp::Format::Tokens::P;
 use JGoff::Lisp::Format::Tokens::Percent;
 use JGoff::Lisp::Format::Tokens::Question;
@@ -181,11 +183,47 @@ sub __token_ampersand_percent_vertical_bar_tilde {
 
 # }}}
 
-# {{{ __token_asterisk_open_bracket
+# {{{ __token_open_bracket
 
-sub __token_asterisk_open_bracket {
+sub __token_open_bracket {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*\[] }x );
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \[ }x );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Open_Bracket->new(
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
+    colon => $rv->{colon},
+    at => $rv->{at}
+  ) if $rv->{format} eq q{~[};
+
+  return $rv;
+}
+
+# }}}
+
+# {{{ __token_close_bracket
+
+sub __token_close_bracket {
+  my $self = shift;
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \] }x );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Close_Bracket->new(
+    n => defined $rv->{parameters} &&
+         @{ $rv->{parameters} } ? $rv->{parameters}->[0] : undef,
+    colon => $rv->{colon},
+    at => $rv->{at}
+  ) if $rv->{format} eq q{~]};
+
+  return $rv;
+}
+
+# }}}
+
+# {{{ __token_asterisk
+
+sub __token_asterisk {
+  my $self = shift;
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? [*] }x );
   my $rv = $self->___parse_token( $match );
   return JGoff::Lisp::Format::Tokens::Asterisk->new(
     n => defined $rv->{parameters} &&
@@ -193,7 +231,6 @@ sub __token_asterisk_open_bracket {
     colon => $rv->{colon},
     at => $rv->{at}
   ) if $rv->{format} eq q{~*};
-
   return $rv;
 }
 
@@ -229,11 +266,11 @@ sub __token_circumflex {
 
 # }}}
 
-# {{{ __token_close_bracket_close_paren
+# {{{ __token_close_paren
 
-sub __token_close_bracket_close_paren {
+sub __token_close_paren {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ [\]\)] }x );
+  my $match = $self->expect( qr{ ~ [\)] }x );
   my $rv = {
     format => $match
   };
@@ -292,12 +329,17 @@ sub _atom {
       $self->_atoms,
       $self->__token_close_brace
     ] },
+    sub { [
+      $self->__token_open_bracket,
+      $self->_atoms,
+      $self->__token_close_bracket
+    ] },
     sub { $self->__token_text },
-    sub { $self->__token_asterisk_open_bracket },
+    sub { $self->__token_asterisk },
     sub { $self->__token_a_b_d_o_s_x },
     sub { $self->__token_ampersand_percent_vertical_bar_tilde },
     sub { $self->__token_c_newline_open_paren_p_question_semi },
-    sub { $self->__token_close_bracket_close_paren },
+    sub { $self->__token_close_paren },
     sub { $self->__token_circumflex },
     sub { $self->__token_f_r },
   );

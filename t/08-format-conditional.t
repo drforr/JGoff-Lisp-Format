@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 39;
+use Test::More tests => 35;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,10 +11,10 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  my $count = 6;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
+#SKIP: {
+#  my $count = 6;
+#  my $str = "$count tests not ready yet";
+#  diag $str; skip $str, $count;
 
 # (def-format-test format.cond.1
 #   "~[~]" (0) "")
@@ -24,6 +24,10 @@ def_format_test 'format.cond.1' =>
    [ 0 ],
    "";
 
+SKIP: {
+  my $count = 1;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.cond.2
 #   "~[a~]" (0) "a")
 
