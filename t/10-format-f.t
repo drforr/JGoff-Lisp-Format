@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 46;
+use Test::More tests => 51;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,10 +11,38 @@ BEGIN {
 use strict;
 use warnings;
 
+def_format_test 'format.jgoff.1' => "~f",  [ .12345 ],     "0.12345";
+def_format_test 'format.jgoff.2' => "~f",  [ 1.2345 ],     "1.2345";
+def_format_test 'format.jgoff.3' => "~f",  [ 12.345 ],    "12.345";
+def_format_test 'format.jgoff.4' => "~f",  [ 123.45 ],   "123.45";
+def_format_test 'format.jgoff.5' => "~f",  [ 1234.5 ],  "1234.5";
+def_format_test 'format.jgoff.6' => "~f",  [ 12345. ], "12345.0";
+
+def_format_test 'format.jgoff.7'  => "~1f",  [ .12345 ],      ".12345";
+def_format_test 'format.jgoff.8'  => "~1f",  [ 1.2345 ],     "1.2345";
+def_format_test 'format.jgoff.9'  => "~1f",  [ 12.345 ],    "12.345";
+def_format_test 'format.jgoff.10' => "~1f",  [ 123.45 ],   "123.45";
+def_format_test 'format.jgoff.11' => "~1f",  [ 1234.5 ],  "1234.5";
+def_format_test 'format.jgoff.12' => "~1f",  [ 12345. ], "12345.";
+
+def_format_test 'format.jgoff.13' => "~2f",  [ .12345 ],      ".1";
+def_format_test 'format.jgoff.14' => "~2f",  [ 1.2345 ],     "1.";
+def_format_test 'format.jgoff.15' => "~2f",  [ 12.345 ],    "12.";
+def_format_test 'format.jgoff.16' => "~2f",  [ 123.45 ],   "123.";
+def_format_test 'format.jgoff.17' => "~2f",  [ 1234.5 ],  "1235."; # Round up
+def_format_test 'format.jgoff.18' => "~2f",  [ 12345. ], "12345.";
+
+def_format_test 'format.jgoff.19' => "~3f",  [ .12345 ],      ".12";
+def_format_test 'format.jgoff.20' => "~3f",  [ 1.2345 ],     "1.2";
+def_format_test 'format.jgoff.21' => "~3f",  [ 12.345 ],    "12.";
+def_format_test 'format.jgoff.22' => "~3f",  [ 123.45 ],   "123.";
+def_format_test 'format.jgoff.23' => "~3f",  [ 1234.5 ],  "1235."; # Round up
+def_format_test 'format.jgoff.24' => "~3f",  [ 12345. ], "12345.";
+
 ### Equivalent to PRIN1 for 0 or (abs x) in range [10^-3,10^7).
 
 SKIP: {
-  my $count = 42;
+  my $count = 4;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
 
@@ -81,6 +109,7 @@ SKIP: {
 #          unless (and (string= s "1.0") (string= s s2))
 #          collect (list x s s2)))
 #  nil)
+}
 
 deftest 'format.f.4' => sub {
   my $f = JGoff::Lisp::Format->new;
@@ -112,7 +141,7 @@ deftest 'format.f.5' => sub {
   for my $x ( remove_duplicates( 1, 1.0, 1.0, 1.0 ) ) {
     my $s = $f->format( undef, "~2f", $x );
     my $s2 = formatter_call_to_string( $fn, $x );
-    unless ( ( $s eq '1.0' ) and ( $s eq $s2 ) ) {
+    unless ( ( $s eq '1.' ) and ( $s eq $s2 ) ) {
       $collector->( list( $x, $s, $s2 ) );
     }
   }
@@ -234,6 +263,10 @@ deftest 'format.f.10' => sub {
   return $remainder;
 }, [];
 
+#SKIP: {
+#  my $count = 31;
+#  my $str = "$count tests not implemented yet";
+#  diag $str; skip $str, $count;
 #(deftest format.f.11
 #  (let ((fn (formatter "~4f")))
 #    (loop for x in (remove-duplicates '(1/2 0.5s0 0.5f0 0.5d0 0.5l0))
@@ -257,6 +290,10 @@ deftest 'format.f.11' => sub {
   return $remainder;
 }, [];
 
+SKIP: {
+  my $count = 30;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 #(deftest format.f.12
 #  (let ((fn (formatter "~4,2F")))
 #    (loop for x in (remove-duplicates '(1/2 0.5s0 0.5f0 0.5d0 0.5l0))

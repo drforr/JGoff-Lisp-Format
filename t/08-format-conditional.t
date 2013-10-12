@@ -11,11 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-#SKIP: {
-#  my $count = 6;
-#  my $str = "$count tests not ready yet";
-#  diag $str; skip $str, $count;
-
 # (def-format-test format.cond.1
 #   "~[~]" (0) "")
 
@@ -86,20 +81,7 @@ deftest 'format.cond.7' => sub {
     $collector->( $f->format( undef, "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 
 #(deftest formatter.cond.7
 #  (let ((fn (formatter "~[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
@@ -115,20 +97,7 @@ deftest 'formatter.cond.7' => sub {
     $collector->( formatter_call_to_strng( $fn, $i ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 
 }
 
@@ -201,20 +170,7 @@ deftest 'format.cond.13' => sub {
       $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", $i, undef ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 
 #(deftest formatter.cond.13
 #  (let ((fn (formatter "~V[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
@@ -231,20 +187,7 @@ deftest 'formatter.cond.13' => sub {
     $collector->( formatter_call_to_strng( $fn, $i ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 
 #(deftest format.cond.14
 #  (loop for i from -1 to 10
@@ -259,20 +202,7 @@ deftest 'format.cond.14' => sub {
       $f->format( undef, "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]", undef, $i ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 
 #(deftest formatter.cond.14
 #  (let ((fn (formatter "~v[a~;b~;c~;d~;e~;f~;g~;h~;i~]")))
@@ -288,20 +218,7 @@ deftest 'formatter.cond.14' => sub {
     $collector->( formatter_call_to_strng( $fn, undef, $i ) );
   }
   return $remainder;
-}, [
-  "",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "",
-  ""
-];
+}, [ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "", "" ];
 }
 
 SKIP: {

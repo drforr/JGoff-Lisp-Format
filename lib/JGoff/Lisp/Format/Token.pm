@@ -3,6 +3,7 @@ package JGoff::Lisp::Format::Token;
 use Moose;
 use Readonly;
 use Carp qw( croak );
+use Scalar::Util qw( looks_like_number );
 
 Readonly our $upcase => 'upcase';
 Readonly our $downcase => 'downcase';
@@ -66,7 +67,7 @@ sub _argument_to_base {
     }
     $argument = $digits;
   }
-  $argument = $self->_commify( $argument );
+  $argument = $self->_commify( $argument ) if looks_like_number( $argument );
   $argument = $self->_padding( $argument );
   return $argument;
 }
@@ -153,21 +154,23 @@ sub _commify {
   my ( $argument ) = @_;
   my $interval = $self->{'comma-interval'};
   my $commachar = $self->{commachar};
-  my $sign = 1;
 
-  if ( $argument and $argument !~ /[^-+0-9.]/ and $argument < 0 ) {
-    $sign = -1;
-    $argument = abs( $argument );
-  }
+  my $sign = $argument < 0 ?  -1 :
+             $argument == 0 ? 0 : +1;
+  $argument = abs( $argument );
+
   if ( $self->colon ) {
+    my ( $l, $r ) = split '.', $argument;
     my @chunk;
-    while ( $argument and
-            length( $argument ) > $interval ) {
-      unshift @chunk, substr( $argument, -$interval, $interval, '' );
+    while ( $l and
+            length( $l ) > $interval ) {
+      unshift @chunk, substr( $l, -$interval, $interval, '' );
     }
-    unshift @chunk, $argument if $argument and $argument ne '';
-    $argument = join $commachar, @chunk;
+    unshift @chunk, $l if $l and $l ne '';
+    $l = join $commachar, @chunk;
+    $l .= $r if defined $r;
   }
+
   if ( $sign < 0 ) {
     return '-' . $argument;
   }

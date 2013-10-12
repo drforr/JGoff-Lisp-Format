@@ -31,7 +31,7 @@ sub format {
   my ( $core ) = @_;
   $self->_resolve_parameters(
     $core, [
-      [ w => 0 ],
+      [ w => undef ],
       [ d => 0 ],
       [ k => 0 ],
       [ overflowchar => ',' ],
@@ -40,17 +40,34 @@ sub format {
   );
 
   my $argument = $core->forward_argument;
-  $argument = sprintf "%f", $argument;
-  if ( $argument =~ m{ [.] [0]+ $ }x ) {
-    $argument =~ s{ [.] [0]+ $ }{.0}x;
-  }
+  $argument = sprintf "%1f", $argument;
 
   $argument = $self->_commify( $argument );
+  if ( $argument !~ /[.]/ ) {
+    $argument .= '.0';
+  }
 
-  if ( $argument and
-       $self->{w} > 0 and
-       length( $argument ) < $self->{w} ) {
-    $argument = ' ' x ( $self->{w} - length( $argument ) ) . $argument;
+  if ( $self->{w} and
+       $self->{w} > 0 ) {
+    $argument =~ s{ ^ 0+ }{}x;
+    $argument =~ s{ 0+ $ }{}x;
+  }
+
+  if ( $self->{w} and
+       $self->{w} > 1 and
+       length( $argument ) > $self->{w} ) {
+    my ( $l, $r ) = split /\./, $argument;
+    my $max_digits = $self->{w} - length( $l ) - 1;
+    if ( $max_digits > 0 ) {
+      $r = substr( $r, 0, $max_digits );
+    }
+    else {
+      if ( '0.' . $r >= 0.5 ) {
+        $l++;
+      }
+      $r = '';
+    }
+    $argument = $l . '.' . $r;
   }
 
   return $argument;
