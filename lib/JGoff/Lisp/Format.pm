@@ -13,6 +13,7 @@ Readonly our $capitalize => 'capitalize';
 our $print_readably = undef; # default value from the CLISP spec
 our $print_case = $upcase; # default value from the CLISP spec
 our $print_radix = undef; # XXX ?
+our $read_base = 10; # default value?
 
 Readonly our $most_positive_fixnum => 2**32-1;#~0; # XXX Probably wrong
 Readonly our $most_negative_fixnum => -(2**32-1);#~0; # XXX Probably wrong

@@ -184,7 +184,10 @@ sub read_from_string {
 }
 
 sub search {
-  die "search not implemented yet!";
+  my ( $in, $str ) = @_;
+
+  my $idx = index( $str, $in );
+  return $idx >= 0 ? $idx : undef;
 }
 
 sub make_list {

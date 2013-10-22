@@ -165,6 +165,11 @@ SKIP: {
 #  [ 1.0 ],
 #  "ies";
 
+def_format_test 'format.p.17' =>
+  '~@p',
+  [ 1.0 ],
+  "ies";
+
 #(deftest format.p.18
 #  (loop for x in *universe*
 #        for s = (format nil "~@p" x)

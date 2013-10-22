@@ -144,7 +144,7 @@ def_format_test 'format.c.3' =>
   char_name( ' ' );
 
 SKIP: {
-  my $count = 6;
+  my $count = 4;
   my $str = "$count tests not implemented yet";
   diag $str; skip $str, $count;
 
@@ -260,6 +260,7 @@ deftest 'format.c.5a' => sub {
   }
   return $remainder;
 }, [];
+}
 
 #(deftest format.c.6
 #  (loop for c across +standard-chars+
@@ -297,13 +298,13 @@ deftest 'format.c.6a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my ( $remainder, $collector ) = _make_collector;
   my $count = 0;
-  for my $i ( 0 .. min( 0x10_000,
+  for my $i ( 0 .. min( 0x100, # 0x10_000
                         $JGoff::Lisp::Format::Utils::char_code_limit ) - 1 ) {
     my $c = code_char( $i );
     my $s1 = $c and $f->format( undef, "~:C", $c );
     my $s2 = $c and $f->format( undef, '~@:C', $c );
     unless ( !defined $c or
-             ( search( $s1, $2 ) == 0 ) ) {
+             ( search( $s1, $s2 ) == 0 ) ) {
       $count++;
       $collector->( list( $c, $s1, $s2 ) );
     }
@@ -314,4 +315,3 @@ deftest 'format.c.6a' => sub {
   }
   return $remainder;
 }, [];
-}

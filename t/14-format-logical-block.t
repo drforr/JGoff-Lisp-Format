@@ -338,9 +338,19 @@ def_pprint_test 'format.logical-block.15' => sub {
 #  (format nil "~@<~@{~A~^*~}~:>" 1 2 3)
 #  "1*2*3")
 
+def_pprint_test 'format.logical-block.16' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~@<~@{~A~^*~}~:>', [ 1, 2, 3 ] );
+}, "1*2*3";
+
 #(def-pprint-test format.logical-block.17
 #  (format nil "~@<~@{~A~^ ~_~}~:>" 1 2 3)
 #  "1 2 3")
+
+def_pprint_test 'format.logical-block.17' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, '~@<~@{~A~^ ~_~}~:>', [ 1, 2, 3 ] );
+}, "1 2 3";
 
 #(def-pprint-test format.logical-block.18
 #  (format nil "~@<~@{~A~^ ~_~}~:>" 1 2 3)
@@ -467,7 +477,18 @@ SKIP: {
 #  (format nil "~<~A~^xxxx~:>" '(1))
 #  "1")
 
+def_pprint_test 'format.logical-block.escape.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<~A~^xxxx~:>", [ 1 ] );
+}, "1";
+
 #(def-pprint-test format.logical-block.escape.2
 #  (format nil "~<~<~A~^xxx~:>yyy~:>" '((1)))
 #  "1yyy")
+
+def_pprint_test 'format.logical-block.escape.1' => sub {
+  my $f = JGoff::Lisp::Format->new;
+  $f->format( undef, "~<~<~A~^xxx~:>yyy~:>", [ [ 1 ] ] );
+}, "1yyy";
+
 }

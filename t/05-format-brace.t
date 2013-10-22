@@ -334,7 +334,7 @@ def_format_test 'format.\:{.5' =>
   "XXX";
 
 SKIP: {
-  my $count = 2;
+  my $count = 1;
   my $str = "$count tests not ready yet";
   diag $str; skip $str, $count;
 # (deftest format.\:{.6
@@ -350,6 +350,7 @@ deftest 'format.\:{.6' => sub {
   );
 }, "134";
 
+}
 # (def-format-test format.\:{.7
 #   "~0:{XYZ~}" ('((1))) "")
 
@@ -357,7 +358,6 @@ def_format_test 'format.\:{.7' =>
   "~0:{XYZ~}",
   [ [ [ 1 ] ] ],
   "";
-}
 
 # (def-format-test format.\:{.8
 #   "~2:{XYZ~}" ('((1))) "XYZ")
@@ -375,10 +375,6 @@ def_format_test 'format.\:{.9' =>
   [ [ [ 1 ], [ 2 ] ] ],
   "12";
 
-SKIP: {
-  my $count = 3;
-  my $str = "$count tests not ready yet";
-  diag $str; skip $str, $count;
 # XXX Testing a property-list, close to a hash.
 # (def-format-test format.\:{.10
 #   "~2:{~A~}" ('((1 X) (2 Y) (3 Z))) "12")
@@ -393,6 +389,11 @@ def_format_test 'format.\:{.10' =>
 #         (format nil "~v:{~A~}" i '((1) (2) (3 X) (4 Y Z) (5) (6))))
 #   ("" "1" "12" "123" "1234" "12345"
 #    "123456" "123456" "123456" "123456" "123456"))
+
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not ready yet";
+  diag $str; skip $str, $count;
 
 deftest 'format.\:{.11' => sub {
   my $f = JGoff::Lisp::Format->new;

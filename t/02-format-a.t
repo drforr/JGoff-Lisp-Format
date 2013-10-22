@@ -156,7 +156,7 @@ deftest 'format.a.8' => sub {
   my $fn = $f->formatter( "~A" );
   my $count = 0;
   my ( $remainder, $collector ) = _make_collector;
-  for my $i ( 0 .. min( 0x10000,
+  for my $i ( 0 .. min( 0x100, # 0x10_000,
                         $JGoff::Lisp::Format::Utils::char_code_limit ) ) {
     my $c = code_char( $i );
     my $s1 = $c && string( $c );
