@@ -16,7 +16,7 @@ use warnings;
 
 def_format_test 'format.{.1' =>
   concatenate( "~{~", "\n", "~}" ),
-  [ [ undef ] ],
+  [ undef ],
   "";
 
 # (def-format-test format.{.1a
@@ -94,7 +94,8 @@ deftest 'format.{.8' => sub {
   my $f = JGoff::Lisp::Format->new;
   my ( $remainder, $collector ) = _make_collector;
   for my $i ( 0 .. 10 ) {
-    my $s = $f->format( undef, "~v{~A~}", $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
+    my $s = $f->format( undef, "~v{~A~}",
+                        $i, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 ] );
     unless ( $s eq subseq( "1234567890", 0, $i ) ) {
       $collector->( list( $i, $s ) );
     }

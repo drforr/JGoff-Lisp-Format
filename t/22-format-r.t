@@ -780,6 +780,7 @@ deftest 'formatter.r.7' => sub {
   }
   return $remainder;
 }, [];
+}
 
 #(deftest format.r.7a
 #  (loop for i from 1 to 100
@@ -791,25 +792,21 @@ deftest 'formatter.r.7' => sub {
 #        collect (list i s1 s3 s4))
 #  nil)
 
-# XXX finish this....
-
 deftest 'format.r.7a' => sub {
   my $f = JGoff::Lisp::Format->new;
   my ( $remainder, $collector ) = _make_collector;
   for my $i ( 1 .. 100 ) {
     my $s1 = $f->format( undef, "~r", -$i );
     my $s2 = $english_number_names[ $i ]; # XXX needs a bit of TLC
-    unless ( $s1 eq $s2 ) {
-      $collector->( list( $i, $s1, $s2 ) );
+    my $s3 = concatenate( 'negative ', $s2 );
+    my $s4 = concatenate( 'minus ', $s2 );
+    unless ( ( $s1 eq $s3 ) or ( $s1 eq $s4 ) ) {
+      $collector->( list( $i, $s1, $s3, $s4 ) );
     }
   }
   return $remainder;
 }, [];
-}
 
-SKIP: {
-  diag "Make these tests work";
-  skip 'Not ready yet', 1;
 # (def-format-test format.r.8
 #   "~vr" (nil 5) "five")
 
@@ -817,7 +814,6 @@ def_format_test 'format.r.8' =>
   "~vr",
   [ undef, 5 ],
   "five";
-}
 
 # (def-format-test format.r.9
 #   "~#r" (4 nil nil) "11" 2)

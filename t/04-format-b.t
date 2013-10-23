@@ -475,7 +475,7 @@ die "mini_universe not defined yet!";
       $f->format( undef, "~A", $x );
     };
     my $s3 = formatter_call_to_string( $fn, $x );
-    unless ( ( integerp $x ) or
+    unless ( ( integerp( $x ) ) or
              ( ( $s1 eq $s2 ) and ( $s1 eq $s3 ) ) ) {
       $collector->( list( $x, $s1, $s2, $s3 ) );
     }

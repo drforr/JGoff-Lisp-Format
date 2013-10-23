@@ -162,7 +162,8 @@ sub _format {
         $output .= $operation->format( $self, $is_first, $before_percent );
       }
       elsif ( exists $token_names{ ref( $operation ) } ) {
-        $output .= $operation->format( $self );
+        my $formatted = $operation->format( $self );
+        $output .= $formatted if defined( $formatted );
       }
       else {
         croak "No operation defined for '$operation'!";

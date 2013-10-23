@@ -56,7 +56,7 @@ sub format {
       $output .= $fn->( $core->stream, [ $argument ] );
     }
   }
-  if ( $core->current_argument and
+  elsif ( $core->current_argument and
        ref( $core->current_argument ) ) {
     for my $argument ( @{ $core->current_argument } ) {
       if ( defined $iteration_count ) {
