@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 57;
+use Test::More tests => 58;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -528,8 +528,8 @@ sub _ternary_to_decimal {
   return $decimal;
 }
 
-is( _ternary_to_decimal( '2' ), 2, 'ternary => decimal 2' );
-is( _ternary_to_decimal( '10' ), 3, 'ternary => decimal 3' );
+is( _ternary_to_decimal( '2'   ), 2,  'ternary => decimal 2'  );
+is( _ternary_to_decimal( '10'  ), 3,  'ternary => decimal 3'  );
 is( _ternary_to_decimal( '101' ), 10, 'ternary => decimal 10' );
 is( _ternary_to_decimal( '102' ), 11, 'ternary => decimal 11' );
 

@@ -24,6 +24,7 @@ our $VERSION = '0.01';
 
 =cut
 
+# {{{ _old_roman_numeral
 sub _old_roman_numeral {
   my $self = shift;
   my ( $argument ) = @_;
@@ -43,7 +44,9 @@ sub _old_roman_numeral {
          ( $n_v ? 'V' x $n_v : '' ).
          ( $argument ? 'I' x $argument : '' );
 }
+# }}}
 
+# {{{ _english_numeral
 sub _english_numeral {
   my $self = shift;
   my ( $argument ) = @_;
@@ -81,6 +84,7 @@ sub _english_numeral {
   $english = 'negative ' . $english if $argument < 0;
   return $english;
 }
+# }}}
 
 =head2 format( $core )
 
@@ -117,6 +121,7 @@ $self->{colinc} = 1;
   }
   elsif ( $self->{radix} and
           $self->{radix} == 10 ) {
+    $argument = $self->_commify( $argument );
   }
   else {
     $argument = $self->_english_numeral( $argument );
