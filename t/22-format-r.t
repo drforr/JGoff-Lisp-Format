@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 58;
+use Test::More tests => 57;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -11,9 +11,9 @@ BEGIN {
 use strict;
 use warnings;
 
-# {{{ @roman_numerals
+# {{{ @new_roman_numerals
 
-my @roman_numerals = qw(
+my @new_roman_numerals = qw(
   I II III IV V VI VII VIII IX X
   XI XII XIII XIV XV XVI XVII XVIII XIX XX
   XXI XXII XXIII XXIV XXV XXVI XXVII XXVIII XXIX XXX
@@ -518,6 +518,7 @@ sub old_roman_numeral {
 
 # }}}
 
+# {{{ _ternary_to_decimal
 sub _ternary_to_decimal {
   my $ternary = shift;
   my $decimal = 0;
@@ -527,6 +528,7 @@ sub _ternary_to_decimal {
   }
   return $decimal;
 }
+# }}}
 
 is( _ternary_to_decimal( '2'   ), 2,  'ternary => decimal 2'  );
 is( _ternary_to_decimal( '10'  ), 3,  'ternary => decimal 3'  );
@@ -732,11 +734,6 @@ my @english_number_names = (
 
 # }}}
 
-SKIP: {
-  my $count = 3;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.r.7
 #  (loop for i from 0 to 100
 #        for s1 = (format nil "~r" i)
@@ -780,7 +777,6 @@ deftest 'formatter.r.7' => sub {
   }
   return $remainder;
 }, [];
-}
 
 #(deftest format.r.7a
 #  (loop for i from 1 to 100
@@ -960,11 +956,6 @@ my @english_ordinal_names = (
 
 # }}}
 
-SKIP: {
-  my $count = 5;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
-
 #(deftest format.r.18
 #  (loop for i from 0 to 100
 #        for s1 = (format nil "~:r" i)
@@ -1034,6 +1025,10 @@ deftest 'format.r.18a' => sub {
   return $remainder;
 }, [];
 
+SKIP: {
+  my $count = 2;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 #(deftest format.r.19
 #  (loop for i from 1
 #        for s1 in *roman-numerals*
@@ -1045,8 +1040,8 @@ deftest 'format.r.18a' => sub {
 deftest 'format.r.19' => sub {
   my $f = JGoff::Lisp::Format->new;
   my ( $remainder, $collector ) = _make_collector;
-  for my $i ( 1 .. $#roman_numerals ) { # XXX needs a bit of TLC
-    my $s1 = $roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
+  for my $i ( 1 .. $#new_roman_numerals ) { # XXX needs a bit of TLC
+    my $s1 = $new_roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
     my $s2 = $f->format( undef, '~@r', $i );
     unless ( $s1 eq $s2 ) {
       $collector->( list( $i, $s1, $s2 ) );
@@ -1068,8 +1063,8 @@ deftest 'formatter.r.19' => sub {
   my $f = JGoff::Lisp::Format->new;
   my $fn = $f->formatter( '~@r' );
   my ( $remainder, $collector ) = _make_collector;
-  for my $i ( 1 .. $#roman_numerals ) { # XXX needs a bit of TLC
-    my $s1 = $roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
+  for my $i ( 1 .. $#new_roman_numerals ) { # XXX needs a bit of TLC
+    my $s1 = $new_roman_numerals[ $i - 1 ]; # XXX needs a bit of TLC
     my $s2 = formatter_call_to_string( $fn, $i );
     unless ( $s1 eq $s2 ) {
       $collector->( list( $i, $s1, $s2 ) );
