@@ -165,7 +165,8 @@ sub _commify {
             length( $argument ) > $interval ) {
       unshift @chunk, substr( $argument, -$interval, $interval, '' );
     }
-    unshift @chunk, $argument if $argument and $argument ne '';
+    #unshift @chunk, $argument if $argument and $argument ne '';
+    unshift @chunk, $argument if defined $argument;
     $argument = join $commachar, @chunk;
   }
   if ( $sign < 0 ) {

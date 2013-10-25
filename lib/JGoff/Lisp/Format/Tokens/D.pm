@@ -5,8 +5,8 @@ use Moose;
 extends 'JGoff::Lisp::Format::Token';
 
 has parameters => ( is => 'rw' );
-has colon => ( is => 'ro', isa => 'Bool' );
-has at => ( is => 'ro', isa => 'Bool' );
+has colon      => ( is => 'ro', isa => 'Bool' );
+has at         => ( is => 'ro', isa => 'Bool' );
 
 =head1 NAME
 
@@ -31,15 +31,16 @@ sub format {
   my ( $core ) = @_;
   $self->_resolve_parameters(
     $core, [
-      [ 'mincol' => 0 ],
-      [ 'padchar' => ' ' ],
-      [ 'commachar' => ',' ],
-      [ 'comma-interval' => 3 ],
+      [ 'mincol'         => 0   ],
+      [ 'padchar'        => ' ' ],
+      [ 'commachar'      => ',' ],
+      [ 'comma-interval' => 3   ],
     ]
   );
 
   my $argument = $core->forward_argument;
-  return $self->_argument_to_base( 10, $argument );
+  my $x =  $self->_argument_to_base( 10, $argument );
+  return $x;
 }
 
 1;

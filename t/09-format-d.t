@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 39;
+use Test::More tests => 40;
 
 BEGIN {
   use_ok( 'JGoff::Lisp::Format' ) || print "Bail out!";
@@ -245,6 +245,7 @@ SKIP: {
 #                     (list i mincol s1 s2 s3 pos))
 #           while (<= count limit))))
 #  nil)
+}
 
 ### Comma tests
 
@@ -277,6 +278,10 @@ deftest 'format.d.8' => sub {
   return $remainder;
 }, [];
 
+SKIP: {
+  my $count = 0;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 #(deftest format.d.9
 #  (let ((fn1 (formatter "~d"))
 #        (fn2 (formatter "~:d")))

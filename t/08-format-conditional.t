@@ -11,10 +11,6 @@ BEGIN {
 use strict;
 use warnings;
 
-SKIP: {
-  my $count = 5;
-  my $str = "$count tests not implemented yet";
-  diag $str; skip $str, $count;
 # (def-format-test format.cond.1
 #   "~[~]" (0) "")
 
@@ -23,6 +19,10 @@ def_format_test 'format.cond.1' =>
    [ 0 ],
    "";
 
+SKIP: {
+  my $count = 4;
+  my $str = "$count tests not implemented yet";
+  diag $str; skip $str, $count;
 # (def-format-test format.cond.2
 #   "~[a~]" (0) "a")
 
