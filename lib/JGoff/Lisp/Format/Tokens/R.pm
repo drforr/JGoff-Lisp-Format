@@ -185,7 +185,8 @@ $self->{colinc} = 1;
   }
   elsif ( $self->{radix} and
           $self->{radix} == 10 ) {
-    $argument = $self->_commify( $argument );
+    #$argument = $self->_commify( $argument );
+    $argument = $self->_argument_to_base( $self->{radix}, $argument );
   }
   elsif ( $self->colon ) {
       $argument = $self->_english_ordinal_number( $argument );
