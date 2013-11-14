@@ -20,4 +20,5 @@ WriteMakefile(
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'JGoff-Lisp-Format-*' },
+    test                => { TESTS => 't/*.t t/format/*.t' },
 );
