@@ -307,10 +307,11 @@ sub __token_text {
   my $self = shift;
   return JGoff::Lisp::Format::Tokens::Text->new( text =>
     $self->any_of(
-      sub { $self->expect( qr{ [!"\$\%^\*()_+-=\#\\.,:;'&\@<>a-zA-Z0-9]
+      sub { $self->expect( qr{ ( [|!'`"\$\?\%^\*<{()}>_+-=\#\\.,:;&\@a-zA-Z0-9]
+                               | [\x00-\x1f\x7f] # Nonprinting characters
                                | \[
                                | \]
-                               | \s+ # XXX ?
+                               | \s )+
       }x ) },
     )
   );

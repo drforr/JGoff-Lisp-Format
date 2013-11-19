@@ -136,7 +136,7 @@ deftest 'format.a.7' => sub {
     }
   };
   return $remainder;
-}, [];
+}, [ ];
 
 #(deftest format.a.8
 #  (let ((fn (formatter "~A")))

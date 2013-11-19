@@ -143,11 +143,11 @@ sub deftest {
   my $test = $func->();
   if ( ref $test ) {
     is_deeply( $test, $result, $name ) or
-      diag( "  at test file $filename line $line\n" . Dump( $test ) );
+      diag( "  at test file $filename line $line: $!;\n" . Dump( $test ) );
   }
   else {
     is( $test, $result, $name ) or
-      diag( "  at test file $filename line $line" );
+      diag( "  at test file $filename line $line: $!" );
   }
 }
 
