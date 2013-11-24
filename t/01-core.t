@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 33;
+use Test::More tests => 23;
 use YAML;
 
 BEGIN {
@@ -12,27 +12,29 @@ BEGIN {
 use strict;
 use warnings;
 
-#
-# and now on to the utilities the test utils will use.
-#
-ok $JGoff::Lisp::Format::Utils::most_positive_fixnum > 0,
-   'most_positive_fixnum is positive';
-ok $JGoff::Lisp::Format::Utils::most_negative_fixnum < 0,
-   'most_negative_fixnum is negative';
-ok @JGoff::Lisp::Format::Utils::standard_chars > 0,
-   'standard_chars has chars';
-isa_ok $JGoff::Lisp::Format::Utils::standard_chars[0],
-       'JGoff::Lisp::Format::Utils::Character',
-       'standard_chars are typed objects for testing purposes';
-my @multibyte_chars =
-   grep { ord( $_->toString ) > 0x7f }
-        @JGoff::Lisp::Format::Utils::standard_chars;
-ok @multibyte_chars == 0,
-   'standard_chars objects are all ASCII';
-ok $JGoff::Lisp::Format::Utils::char_code_limit > 0,
-   'char_code_limit > 0';
-ok $JGoff::Lisp::Format::Utils::call_arguments_limit > 0,
-   'call_char_limit > 0';
+subtest 'Utility state defaults correctly' => sub {
+  plan tests => 7;
+
+  my @multibyte_chars =
+     grep { ord( $_->toString ) > 0x7f }
+          @JGoff::Lisp::Format::Utils::standard_chars;
+
+  ok $JGoff::Lisp::Format::Utils::most_positive_fixnum > 0,
+     'most_positive_fixnum is positive';
+  ok $JGoff::Lisp::Format::Utils::most_negative_fixnum < 0,
+     'most_negative_fixnum is negative';
+  ok @JGoff::Lisp::Format::Utils::standard_chars > 0,
+     'standard_chars has chars';
+  isa_ok $JGoff::Lisp::Format::Utils::standard_chars[0],
+         'JGoff::Lisp::Format::Utils::Character',
+         'standard_chars are typed objects for testing purposes';
+  ok @multibyte_chars == 0,
+     'standard_chars objects are all ASCII';
+  ok $JGoff::Lisp::Format::Utils::char_code_limit > 0,
+     'char_code_limit > 0';
+  ok $JGoff::Lisp::Format::Utils::call_arguments_limit > 0,
+     'call_char_limit > 0';
+};
 
 SKIP: {
   diag 'Missing stuff';
@@ -43,9 +45,13 @@ is char_int( ' ' ), 32,
    'XXX Should this be the correct return value?';
 }
 
-is char_name( ' ' ), 'Space';
-is char_name( "\n" ), 'Newline';
-is char_name( 'n' ), 'n';
+subtest 'char_names' => sub {
+  plan tests => 3;
+
+  is char_name( ' ' ), 'Space';
+  is char_name( "\n" ), 'Newline';
+  is char_name( 'n' ), 'n';
+};
 
 is char_code( ' ' ), 32;
 
@@ -55,12 +61,20 @@ SKIP: {
 is char_int( ' ' ), 32, 'XXX Should this be the correct return value?';
 }
 
-is string( 'f' ), 'f';
-is string( JGoff::Lisp::Format::Utils::Character->new( character => 'f' ) ),
-   'f';
+subtest 'strings' => sub {
+  plan tests => 2;
 
-is subseq( 'foo', 1, 2 ), 'o';
-is subseq( 'foo', 1, 3 ), 'oo';
+  is string( 'f' ), 'f';
+  is string( JGoff::Lisp::Format::Utils::Character->new( character => 'f' ) ),
+     'f';
+};
+
+subtest 'subseqs' => sub {
+  plan tests => 2;
+
+  is subseq( 'foo', 1, 2 ), 'o';
+  is subseq( 'foo', 1, 3 ), 'oo';
+};
 
 is with_standard_io_syntax { 'foo' }, 'foo';
 

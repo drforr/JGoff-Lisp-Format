@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 92;
+use Test::More tests => 93;
 use List::Util qw( min );
 
 BEGIN {
@@ -11,6 +11,13 @@ BEGIN {
 
 use strict;
 use warnings;
+
+subtest 'core ~a' => sub {
+  plan tests => 1;
+  my $f = JGoff::Lisp::Format->new;
+
+  is $f->format( '~a', 'f' ) => 'f';
+};
 
 # (def-format-test format.a.1
 #   "~a" (nil) "NIL")
@@ -798,7 +805,7 @@ def_format_test 'format.a.58' =>
   [ "xyz" ],
   "xyz";
 
-def_format_test 'format.a.jgoff.1' =>
+def_format_test 'format.a.author.1' =>
   "~A ~A",
   [ "xyz", "abc" ],
   "xyz abc";

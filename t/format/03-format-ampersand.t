@@ -46,7 +46,7 @@ def_format_test 'format.&.4' =>
 #
 # Test for ~n& beforehand.
 #
-def_format_test 'format.&.jgoff.1' =>
+def_format_test 'format.&.author.1' =>
   "~2&",
   undef,
   "\n" x 1; # JMG And it's worth pointing out that it's one off.

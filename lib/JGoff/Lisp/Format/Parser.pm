@@ -236,11 +236,11 @@ sub __token_asterisk {
 
 # }}}
 
-# {{{ __token_c_newline_open_paren_p_question_semi
+# {{{ __token_c_newline_p_question_semi
 
-sub __token_c_newline_open_paren_p_question_semi {
+sub __token_c_newline_p_question_semi {
   my $self = shift;
-  my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\(\npP?;] }x );
+  my $match = $self->expect( qr{ ~ $MODIFIERS? [cC\npP?;] }x );
   my $rv = $self->___parse_token( $match );
   return JGoff::Lisp::Format::Tokens::C->new( %$rv ) if $rv->{format} eq q{~c};
   return JGoff::Lisp::Format::Tokens::P->new( %$rv ) if $rv->{format} eq q{~p};
@@ -290,6 +290,17 @@ sub __token_open_brace {
 
 # }}}
 
+# {{{ __token_open_paren
+
+sub __token_open_paren {
+  my $self = shift;
+  my $match = $self->expect( qr{ ~ $PARAMETER? $MODIFIERS? \( }x );
+  my $rv = $self->___parse_token( $match );
+  return JGoff::Lisp::Format::Tokens::Open_Paren->new( %$rv );
+}
+
+# }}}
+
 # {{{ __token_close_brace
 
 sub __token_close_brace {
@@ -307,8 +318,8 @@ sub __token_text {
   my $self = shift;
   return JGoff::Lisp::Format::Tokens::Text->new( text =>
     $self->any_of(
-      sub { $self->expect( qr{ ( [\x00-\x7d\x7f] # Everything but ~
-                               | [\x80-\xff] # Latin-1
+      sub { $self->expect( qr{ ( [\x00-\x7d\x7f] # ASCII minus '~'
+                               | [\x80-\xff]     # Latin-1
                                )+
       }x ) },
     )
@@ -329,6 +340,11 @@ sub _atom {
       $self->__token_close_brace
     ] },
     sub { [
+      $self->__token_open_paren,
+      $self->_atoms,
+      $self->__token_close_paren
+    ] },
+    sub { [
       $self->__token_open_bracket,
       $self->_atoms,
       $self->__token_close_bracket
@@ -337,7 +353,7 @@ sub _atom {
     sub { $self->__token_asterisk },
     sub { $self->__token_a_b_d_o_s_x },
     sub { $self->__token_ampersand_percent_vertical_bar_tilde },
-    sub { $self->__token_c_newline_open_paren_p_question_semi },
+    sub { $self->__token_c_newline_p_question_semi },
     sub { $self->__token_close_paren },
     sub { $self->__token_circumflex },
     sub { $self->__token_f_r },
