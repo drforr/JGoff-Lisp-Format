@@ -318,8 +318,8 @@ sub __token_text {
   my $self = shift;
   return JGoff::Lisp::Format::Tokens::Text->new( text =>
     $self->any_of(
-      sub { $self->expect( qr{ ( [\x00-\x7d\x7f] # ASCII minus '~'
-                               | [\x80-\xff]     # Latin-1
+      sub { $self->expect( qr{ ( [\x00-\x7d\x7f]  # ASCII minus '~'
+                               | [\x80-\x{10fff}] # The rest
                                )+
       }x ) },
     )
