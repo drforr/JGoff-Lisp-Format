@@ -38,6 +38,8 @@ sub format {
     ]
   );
 
+  die "no more arguments" if $core->num_arguments == 0;
+
   my $argument = $core->forward_argument;
 
 # Strip escape characters

@@ -41,16 +41,16 @@ SKIP: {
   skip 'Not ready yet', 1;
 ok @JGoff::Lisp::Format::Utils::mini_universe > 0,
    'mini_universe populated';
-is char_int( ' ' ), 32,
+is char_int( ' ' ) => 32,
    'XXX Should this be the correct return value?';
 }
 
 subtest 'char_names' => sub {
   plan tests => 3;
 
-  is char_name( ' ' ), 'Space';
-  is char_name( "\n" ), 'Newline';
-  is char_name( 'n' ), 'n';
+  is char_name( ' ' ) => 'Space';
+  is char_name( "\n" ) => 'Newline';
+  is char_name( 'n' ) => 'n';
 };
 
 is char_code( ' ' ), 32;
@@ -58,33 +58,33 @@ is char_code( ' ' ), 32;
 SKIP: {
   diag 'Missing stuff';
   skip 'Not ready yet', 1;
-is char_int( ' ' ), 32, 'XXX Should this be the correct return value?';
+is char_int( ' ' ) => 32, 'XXX Should this be the correct return value?';
 }
 
 subtest 'strings' => sub {
   plan tests => 2;
 
-  is string( 'f' ), 'f';
-  is string( JGoff::Lisp::Format::Utils::Character->new( character => 'f' ) ),
+  is string( 'f' ) => 'f';
+  is string( JGoff::Lisp::Format::Utils::Character->new( character => 'f' ) ) =>
      'f';
 };
 
 subtest 'subseqs' => sub {
   plan tests => 2;
 
-  is subseq( 'foo', 1, 2 ), 'o';
-  is subseq( 'foo', 1, 3 ), 'oo';
+  is subseq( 'foo', 1, 2 ) => 'o';
+  is subseq( 'foo', 1, 3 ) => 'oo';
 };
 
-is with_standard_io_syntax { 'foo' }, 'foo';
+is with_standard_io_syntax { 'foo' } => 'foo';
 
-is concatenate( 'foo', 'bar' ), 'foobar';
+is concatenate( 'foo', 'bar' ) => 'foobar';
 
 my $foo = [];
 collect( $foo, 1 );
-is_deeply $foo, [ 1 ];
+is_deeply $foo => [ 1 ];
 
-is_deeply list( 'a', 'b' ), [ 'a', 'b' ];
+is_deeply list( 'a', 'b' ) => [ 'a', 'b' ];
 
 # XXX formatter_call_to_string
 
@@ -102,12 +102,12 @@ def_format_test 'core.2' =>
   ok $side_effect == 1, 'deftest() had required side effect';
 }
 
-is code_char( 32 ), ' ';
-is make_string( 3, initial_element => 'x' ), 'xxx';
+is code_char( 32 ) => ' ';
+is make_string( 3, initial_element => 'x' ) => 'xxx';
 
-is random_from_seq( 'x' ), 'x';
+is random_from_seq( 'x' ) => 'x';
 
-is_deeply [ remove_duplicates( 'a', 'b', 'a', 'c', 'c', 'd' ) ],
+is_deeply [ remove_duplicates( 'a', 'b', 'a', 'c', 'c', 'd' ) ] =>
           [ 'a', 'b', 'c', 'd' ];
 
 # XXX graphic_char_p
@@ -116,11 +116,11 @@ is_deeply [ remove_duplicates( 'a', 'b', 'a', 'c', 'c', 'd' ) ],
 
 # XXX search
 
-is_deeply make_list( 3 ), [ undef, undef, undef ];
+is_deeply make_list( 3 ) => [ undef, undef, undef ];
 
-is apply( sub { scalar @_ }, undef, undef, undef ), 3;
+is apply( sub { scalar @_ }, undef, undef, undef ) => 3;
 
-is_deeply cons( 3, [ undef, undef, undef ] ), [ undef, undef, undef, 3 ];
+is_deeply cons( 3, [ undef, undef, undef ] ) => [ undef, undef, undef, 3 ];
 
 # XXX signals_type_error
 
@@ -136,7 +136,7 @@ sub parse_deeply {
   my ( $str, $expected ) = @_;
   my ( $package, $filename, $line ) = caller();
   my $actual = $p->from_string( $str );
-  is_deeply( $actual, [ $expected ], qq{q{$str}} ) or
+  is_deeply( $actual => [ $expected ], qq{q{$str}} ) or
       diag( "  at test file $filename line $line\n" . Dump( $actual ) );
 }
 
